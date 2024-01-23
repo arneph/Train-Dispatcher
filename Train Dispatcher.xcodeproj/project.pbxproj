@@ -7,39 +7,99 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C7FA2B54BF730042332D /* TrackPen.swift */; };
+		1465C7FD2B5B54580042332D /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C7FC2B5B54580042332D /* Path.swift */; };
+		1465C8002B5B6DF80042332D /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 1465C7FF2B5B6DF80042332D /* Algorithms */; };
+		14A2AB912B402D3B0044861E /* ContainerWagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB902B402D3B0044861E /* ContainerWagon.swift */; };
+		14A2AB932B4035000044861E /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB922B4035000044861E /* Vehicle.swift */; };
+		14A2AB952B40364F0044861E /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB942B40364F0044861E /* Object.swift */; };
+		14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */; };
+		14C7749B2B1BA6320096BC97 /* Code.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C7749A2B1BA6320096BC97 /* Code.swift */; };
+		14C774AA2B1D189A0096BC97 /* Code_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C774A92B1D189A0096BC97 /* Code_Tests.swift */; };
+		14C774AC2B1D1BA00096BC97 /* Code.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C7749A2B1BA6320096BC97 /* Code.swift */; };
 		14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */; };
-		14E082622B156E0B00AA29C2 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082612B156E0B00AA29C2 /* Document.swift */; };
-		14E082652B156E0B00AA29C2 /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082632B156E0B00AA29C2 /* Document.xib */; };
+		14E082622B156E0B00AA29C2 /* TrainDispatcherDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */; };
+		14E082652B156E0B00AA29C2 /* TrainDispatcherDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082632B156E0B00AA29C2 /* TrainDispatcherDocument.xib */; };
 		14E082672B156E0E00AA29C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E082662B156E0E00AA29C2 /* Assets.xcassets */; };
 		14E0826A2B156E0E00AA29C2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082682B156E0E00AA29C2 /* MainMenu.xib */; };
+		14E082732B156E9600AA29C2 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082722B156E9600AA29C2 /* MapView.swift */; };
+		14E082752B156F3000AA29C2 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082742B156F3000AA29C2 /* Geometry.swift */; };
+		14E082772B156F7000AA29C2 /* Physics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082762B156F7000AA29C2 /* Physics.swift */; };
+		14E0827C2B158F7600AA29C2 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827B2B158F7600AA29C2 /* Container.swift */; };
+		14E0827E2B18227A00AA29C2 /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827D2B18227A00AA29C2 /* Drawing.swift */; };
+		14E082802B18299600AA29C2 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827F2B18299600AA29C2 /* Map.swift */; };
+		14E082822B1829BB00AA29C2 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082812B1829BB00AA29C2 /* Track.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		14C774A42B1D18890096BC97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 14E0825B2B156E0B00AA29C2;
+			remoteInfo = "Train Dispatcher";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		1465C7FA2B54BF730042332D /* TrackPen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen.swift; sourceTree = "<group>"; };
+		1465C7FC2B5B54580042332D /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
+		14A2AB902B402D3B0044861E /* ContainerWagon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerWagon.swift; sourceTree = "<group>"; };
+		14A2AB922B4035000044861E /* Vehicle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
+		14A2AB942B40364F0044861E /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherWindowController.swift; sourceTree = "<group>"; };
+		14C7749A2B1BA6320096BC97 /* Code.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Code.swift; sourceTree = "<group>"; };
+		14C774A02B1D18890096BC97 /* Train Dispatcher Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Train Dispatcher Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		14C774A92B1D189A0096BC97 /* Code_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Code_Tests.swift; sourceTree = "<group>"; };
 		14E0825C2B156E0B00AA29C2 /* Train Dispatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Train Dispatcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		14E082612B156E0B00AA29C2 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
-		14E082642B156E0B00AA29C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Document.xib; sourceTree = "<group>"; };
+		14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherDocument.swift; sourceTree = "<group>"; };
+		14E082642B156E0B00AA29C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TrainDispatcherDocument.xib; sourceTree = "<group>"; };
 		14E082662B156E0E00AA29C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		14E082692B156E0E00AA29C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		14E0826B2B156E0E00AA29C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14E0826C2B156E0E00AA29C2 /* Train_Dispatcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Train_Dispatcher.entitlements; sourceTree = "<group>"; };
+		14E082722B156E9600AA29C2 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		14E082742B156F3000AA29C2 /* Geometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
+		14E082762B156F7000AA29C2 /* Physics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physics.swift; sourceTree = "<group>"; };
+		14E0827B2B158F7600AA29C2 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
+		14E0827D2B18227A00AA29C2 /* Drawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
+		14E0827F2B18299600AA29C2 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		14E082812B1829BB00AA29C2 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		14E082592B156E0B00AA29C2 /* Frameworks */ = {
+		14C7749D2B1D18890096BC97 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		14E082592B156E0B00AA29C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1465C8002B5B6DF80042332D /* Algorithms in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14C774A12B1D18890096BC97 /* Train Dispatcher Tests */ = {
+			isa = PBXGroup;
+			children = (
+				14C774A92B1D189A0096BC97 /* Code_Tests.swift */,
+			);
+			path = "Train Dispatcher Tests";
+			sourceTree = "<group>";
+		};
 		14E082532B156E0B00AA29C2 = {
 			isa = PBXGroup;
 			children = (
 				14E0825E2B156E0B00AA29C2 /* Train Dispatcher */,
+				14C774A12B1D18890096BC97 /* Train Dispatcher Tests */,
 				14E0825D2B156E0B00AA29C2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				14E0825C2B156E0B00AA29C2 /* Train Dispatcher.app */,
+				14C774A02B1D18890096BC97 /* Train Dispatcher Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,20 +116,60 @@
 		14E0825E2B156E0B00AA29C2 /* Train Dispatcher */ = {
 			isa = PBXGroup;
 			children = (
-				14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */,
-				14E082612B156E0B00AA29C2 /* Document.swift */,
-				14E082632B156E0B00AA29C2 /* Document.xib */,
 				14E082662B156E0E00AA29C2 /* Assets.xcassets */,
+				14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */,
 				14E082682B156E0E00AA29C2 /* MainMenu.xib */,
+				14E082632B156E0B00AA29C2 /* TrainDispatcherDocument.xib */,
+				14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */,
+				14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */,
+				14E082722B156E9600AA29C2 /* MapView.swift */,
+				1465C7FA2B54BF730042332D /* TrackPen.swift */,
+				14E082782B156F7700AA29C2 /* Model */,
 				14E0826B2B156E0E00AA29C2 /* Info.plist */,
 				14E0826C2B156E0E00AA29C2 /* Train_Dispatcher.entitlements */,
 			);
 			path = "Train Dispatcher";
 			sourceTree = "<group>";
 		};
+		14E082782B156F7700AA29C2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				14C7749A2B1BA6320096BC97 /* Code.swift */,
+				14E082762B156F7000AA29C2 /* Physics.swift */,
+				14E082742B156F3000AA29C2 /* Geometry.swift */,
+				1465C7FC2B5B54580042332D /* Path.swift */,
+				14E0827D2B18227A00AA29C2 /* Drawing.swift */,
+				14A2AB942B40364F0044861E /* Object.swift */,
+				14E082812B1829BB00AA29C2 /* Track.swift */,
+				14A2AB922B4035000044861E /* Vehicle.swift */,
+				14E0827B2B158F7600AA29C2 /* Container.swift */,
+				14A2AB902B402D3B0044861E /* ContainerWagon.swift */,
+				14E0827F2B18299600AA29C2 /* Map.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		14C7749F2B1D18890096BC97 /* Train Dispatcher Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 14C774A62B1D18890096BC97 /* Build configuration list for PBXNativeTarget "Train Dispatcher Tests" */;
+			buildPhases = (
+				14C7749C2B1D18890096BC97 /* Sources */,
+				14C7749D2B1D18890096BC97 /* Frameworks */,
+				14C7749E2B1D18890096BC97 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				14C774A52B1D18890096BC97 /* PBXTargetDependency */,
+			);
+			name = "Train Dispatcher Tests";
+			productName = "Train Dispatcher Tests";
+			productReference = 14C774A02B1D18890096BC97 /* Train Dispatcher Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		14E0825B2B156E0B00AA29C2 /* Train Dispatcher */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 14E0826F2B156E0E00AA29C2 /* Build configuration list for PBXNativeTarget "Train Dispatcher" */;
@@ -82,6 +183,9 @@
 			dependencies = (
 			);
 			name = "Train Dispatcher";
+			packageProductDependencies = (
+				1465C7FF2B5B6DF80042332D /* Algorithms */,
+			);
 			productName = "Train Dispatcher";
 			productReference = 14E0825C2B156E0B00AA29C2 /* Train Dispatcher.app */;
 			productType = "com.apple.product-type.application";
@@ -94,8 +198,12 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					14C7749F2B1D18890096BC97 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 14E0825B2B156E0B00AA29C2;
+					};
 					14E0825B2B156E0B00AA29C2 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -110,22 +218,33 @@
 				Base,
 			);
 			mainGroup = 14E082532B156E0B00AA29C2;
+			packageReferences = (
+				1465C7FE2B5B6DF80042332D /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+			);
 			productRefGroup = 14E0825D2B156E0B00AA29C2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				14E0825B2B156E0B00AA29C2 /* Train Dispatcher */,
+				14C7749F2B1D18890096BC97 /* Train Dispatcher Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		14C7749E2B1D18890096BC97 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		14E0825A2B156E0B00AA29C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				14E082672B156E0E00AA29C2 /* Assets.xcassets in Resources */,
-				14E082652B156E0B00AA29C2 /* Document.xib in Resources */,
+				14E082652B156E0B00AA29C2 /* TrainDispatcherDocument.xib in Resources */,
 				14E0826A2B156E0E00AA29C2 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,24 +252,55 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		14C7749C2B1D18890096BC97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14C774AC2B1D1BA00096BC97 /* Code.swift in Sources */,
+				14C774AA2B1D189A0096BC97 /* Code_Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		14E082582B156E0B00AA29C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14E082622B156E0B00AA29C2 /* Document.swift in Sources */,
+				1465C7FD2B5B54580042332D /* Path.swift in Sources */,
+				14E082622B156E0B00AA29C2 /* TrainDispatcherDocument.swift in Sources */,
+				1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */,
+				14E082822B1829BB00AA29C2 /* Track.swift in Sources */,
+				14E082752B156F3000AA29C2 /* Geometry.swift in Sources */,
+				14E082772B156F7000AA29C2 /* Physics.swift in Sources */,
+				14E0827E2B18227A00AA29C2 /* Drawing.swift in Sources */,
+				14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */,
+				14A2AB932B4035000044861E /* Vehicle.swift in Sources */,
+				14E082732B156E9600AA29C2 /* MapView.swift in Sources */,
+				14E0827C2B158F7600AA29C2 /* Container.swift in Sources */,
+				14A2AB952B40364F0044861E /* Object.swift in Sources */,
+				14A2AB912B402D3B0044861E /* ContainerWagon.swift in Sources */,
+				14E082802B18299600AA29C2 /* Map.swift in Sources */,
 				14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */,
+				14C7749B2B1BA6320096BC97 /* Code.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		14C774A52B1D18890096BC97 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 14E0825B2B156E0B00AA29C2 /* Train Dispatcher */;
+			targetProxy = 14C774A42B1D18890096BC97 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
-		14E082632B156E0B00AA29C2 /* Document.xib */ = {
+		14E082632B156E0B00AA29C2 /* TrainDispatcherDocument.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				14E082642B156E0B00AA29C2 /* Base */,
 			);
-			name = Document.xib;
+			name = TrainDispatcherDocument.xib;
 			sourceTree = "<group>";
 		};
 		14E082682B156E0E00AA29C2 /* MainMenu.xib */ = {
@@ -164,6 +314,42 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		14C774A72B1D18890096BC97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = NL3W2DXR5S;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.Train-Dispatcher-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
+			};
+			name = Debug;
+		};
+		14C774A82B1D18890096BC97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = NL3W2DXR5S;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.Train-Dispatcher-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
+			};
+			name = Release;
+		};
 		14E0826D2B156E0E00AA29C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -198,6 +384,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -261,6 +448,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -291,6 +479,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NL3W2DXR5S;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -319,6 +508,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NL3W2DXR5S;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -341,6 +531,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		14C774A62B1D18890096BC97 /* Build configuration list for PBXNativeTarget "Train Dispatcher Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				14C774A72B1D18890096BC97 /* Debug */,
+				14C774A82B1D18890096BC97 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		14E082572B156E0B00AA29C2 /* Build configuration list for PBXProject "Train Dispatcher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -360,6 +559,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1465C7FE2B5B6DF80042332D /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1465C7FF2B5B6DF80042332D /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1465C7FE2B5B6DF80042332D /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 14E082542B156E0B00AA29C2 /* Project object */;
 }
