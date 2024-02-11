@@ -10,19 +10,21 @@ import Foundation
 protocol Unit {
     static func toString(_: Float64) -> String
 }
-struct Seconds : Unit {
+struct Radians: Unit {
+    static func toString(_ v: Float64) -> String {
+        String(format: "%.1f°", v / Float64.pi * 180.0)
+    }
+}
+struct Seconds: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.1fs", v) }
 }
-struct Seconds2 : Unit {
+struct Seconds²: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.1fs²", v) }
 }
-struct Seconds3 : Unit {
+struct Seconds³: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.1fs³", v) }
 }
-struct Radians : Unit {
-    static func toString(_ v: Float64) -> String { String(format: "%.1f°", v / Float64.pi * 180.0) }
-}
-struct Meters : Unit {
+struct Meters: Unit {
     static func toString(_ v: Float64) -> String {
         abs(v) >= 1000.0 ? String(format: "%.1fkm", v / 1000.0) : String(format: "%.2fm", v)
     }
@@ -32,38 +34,38 @@ struct Meters² : Unit {
         abs(v) >= 1000000.0 ? String(format: "%.1fkm²", v / 1000000.0) : String(format: "%.2m²", v)
     }
 }
-struct Meters³ : Unit {
+struct Meters³: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.2fm³", v) }
 }
-struct Meters⁴ : Unit {
+struct Meters⁴: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.2fm⁴", v) }
 }
-struct MetersPerSecond : Unit {
+struct MetersPerSecond: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.0fkm/h", v * 3.6) }
 }
-struct Meters²PerSecond² : Unit {
+struct Meters²PerSecond²: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.2fm²/s²", v) }
 }
-struct MetersPerSecond² : Unit {
+struct MetersPerSecond²: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.2fkm/h/s", v * 3.6) }
 }
-struct MetersPerSecond³ : Unit {
+struct MetersPerSecond³: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.2fkm/h/s²", v * 3.6) }
 }
-struct Seconds²PerMeter : Unit {
+struct Seconds²PerMeter: Unit {
     static func toString(_ v: Float64) -> String { String(format: "%.2fs²/m", v) }
 }
-struct Newtons : Unit {
+struct Newtons: Unit {
     static func toString(_ v: Float64) -> String {
         abs(v) >= 1000.0 ? String(format: "%.1fkN", v / 1000.0) : String(format: "%.2fN", v)
     }
 }
-struct NewtonsPerSecond : Unit {
+struct NewtonsPerSecond: Unit {
     static func toString(_ v: Float64) -> String {
         abs(v) >= 1000.0 ? String(format: "%.1fkN/s", v / 1000.0) : String(format: "%.2fN/s", v)
     }
 }
-struct Kilograms : Unit {
+struct Kilograms: Unit {
     static func toString(_ v: Float64) -> String {
         abs(v) >= 1000.0 ? String(format: "%.1fT", v / 1000.0) : String(format: "%.0fkg", v)
     }
@@ -74,8 +76,7 @@ struct Quantity<T: Unit> : Equatable,
                            Comparable,
                            Codable,
                            CustomStringConvertible,
-                           CustomDebugStringConvertible,
-                           CodeRepresentable {
+                           CustomDebugStringConvertible {
     fileprivate let value: Float64
     
     init(_ value: Int) {
@@ -134,37 +135,29 @@ struct Quantity<T: Unit> : Equatable,
         Quantity<T>(lhs.value / rhs)
     }
     
-    static func == (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs.value == rhs.value }
-    static func != (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs.value != rhs.value }
-    static func < (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs.value < rhs.value }
-    static func <= (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs.value <= rhs.value }
-    static func >= (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs.value >= rhs.value }
-    static func > (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs.value > rhs.value }
+    static func == (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool {
+        abs(lhs.value - rhs.value) <= 1e-9
+    }
+    static func != (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool {
+        abs(lhs.value - rhs.value) > 1e-9
+    }
+    static func < (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs != rhs && lhs.value < rhs.value }
+    static func <= (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs == rhs || lhs.value <= rhs.value }
+    static func >= (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs == rhs || lhs.value >= rhs.value }
+    static func > (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool { lhs != rhs && lhs.value > rhs.value }
         
     var description: String { T.toString(value) }
     var debugDescription: String { T.toString(value) }
-    
-    static func parseCode(with scanner: Scanner) -> Quantity<T>? {
-        switch scanner.next() {
-        case .number(let value):
-            return Quantity(value)
-        default:
-            return nil
-        }
-    }
-    
-    func printCode(with printer: Printer) { printer.write(String(value)) }
-    
 }
+
+typealias Angle = Quantity<Radians>
+typealias AngleDiff = Quantity<Radians>
 
 typealias Time = Quantity<Seconds>
 typealias Duration = Quantity<Seconds>
 
-typealias Duration² = Quantity<Seconds2>
-typealias Duration³ = Quantity<Seconds3>
-
-typealias Angle = Quantity<Radians>
-typealias AngleDiff = Quantity<Radians>
+typealias Duration² = Quantity<Seconds²>
+typealias Duration³ = Quantity<Seconds³>
 
 typealias Position = Quantity<Meters>
 typealias Distance = Quantity<Meters>
@@ -212,6 +205,22 @@ func max<T>(_ xs: Quantity<T>...) -> Quantity<T> {
     Quantity<T>(xs.map{ $0.value }.reduce(xs.first!.value, max))
 }
 
+func cos(_ angle: Angle) -> Float64 {
+    cos(angle.withoutUnit)
+}
+
+func sin(_ angle: Angle) -> Float64 {
+    sin(angle.withoutUnit)
+}
+
+func absDiff(_ a: Angle, _ b: Angle) -> AngleDiff {
+    Angle(abs(a.withoutUnit - b.withoutUnit))
+}
+
+func angle(from a: Point, to b: Point) -> Angle {
+    Angle(atan2((b.y - a.y).withoutUnit, (b.x - a.x).withoutUnit))
+}
+
 func pow2(_ d: Duration) -> Duration² {
     Duration²(pow(d.value, 2.0))
 }
@@ -246,34 +255,6 @@ func sqrt(_ d: Distance⁴) -> Distance² {
 
 func sqrt(_ s: Speed²) -> Speed {
     Speed(sqrt(s.value))
-}
-
-func cos(_ angle: Angle) -> Float64 {
-    cos(angle.value)
-}
-
-func sin(_ angle: Angle) -> Float64 {
-    sin(angle.value)
-}
-
-func clamp(angle a: Angle, min: Angle) -> Angle {
-    let max = min + Angle(2.0 * Float64.pi)
-    var angle = a
-    while angle <= min { angle += Angle(2.0 * Float64.pi) }
-    while angle >= max { angle -= Angle(2.0 * Float64.pi) }
-    return angle
-}
-
-func absDiff(_ a: Angle, _ b: Angle) -> AngleDiff {
-    clamp(angle: abs(a - b), min: 0.0.deg)
-}
-
-func angleAsScale(_ a: Angle) -> Float64 {
-    a.value
-}
-
-func angle(from a: Point, to b: Point) -> Angle {
-    Angle(atan2((b.y - a.y).value, (b.x - a.x).value))
 }
 
 func length(_ direction: Direction) -> Distance {

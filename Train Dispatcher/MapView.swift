@@ -14,7 +14,7 @@ protocol MapViewDelegate: AnyObject {
     var map: Map { get }
 }
 
-class MapView: NSView, ViewContext {
+class MapView: NSView, ToolOwner, ViewContext {
     var delegate: MapViewDelegate? {
         didSet {
             if oldValue !== delegate {
@@ -31,9 +31,7 @@ class MapView: NSView, ViewContext {
     var mapPointAtViewCenter: Point { Point(x: Position(mapCGPointAtViewCenter.x),
                                             y: Position(mapCGPointAtViewCenter.y)) }
     @objc dynamic var mapCGPointAtViewCenter: CGPoint = CGPoint(x: 0.0, y: 0.0) {
-        didSet {
-            needsDisplay = true
-        }
+        didSet { needsDisplay = true }
     }
     @objc dynamic var mapScale: CGFloat = 10.0 {
         didSet {
@@ -47,32 +45,27 @@ class MapView: NSView, ViewContext {
         }
     }
     
-    private struct TrackPenDragState {
-        let start: DragPoint
-        let end: DragPoint
-        let track: Track?
+    // MARK: - Tool
+    private var tool: Tool? {
+        didSet { needsDisplay = true }
     }
-    private enum ToolState {
-        case none
-        case trackPenHovering(DragPoint)
-        case trackPenDragging(TrackPenDragState)
-    }
-    private var toolState: ToolState = .none {
-        didSet {
-            needsDisplay = true
-        }
+    
+    func stateChanged(tool: Tool) {
+        needsDisplay = true
     }
     
     // MARK: - init
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
+        tool = TrackPen(owner: self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        tool = TrackPen(owner: self)
     }
     
-    // MARK: - init
+    // MARK: - NSView notifications
     override func viewDidMoveToWindow() {
         window?.acceptsMouseMovedEvents = true
     }
@@ -169,60 +162,35 @@ class MapView: NSView, ViewContext {
     override func mouseEntered(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
-        let dragPoint = dragStartPointFor(map: map, point: mapPoint)
-        toolState = .trackPenHovering(dragPoint)
+        tool?.mouseEntered(point: mapPoint)
     }
     
     override func mouseMoved(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
-        let dragPoint = dragStartPointFor(map: map, point: mapPoint)
-        toolState = .trackPenHovering(dragPoint)
+        tool?.mouseMoved(point: mapPoint)
     }
     
     override func mouseExited(with event: NSEvent) {
-        toolState = .none
+        tool?.mouseExited()
     }
     
     override func mouseDown(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
-        let dragPoint = dragStartPointFor(map: map, point: mapPoint)
-        toolState = .trackPenDragging(TrackPenDragState(start: dragPoint,
-                                                        end: dragPoint,
-                                                        track: nil))
+        tool?.mouseDown(point: mapPoint)
     }
     
     override func mouseDragged(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
-        switch toolState {
-        case .none, .trackPenHovering:
-            let dragPoint = dragStartPointFor(map: map, point: mapPoint)
-            toolState = .trackPenDragging(TrackPenDragState(start: dragPoint,
-                                                            end: dragPoint,
-                                                            track: nil))
-        case .trackPenDragging(let oldState):
-            let dragStartPoint = oldState.start
-            let dragEndPoint = dragEndPointFor(map: map,
-                                               point: mapPoint,
-                                               startPoint: dragStartPoint)
-            let track = trackForDrag(from: dragStartPoint, to: dragEndPoint)
-            toolState = .trackPenDragging(TrackPenDragState(start: dragStartPoint,
-                                                            end: dragEndPoint,
-                                                            track: track))
-        }
+        tool?.mouseDragged(point: mapPoint)
     }
     
     override func mouseUp(with event: NSEvent) {
-        switch toolState {
-        case .none, .trackPenHovering: break
-        case .trackPenDragging(let state):
-            if let track = state.track {
-                map.tracks.append(track)
-            }
-        }
-        toolState = .none
+        let viewPoint = convert(event.locationInWindow, from: nil)
+        let mapPoint = toMapPoint(viewPoint: viewPoint)
+        tool?.mouseUp(point: mapPoint)
     }
         
     override func scrollWheel(with event: NSEvent) {
@@ -320,47 +288,10 @@ class MapView: NSView, ViewContext {
             drawGrid(mapRect)
         }
         
-        map.tracks.draw(context, self)
+        map.trackMap.tracks.draw(context, self)
         map.vehicles.forEach{ $0.draw(context, self) }
         map.containers.forEach{ $0.draw(context, self) }
-        
-        switch toolState {
-        case .none: break
-        case .trackPenHovering(let dragPoint):
-            switch dragPoint {
-            case .freePoint: break
-            default:
-                context.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-                context.fillEllipse(in: toViewRect(Rect.square(around: dragPoint.point,
-                                                               length: 1.0.m)))
-            }
-        case .trackPenDragging(let state):
-            context.saveGState()
-            
-            if let track = state.track {
-                trace(path: track.path, context, self)
-                context.setLineWidth(max(toViewDistance(trackBedWidth), 3.0))
-                context.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
-                context.strokePath()
-                
-            } else {
-                context.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
-                context.setLineWidth(max(toViewDistance(trackBedWidth / 4.0), 3.0))
-                context.setLineDash(phase: 0.0, lengths: [20.0, 20.0])
-                context.move(to: toViewPoint(state.start.point))
-                context.addLine(to: toViewPoint(state.end.point))
-                context.strokePath()
-            }
-            
-            let diameter = max(1.0.m, toMapDistance(viewDistance: 8.0))
-            context.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-            context.fillEllipse(in: toViewRect(Rect.square(around: state.start.point,
-                                                           length: diameter)))
-            context.fillEllipse(in: toViewRect(Rect.square(around: state.end.point,
-                                                           length: diameter)))
-                        
-            context.restoreGState()
-        }
+        tool?.draw(context, self)
         
         if showScale {
             drawScale()

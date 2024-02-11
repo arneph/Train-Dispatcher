@@ -53,32 +53,6 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
         try super.encode(to: values.superEncoder())
     }
     
-    static let name = "ContainerWagon"
-    private static let containerLabel = "container"
-    
-    static func parseCode(with scanner: Scanner) -> ContainerWagon? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let vehiclePosition = BaseVehicle.parseLabelsAndArgs(with: scanner) else {
-                return nil
-            }
-            guard scanner.next() == .comma else { return nil }
-            guard let container: Container = parseArgument(label: containerLabel,
-                                                           scanner: scanner) else {
-                return nil
-            }
-            return ContainerWagon(vehiclePosition: vehiclePosition, container: container)
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: ContainerWagon.name,
-                    printer: printer) {
-            super.printLabelsAndArgs(with: printer)
-            printer.write(",\n")
-            print(label: ContainerWagon.containerLabel, argument: container, printer: printer)
-        }
-    }
-    
     // MARK: -  Drawing
     func draw(_ cgContext: CGContext, _ viewContext: ViewContext) {
         cgContext.saveGState()

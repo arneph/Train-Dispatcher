@@ -31,7 +31,7 @@ final class Container: Object {
         }
     }
     var center: Point { objectPosition.center }
-    var orientation: Angle { objectPosition.orientation }
+    var orientation: CircleAngle { objectPosition.orientation }
     
     func set(owner: ContainerOwner) {
         positioning = .byOwner(owner)
@@ -45,7 +45,7 @@ final class Container: Object {
         }
     }
     
-    var forward: Angle { orientation }
+    var forward: Angle { orientation.asAngle }
     var left: Angle { orientation + 90.0.deg }
     var right: Angle { orientation - 90.0.deg }
     var backward: Angle { orientation + 180.deg }
@@ -64,11 +64,11 @@ final class Container: Object {
     private let colorIndex: Int
     var color: CGColor { Container.colors[colorIndex] }
     
-    convenience init(center: Point, orientation: Angle) {
+    convenience init(center: Point, orientation: CircleAngle) {
         self.init(objectPosition: ObjectPosition(center: center, orientation: orientation))
     }
     
-    convenience init(center: Point, orientation: Angle, colorIndex: Int) {
+    convenience init(center: Point, orientation: CircleAngle, colorIndex: Int) {
         self.init(objectPosition: ObjectPosition(center: center, orientation: orientation),
                   colorIndex: colorIndex)
     }
@@ -103,7 +103,7 @@ final class Container: Object {
             self.positioning = .freely(position)
         } else {
             self.positioning = .freely(ObjectPosition(center: Point.init(x: 0.0.m, y: 0.0.m),
-                                                orientation: 0.0.deg))
+                                                      orientation: CircleAngle(0.0.deg)))
         }
         colorIndex = try values.decode(Int.self, forKey: .colorIndex)
     }
@@ -117,33 +117,6 @@ final class Container: Object {
             try values.encode((Position?)(nil), forKey: CodingKeys.position)
         }
         try values.encode(colorIndex, forKey: CodingKeys.colorIndex)
-    }
-    
-    private static let name = "Container"
-    private static let labels = [centerLabel, orientationLabel, colorIndexLabel]
-    private static let centerLabel = "center"
-    private static let orientationLabel = "orientation"
-    private static let colorIndexLabel = "colorIndex"
-    
-    static func parseCode(with scanner: Scanner) -> Container? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let (center, orientation, colorIndex): (Point, Angle, Int) =
-                    parseArguments(labels: labels, scanner: scanner) else {
-                return nil
-            }
-            return Container(center: center, 
-                             orientation: orientation,
-                             colorIndex: min(colorIndex, colors.count - 1))
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: Container.name, printer: printer) {
-            print(labelsAndArguments: [(Container.centerLabel, center), 
-                                       (Container.orientationLabel, orientation),
-                                       (Container.colorIndexLabel, colorIndex)],
-                  printer: printer)
-        }
     }
     
     // MARK: -  Drawing

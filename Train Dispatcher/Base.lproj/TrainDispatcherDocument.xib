@@ -7,9 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TrainDispatcherWindowController" customModule="Train_Dispatcher" customModuleProvider="target">
             <connections>
-                <outlet property="commandField" destination="dE8-kJ-9F3" id="kUn-Ql-lPg"/>
-                <outlet property="commandList" destination="CRa-pv-8AN" id="Gdv-A9-Bye"/>
-                <outlet property="mapTextView" destination="MhC-ck-m8l" id="7ob-hX-eRT"/>
                 <outlet property="mapView" destination="fSs-ah-cau" id="wrt-DN-z78"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
             </connections>
@@ -20,97 +17,16 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="133" y="235" width="507" height="413"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="gIp-Ho-8D9">
                 <rect key="frame" x="0.0" y="0.0" width="507" height="413"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="SlT-dy-s43">
+                    <customView id="fSs-ah-cau" customClass="MapView" customModule="Train_Dispatcher" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="507" height="413"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <customView fixedFrame="YES" id="fSs-ah-cau" customClass="MapView" customModule="Train_Dispatcher" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="507" height="316"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            </customView>
-                            <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="thin" vertical="YES" id="p9h-PN-BkO">
-                                <rect key="frame" x="0.0" y="317" width="507" height="96"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <subviews>
-                                    <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" id="Nbz-7v-O9b">
-                                        <rect key="frame" x="0.0" y="0.0" width="253" height="96"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <clipView key="contentView" drawsBackground="NO" id="XvL-dy-O8d">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="96"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <subviews>
-                                                <textView wantsLayer="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" allowsUndo="YES" spellingCorrection="YES" smartInsertDelete="YES" id="MhC-ck-m8l">
-                                                    <rect key="frame" x="0.0" y="0.0" width="253" height="96"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="minSize" width="253" height="96"/>
-                                                    <size key="maxSize" width="507" height="10000000"/>
-                                                    <color key="insertionPointColor" name="textInsertionPointColor" catalog="System" colorSpace="catalog"/>
-                                                    <connections>
-                                                        <outlet property="delegate" destination="-2" id="qx2-kn-bix"/>
-                                                    </connections>
-                                                </textView>
-                                            </subviews>
-                                        </clipView>
-                                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="BxH-MM-Kmw">
-                                            <rect key="frame" x="-100" y="-100" width="240" height="16"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </scroller>
-                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Scn-wu-Nhx">
-                                            <rect key="frame" x="237" y="0.0" width="16" height="96"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </scroller>
-                                    </scrollView>
-                                    <customView fixedFrame="YES" id="YsO-bI-AfW">
-                                        <rect key="frame" x="254" y="0.0" width="253" height="96"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <subviews>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CRa-pv-8AN">
-                                                <rect key="frame" x="0.0" y="17" width="253" height="79"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <textFieldCell key="cell" selectable="YES" drawsBackground="YES" id="qAG-O9-v7C">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="3tJ-za-kIJ">
-                                                <rect key="frame" x="0.0" y="13" width="253" height="5"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                            </box>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dE8-kJ-9F3">
-                                                <rect key="frame" x="0.0" y="0.0" width="253" height="16"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                <textFieldCell key="cell" lineBreakMode="charWrapping" selectable="YES" editable="YES" state="on" drawsBackground="YES" id="G71-zD-TMM">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                                <connections>
-                                                    <action selector="enteredCommand:" target="-2" id="DAJ-az-w82"/>
-                                                </connections>
-                                            </textField>
-                                        </subviews>
-                                    </customView>
-                                </subviews>
-                                <holdingPriorities>
-                                    <real value="250"/>
-                                    <real value="250"/>
-                                </holdingPriorities>
-                            </splitView>
-                        </subviews>
-                        <holdingPriorities>
-                            <real value="100"/>
-                            <real value="300"/>
-                        </holdingPriorities>
-                    </splitView>
+                    </customView>
                 </subviews>
             </view>
             <connections>

@@ -16,6 +16,8 @@ protocol ViewContext {
     var style: Style { get }
     var mapScale: CGFloat { get }
     
+    func toMapDistance(viewDistance: CGFloat) -> Distance
+    
     func toMapPoint(viewPoint: CGPoint) -> Point
     func toMapSize(viewSize: CGSize) -> Size
     func toMapRect(viewRect: CGRect) -> Rect
@@ -41,9 +43,10 @@ func trace(path: CircularPath, _ cgContext: CGContext, _ viewContext: ViewContex
     cgContext.move(to: viewContext.toViewPoint(path.start))
     cgContext.addArc(center: viewContext.toViewPoint(path.center),
                      radius: viewContext.toViewDistance(path.radius),
-                     startAngle: viewContext.toViewAngle(path.startAngle),
-                     endAngle: viewContext.toViewAngle(path.endAngle),
-                     clockwise: path.clockwise)
+                     startAngle: viewContext.toViewAngle(path.circleRange.startAngle),
+                     endAngle: viewContext.toViewAngle(path.circleRange.startAngle + 
+                                                       path.circleRange.delta),
+                     clockwise: path.circleRange.direction == .negative)
 }
 
 func trace(path: CompoundPath, _ cgContext: CGContext, _ viewContext: ViewContext) {
@@ -55,9 +58,10 @@ func trace(path: CompoundPath, _ cgContext: CGContext, _ viewContext: ViewContex
         case .circular(let component):
             cgContext.addArc(center: viewContext.toViewPoint(component.center),
                              radius: viewContext.toViewDistance(component.radius),
-                             startAngle: viewContext.toViewAngle(component.startAngle),
-                             endAngle: viewContext.toViewAngle(component.endAngle),
-                             clockwise: component.clockwise)
+                             startAngle: viewContext.toViewAngle(component.circleRange.startAngle),
+                             endAngle: viewContext.toViewAngle(component.circleRange.startAngle +
+                                                               component.circleRange.delta),
+                             clockwise: component.circleRange.direction == .negative)
         }
     }
 }

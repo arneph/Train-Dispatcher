@@ -12,12 +12,12 @@ struct VehiclePosition: Codable {
     let pathPosition: Position
     
     var center: Point { path.point(at: pathPosition)! }
-    var orientation: Angle { path.orientation(at: pathPosition)! }
+    var orientation: CircleAngle { path.orientation(at: pathPosition)! }
     var objectPosition: ObjectPosition {
         ObjectPosition(center: center, orientation: orientation)
     }
     
-    var forward: Angle { orientation }
+    var forward: CircleAngle { orientation }
     var left: Angle { orientation + 90.0.deg }
     var right: Angle { orientation - 90.0.deg }
     var backward: Angle { orientation + 180.deg }
@@ -52,27 +52,9 @@ class BaseVehicle: Codable {
     init(vehiclePosition: VehiclePosition) {
         self.vehiclePosition = vehiclePosition
     }
-        
-    private static let pathLabel = "path"
-    private static let pathPositionLabel = "pathPosition"
-    
-    static func parseLabelsAndArgs(with scanner: Scanner) -> VehiclePosition? {
-        guard let (path, pathPosition): (SomeFinitePath, Position) =
-                parseArguments(labels: [pathLabel, pathPositionLabel], scanner: scanner) else {
-            return nil
-        }
-        return VehiclePosition(path: path, pathPosition: pathPosition)
-    }
-    
-    func printLabelsAndArgs(with printer: Printer) {
-        print(labelsAndArguments: 
-                [(BaseVehicle.pathLabel, vehiclePosition.path),
-                 (BaseVehicle.pathPositionLabel, vehiclePosition.pathPosition)],
-              printer: printer)
-    }
     
     var center: Point { objectPosition.center }
-    var orientation: Angle { objectPosition.orientation }
+    var orientation: CircleAngle { objectPosition.orientation }
     
     var forward: Angle { objectPosition.forward }
     var left: Angle { objectPosition.left }
@@ -87,7 +69,7 @@ protocol Vehicle: Object {
     var vehiclePosition: VehiclePosition { get }
 }
 
-enum EncodedVehicle: Codable, CodeRepresentable {
+enum EncodedVehicle: Codable {
     case container(ContainerWagon)
     
     var underlying: Vehicle {
@@ -102,22 +84,6 @@ enum EncodedVehicle: Codable, CodeRepresentable {
         } else {
             fatalError("Unexpected Vehicle type")
         }
-    }
-    
-    static func parseCode(with scanner: Scanner) -> EncodedVehicle? {
-        switch scanner.peek() {
-        case .identifier(ContainerWagon.name):
-            guard let vehicle = ContainerWagon.parseCode(with: scanner) else {
-                return nil
-            }
-            return EncodedVehicle(vehicle)
-        default:
-            return nil
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        underlying.printCode(with: printer)
     }
     
 }

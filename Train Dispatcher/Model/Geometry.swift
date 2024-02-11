@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Point : Equatable, Hashable, Codable, CodeRepresentable {
+struct Point : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
     let x: Position
     let y: Position
     
@@ -21,34 +21,14 @@ struct Point : Equatable, Hashable, Codable, CodeRepresentable {
         self.y = y
     }
     
-    private static let name: String = "Point"
-    private static let labels: [String] = [xLabel, yLabel]
-    private static let xLabel: String = "x"
-    private static let yLabel: String = "y"
-    
-    static func parseCode(with scanner: Scanner) -> Point? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let (x, y): (Position, Position) = parseArguments(labels: labels, 
-                                                                    scanner: scanner) else {
-                return nil
-            }
-            return Point(x: x, y: y)
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: Point.name, printer: printer) {
-            print(labelsAndArguments: [(Point.xLabel, x), (Point.yLabel, y)],
-                  onSeparateLines: false,
-                  printer: printer)
-        }
-    }
+    var description: String { "(" + x.description + ", " + y.description + ")" }
+    var debugDescription: String { "(" + x.debugDescription + ", " + y.debugDescription + ")" }
     
 }
 
 typealias Direction = Point
 
-struct Size : Equatable, Hashable, Codable, CodeRepresentable {
+struct Size : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
     let width: Distance
     let height: Distance
     
@@ -63,32 +43,12 @@ struct Size : Equatable, Hashable, Codable, CodeRepresentable {
         self.height = height
     }
     
-    private static let name: String = "Size"
-    private static let labels: [String] = [widthLabel, heightLabel]
-    private static let widthLabel = "w"
-    private static let heightLabel = "h"
-    
-    static func parseCode(with scanner: Scanner) -> Size? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let (w, h): (Distance, Distance) = parseArguments(labels: labels,
-                                                                    scanner: scanner) else {
-                return nil
-            }
-            return Size(width: w, height: h)
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: Size.name, printer: printer) {
-            print(labelsAndArguments: [(Size.widthLabel, width), (Size.heightLabel, height)],
-                  onSeparateLines: false,
-                  printer: printer)
-        }
-    }
+    var description: String { width.description + " x " + height.description }
+    var debugDescription: String { width.debugDescription + " x " + height.debugDescription }
     
 }
 
-struct Rect : Equatable, Hashable, Codable, CodeRepresentable {
+struct Rect : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
     let origin: Point
     let size: Size
     
@@ -103,6 +63,9 @@ struct Rect : Equatable, Hashable, Codable, CodeRepresentable {
     var minY: Position { origin.y }
     var maxY: Position { origin.y + size.height }
     var yRange: ClosedRange<Position> { minY...maxY }
+    
+    var minXY: Point { origin }
+    var maxXY: Point { Point(x: x + width, y: y + height) }
     
     var xValue: Float64 { origin.xValue }
     var yValue: Float64 { origin.yValue }
@@ -160,33 +123,8 @@ struct Rect : Equatable, Hashable, Codable, CodeRepresentable {
         self.size = Size(width: abs(p2.x - p1.x), height: abs(p2.y - p1.y))
     }
     
-    private static let name: String = "Rect"
-    private static let labels: [String] = [xLabel, yLabel, widthLabel, heightLabel]
-    private static let xLabel: String = "x"
-    private static let yLabel: String = "y"
-    private static let widthLabel = "w"
-    private static let heightLabel = "h"
-    
-    static func parseCode(with scanner: Scanner) -> Rect? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let (x, y, w, h): (Position, Position, Distance, Distance) =
-                    parseArguments(labels: labels, scanner: scanner) else {
-                return nil
-            }
-            return Rect(x: x, y: y, width: w, height: h)
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: Rect.name, printer: printer) {
-            print(labelsAndArguments: [(Rect.xLabel, x),
-                                       (Rect.yLabel, y),
-                                       (Rect.widthLabel, width),
-                                       (Rect.heightLabel, height)],
-                  onSeparateLines: false,
-                  printer: printer)
-        }
-    }
+    var description: String { minXY.description + "..." + maxXY.description }
+    var debugDescription: String { minXY.debugDescription + "..." + maxXY.debugDescription }
     
 }
 

@@ -21,16 +21,20 @@ func isApproximatelyInRange(x: Position,
     range.lowerBound <= x + epsilon && x - epsilon <= range.upperBound
 }
 
-struct PointAndOrientation {
+struct PointAndOrientation: Equatable, Hashable, Codable {
     let point: Point
-    let orientation: Angle
+    let orientation: CircleAngle
 }
 
-enum AtomicPathType {
+enum PathExtremity: Equatable, Hashable, Codable {
+    case start, end
+}
+
+enum AtomicPathType: Equatable, Hashable, Codable {
     case linear, circular
 }
 
-enum FinitePathType {
+enum FinitePathType: Equatable, Hashable, Codable {
     case linear, circular, compound
     
     var atomicPathType: AtomicPathType? {
@@ -49,12 +53,12 @@ enum FinitePathType {
     }
 }
 
-struct ClosestPathPointInfo {
-    enum AtomicPathInfo {
+struct ClosestPathPointInfo: Equatable, Hashable, Codable {
+    enum AtomicPathInfo: Equatable, Hashable, Codable {
         case singleAtomicPath(AtomicPathType)
         case twoAtomicPathsConnection(AtomicPathType, AtomicPathType)
     }
-    enum SpecialCase {
+    enum SpecialCase: Equatable, Hashable, Codable {
         case no, start, end
     }
     
@@ -64,7 +68,7 @@ struct ClosestPathPointInfo {
     let specialCase: SpecialCase
 }
 
-protocol Path: Codable, CodeRepresentable {
+protocol Path: Equatable, Hashable, Codable {
     var reverse: Self { get }
     
     func offsetLeft(by: Distance) -> Self?
@@ -73,7 +77,7 @@ protocol Path: Codable, CodeRepresentable {
     func normalize(_ x: Position) -> Position
     
     func point(at x: Position) -> Point?
-    func orientation(at x: Position) -> Angle?
+    func orientation(at x: Position) -> CircleAngle?
     func pointAndOrientation(at x: Position) -> PointAndOrientation?
     
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo
@@ -81,6 +85,10 @@ protocol Path: Codable, CodeRepresentable {
 }
 
 extension Path {
+    func offsetRight(by d: Distance) -> Self? { offsetLeft(by: -d) }
+    
+    func normalize(_ x: Position) -> Position { x }
+    
     func pointAndOrientation(at x: Position) -> PointAndOrientation? {
         guard let point = point(at: x), let orientation = orientation(at: x) else {
             return nil
@@ -92,8 +100,8 @@ extension Path {
 protocol FinitePath: Path {
     var start: Point { get }
     var end: Point { get }
-    var startOrientation: Angle { get }
-    var endOrientation: Angle { get }
+    var startOrientation: CircleAngle { get }
+    var endOrientation: CircleAngle { get }
     var length: Distance { get }
     var range: ClosedRange<Position> { get }
     
@@ -107,6 +115,7 @@ protocol FinitePath: Path {
     
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)?
     static func combine(_ a: Self, _ b: Self) -> Self?
+    static func combine(_ paths: [Self]) -> Self?
 }
 
 extension FinitePath {
@@ -115,6 +124,16 @@ extension FinitePath {
     }
     var endPointAndOrientation: PointAndOrientation {
         PointAndOrientation(point: end, orientation: endOrientation)
+    }
+    
+    static func combine(_ paths: [Self]) -> Self? {
+        guard !paths.isEmpty else { return nil }
+        var combined = paths.first!
+        for path in paths.dropFirst() {
+            guard let result = Self.combine(combined, path) else { return nil }
+            combined = result
+        }
+        return combined
     }
 }
 
@@ -125,9 +144,9 @@ func canConnect(_ a: PointAndOrientation, _ b: PointAndOrientation) -> Bool {
 struct LinearPath: FinitePath {
     let start: Point
     let end: Point
-    var orientation: Angle { angle(from: start, to: end) }
-    var startOrientation: Angle { orientation }
-    var endOrientation: Angle { orientation }
+    var orientation: CircleAngle { CircleAngle(angle(from: start, to: end)) }
+    var startOrientation: CircleAngle { orientation }
+    var endOrientation: CircleAngle { orientation }
     var direction: Direction { Train_Dispatcher.direction(from: start, to: end) }
     var normDirection: Direction { Train_Dispatcher.normalize(direction) }
     var length: Distance { distance(start, end) }
@@ -141,13 +160,7 @@ struct LinearPath: FinitePath {
     func offsetLeft(by d: Distance) -> LinearPath? {
         LinearPath(start: start + d ** left, end: end + d ** left)!
     }
-    
-    func offsetRight(by d: Distance) -> LinearPath? {
-        LinearPath(start: start + d ** right, end: end + d ** right)!
-    }
-    
-    func normalize(_ x: Position) -> Position { x }
-    
+        
     func point(at x: Position) -> Point? {
         if !isApproximatelyInRange(x: x, range: range) {
             return nil
@@ -156,7 +169,7 @@ struct LinearPath: FinitePath {
         return start + (end - start) * progress
     }
     
-    func orientation(at x: Position) -> Angle? {
+    func orientation(at x: Position) -> CircleAngle? {
         if !isApproximatelyInRange(x: x, range: range) {
             return nil
         }
@@ -241,133 +254,74 @@ struct LinearPath: FinitePath {
         self.end = end
     }
     
-    static let name: String = "LinearPath"
-    private static let labels: [String] = [startLabel, endLabel]
-    private static let startLabel: String = "start"
-    private static let endLabel: String = "end"
-    
-    static func parseCode(with scanner: Scanner) -> LinearPath? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let (start, end): (Point, Point) = parseArguments(labels: labels,
-                                                                    scanner: scanner) else {
-                return nil
-            }
-            return LinearPath(start: start, end: end)
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: LinearPath.name, printer: printer) {
-            print(labelsAndArguments: [(LinearPath.startLabel, start),
-                                       (LinearPath.endLabel, end)],
-                  printer: printer)
-        }
-    }
-    
 }
 
 struct CircularPath: FinitePath {
     let center: Point
     let radius: Distance
-    var startOrientation: Angle {
-        !clockwise ? startAngle + Angle(Float64.pi * 0.5)
-                   : startAngle - Angle(Float64.pi * 0.5)
+    let circleRange: CircleRange
+    
+    private func toOrientation(_ a: CircleAngle) -> CircleAngle {
+        switch circleRange.direction {
+        case .positive: return CircleAngle(a + 90.0.deg)
+        case .negative: return CircleAngle(a - 90.0.deg)
+        }
     }
-    var endOrientation: Angle {
-        !clockwise ? endAngle + Angle(Float64.pi * 0.5)
-                   : endAngle - Angle(Float64.pi * 0.5)
-    }
-    let startAngle: Angle
-    let endAngle: Angle
-    var deltaAngle: AngleDiff {
-        clamp(angle: endAngle - startAngle, min: !clockwise ? 0.0.deg : -360.0.deg)
-    }
-    let clockwise: Bool
-    var start: Point {
-        center + radius ** startAngle
-    }
-    var end: Point {
-        center + radius ** endAngle
-    }
-    var length: Distance {
-        radius * angleAsScale(abs(deltaAngle))
-    }
+    
+    var start: Point { center + radius ** circleRange.startAngle }
+    var end: Point { center + radius ** circleRange.endAngle }
+    var startOrientation: CircleAngle { toOrientation(circleRange.start) }
+    var endOrientation: CircleAngle { toOrientation(circleRange.end) }
+    var length: Distance { radius * circleRange.absDelta.withoutUnit }
     var range: ClosedRange<Position> { Position(0.0)...length }
     var reverse: CircularPath {
-        CircularPath(center: center,
-                     radius: radius,
-                     startAngle: endAngle,
-                     endAngle: startAngle,
-                     clockwise: !clockwise)!
+        CircularPath(center: center, radius: radius, circleRange: circleRange.flipped)!
     }
     var finitePathType: FinitePathType { .circular }
     
     func offsetLeft(by d: Distance) -> CircularPath? {
-        CircularPath(center: center,
-                     radius: radius + (clockwise ? +d : -d),
-                     startAngle: startAngle,
-                     endAngle: endAngle,
-                     clockwise: clockwise)!
-    }
-    
-    func offsetRight(by d: Distance) -> CircularPath? {
-        CircularPath(center: center,
-                     radius: radius + (clockwise ? -d : +d),
-                     startAngle: startAngle,
-                     endAngle: endAngle,
-                     clockwise: clockwise)!
-    }
-    
-    func normalize(_ x: Position) -> Position { x }
-    
-    private func clampForPath(angle a: Angle) -> Angle {
-        clamp(angle: a, min: !clockwise ? startAngle : endAngle)
-    }
-    
-    private func isOnPath(clampedAngle: Angle) -> Bool {
-        if !clockwise {
-            return startAngle <= clampedAngle && clampedAngle <= endAngle
-        } else {
-            return startAngle >= clampedAngle && clampedAngle >= endAngle
+        let offsetRadius: Distance
+        switch circleRange.direction {
+        case .positive: offsetRadius = radius - d
+        case .negative: offsetRadius = radius + d
         }
+        return CircularPath(center: center, radius: offsetRadius, circleRange: circleRange)
+    }
+    
+    private func toCircleAngle(_ x: Position) -> CircleAngle {
+        CircleAngle(circleRange.start + circleRange.delta * (x / length))
+    }
+    
+    private func toOrientation(_ x: Position) -> CircleAngle { toOrientation(toCircleAngle(x)) }
+    
+    private func toPosition(_ a: CircleAngle) -> Position {
+        circleRange.fraction(for: a) * length
     }
     
     func point(at x: Position) -> Point? {
         if !isApproximatelyInRange(x: x, range: range) {
             return nil
         }
-        let angle = deltaAngle * (x / length)
-        return center + radius ** (startAngle + angle)
+        return center + radius ** toCircleAngle(x).asAngle
     }
     
-    func orientation(at x: Position) -> Angle? {
+    func orientation(at x: Position) -> CircleAngle? {
         if !isApproximatelyInRange(x: x, range: range) {
             return nil
         }
-        let angle = deltaAngle * (x / length)
-        if !clockwise {
-            return startAngle + angle + Angle(Float64.pi * 0.5)
-        } else {
-            return startAngle + angle - Angle(Float64.pi * 0.5)
-        }
+        return toOrientation(x)
     }
     
-    func closestPointOnPath(from: Point) -> ClosestPathPointInfo {
-        let distToStart = distance(from, start)
-        let distToEnd = distance(from, end)
-        let angle = clampForPath(angle: angle(from: center, to: from))
-        if isOnPath(clampedAngle: angle) {
-            let distToCenter = distance(from, center)
-            let distToProjectedPoint = abs(distToCenter - radius)
-            let x: Position = radius * angleAsScale(abs(angle - startAngle))
-            if distToProjectedPoint < distToStart &&
-                distToProjectedPoint < distToEnd {
-                return ClosestPathPointInfo(distance: distToProjectedPoint, 
-                                            x: x,
-                                            atomicPathInfo: .singleAtomicPath(.circular),
-                                            specialCase: .no)
-            }
+    func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
+        let circleAngle = CircleAngle(angle(from: center, to: p))
+        if circleRange.contains(circleAngle) {
+            return ClosestPathPointInfo(distance: abs(distance(p, center) - radius),
+                                        x: toPosition(circleAngle),
+                                        atomicPathInfo: .singleAtomicPath(.circular),
+                                        specialCase: .no)
         }
+        let distToStart = distance(p, start)
+        let distToEnd = distance(p, end)
         return distToStart < distToEnd
             ? ClosestPathPointInfo(distance: distToStart,
                                    x: 0.0.m,
@@ -381,25 +335,18 @@ struct CircularPath: FinitePath {
     
     func pointsOnPath(atDistance distToPoints: Distance, from p: Point) -> [Position] {
         let distToCenter = distance(center, p)
-        if distToCenter < abs(radius - distToPoints) ||
-            distToCenter > radius + distToPoints {
+        if distToCenter < abs(radius - distToPoints) || distToCenter > radius + distToPoints {
             return []
         }
-        let baseAngle = clampForPath(angle: angle(from: center, to: p))
-        if distToCenter == abs(radius - distToPoints) ||
-            distToCenter == radius + distToPoints {
-            return isOnPath(clampedAngle: baseAngle)
-                 ? [radius * angleAsScale(abs(baseAngle - startAngle))] : []
+        let baseAngle = CircleAngle(angle(from: center, to: p))
+        if distToCenter == abs(radius - distToPoints) || distToCenter == radius + distToPoints {
+            return circleRange.contains(baseAngle) ? [toPosition(baseAngle)] : []
         }
-        let l = (pow2(radius) + pow2(distToCenter) - pow2(distToPoints))
-                / (2.0 * distToCenter)
+        let l = (pow2(radius) + pow2(distToCenter) - pow2(distToPoints)) / (2.0 * distToCenter)
         let angleOffset = Angle(acos(l / radius))
-        let angle1 = clampForPath(angle: baseAngle - angleOffset)
-        let angle2 = clampForPath(angle: baseAngle + angleOffset)
-        return [angle1, angle2]
-            .filter{ isOnPath(clampedAngle: $0) }
-            .map{ radius * angleAsScale(abs($0 - startAngle)) }
-            .sorted()
+        let angle1 = CircleAngle(baseAngle - angleOffset)
+        let angle2 = CircleAngle(baseAngle + angleOffset)
+        return [angle1, angle2].filter{ circleRange.contains($0) }.map{ toPosition($0) }.sorted()
     }
     
     func firstPointOnPath(atDistance d: Distance,
@@ -413,84 +360,55 @@ struct CircularPath: FinitePath {
     }
     
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
-        if x <= 0.0.m || x >= length {
+        if !range.contains(x) {
             return nil
         }
-        let orientation = orientation(at: x)!
-        return (.circular(CircularPath(center: center,
-                                       radius: radius,
-                                       startAngle: startAngle,
-                                       endAngle: orientation,
-                                       clockwise: clockwise)!),
-                .circular(CircularPath(center: center,
-                                       radius: radius,
-                                       startAngle: orientation,
-                                       endAngle: endAngle,
-                                       clockwise: clockwise)!))
+        if let (splitCircleRange1, splitCircleRange2) = circleRange.split(at: toCircleAngle(x)) {
+            return (.circular(CircularPath(center: center,
+                                           radius: radius,
+                                           circleRange: splitCircleRange1)!),
+                    .circular(CircularPath(center: center,
+                                           radius: radius,
+                                           circleRange: splitCircleRange2)!))
+        } else {
+            return nil
+        }
     }
     
     static func combine(_ a: CircularPath, _ b: CircularPath) -> CircularPath? {
-        guard a.center == b.center,
-              a.radius == b.radius,
-              a.clockwise == b.clockwise,
-              a.endAngle == b.startAngle else {
+        guard let circleRange = CircleRange.combine(a.circleRange, b.circleRange),
+              a.center == b.center,
+              a.radius == b.radius else {
             return nil
         }
-        return CircularPath(center: a.center,
-                            radius: a.radius,
-                            startAngle: a.startAngle,
-                            endAngle: b.endAngle,
-                            clockwise: a.clockwise)
+        return CircularPath(center: a.center, radius: a.radius, circleRange: circleRange)
     }
     
     init?(center: Point,
           radius: Distance,
-          startAngle: Angle,
-          endAngle: Angle,
-          clockwise: Bool) {
-        if radius < minDistance || absDiff(startAngle, endAngle) < minAngle {
+          circleRange: CircleRange) {
+        if radius < minDistance || circleRange.absDelta < minAngle {
             return nil
         }
         self.center = center
         self.radius = radius
-        self.startAngle = startAngle
-        self.endAngle = endAngle
-        self.clockwise = clockwise
+        self.circleRange = circleRange
     }
     
-    fileprivate static let name: String = "CircularPath"
-    private static let labels: [String] =
-        [centerLabel, radiusLabel, startAngleLabel, endAngleLabel, clockwiseLabel]
-    private static let centerLabel: String = "center"
-    private static let radiusLabel: String = "radius"
-    private static let startAngleLabel: String = "startAngle"
-    private static let endAngleLabel: String = "endAngle"
-    private static let clockwiseLabel: String = "clockwise"
-        
-    static func parseCode(with scanner: Scanner) -> CircularPath? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let (center, radius, startAngle, endAngle, clockwise):
-                    (Point, Distance, Angle, Angle, Bool) = parseArguments(labels: labels,
-                                                                           scanner: scanner) else {
-                return nil
-            }
-            return CircularPath(center: center,
-                                radius: radius,
-                                startAngle: startAngle,
-                                endAngle: endAngle,
-                                clockwise: clockwise)
-        }
+    init?(center: Point, radius: Distance, startAngle: CircleAngle, deltaAngle: AngleDiff) {
+        self.init(center: center,
+                  radius: radius,
+                  circleRange: CircleRange(start: startAngle, delta: deltaAngle))
     }
     
-    func printCode(with printer: Printer) {
-        printStruct(name: CircularPath.name, printer: printer) {
-            print(labelsAndArguments: [(CircularPath.centerLabel, center),
-                                       (CircularPath.radiusLabel, radius),
-                                       (CircularPath.startAngleLabel, startAngle),
-                                       (CircularPath.endAngleLabel, endAngle),
-                                       (CircularPath.clockwiseLabel, clockwise)],
-                  printer: printer)
-        }
+    init?(center: Point,
+          radius: Distance,
+          startAngle: CircleAngle,
+          endAngle: CircleAngle,
+          direction: CircleRange.Direction) {
+        self.init(center: center,
+                  radius: radius,
+                  circleRange: CircleRange(start: startAngle, end: endAngle, direction: direction))
     }
     
 }
@@ -511,13 +429,13 @@ enum AtomicFinitePath: FinitePath {
         case .circular(let path): return path.end
         }
     }
-    var startOrientation: Angle {
+    var startOrientation: CircleAngle {
         switch self {
         case .linear(let path): return path.startOrientation
         case .circular(let path): return path.startOrientation
         }
     }
-    var endOrientation: Angle {
+    var endOrientation: CircleAngle {
         switch self {
         case .linear(let path): return path.endOrientation
         case .circular(let path): return path.endOrientation
@@ -564,31 +482,7 @@ enum AtomicFinitePath: FinitePath {
             }
         }
     }
-    
-    func offsetRight(by d: Distance) -> AtomicFinitePath? {
-        switch self {
-        case .linear(let path):
-            if let offsetPath = path.offsetRight(by: d) {
-                return .linear(offsetPath)
-            } else {
-                return nil
-            }
-        case .circular(let path):
-            if let offsetPath = path.offsetRight(by: d) {
-                return .circular(offsetPath)
-            } else {
-                return nil
-            }
-        }
-    }
-    
-    func normalize(_ x: Position) -> Position {
-        switch self {
-        case .linear(let path): return path.normalize(x)
-        case .circular(let path): return path.normalize(x)
-        }
-    }
-    
+        
     func point(at x: Position) -> Point? {
         switch self {
         case .linear(let path): return path.point(at: x)
@@ -596,7 +490,7 @@ enum AtomicFinitePath: FinitePath {
         }
     }
     
-    func orientation(at x: Position) -> Angle? {
+    func orientation(at x: Position) -> CircleAngle? {
         switch self {
         case .linear(let path): return path.orientation(at: x)
         case .circular(let path): return path.orientation(at: x)
@@ -657,37 +551,28 @@ enum AtomicFinitePath: FinitePath {
         }
     }
     
-    static func parseCode(with scanner: Scanner) -> AtomicFinitePath? {
-        switch scanner.peek() {
-        case .identifier(LinearPath.name):
-            guard let path = LinearPath.parseCode(with: scanner) else { return nil }
-            return .linear(path)
-        case .identifier(CircularPath.name):
-            guard let path = CircularPath.parseCode(with: scanner) else { return nil }
-            return .circular(path)
-        default:
-            return nil
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        switch self {
-        case .linear(let path): return path.printCode(with: printer)
-        case .circular(let path): return path.printCode(with: printer)
-        }
-    }
 }
 
 struct CompoundPath: FinitePath {
+    private struct Context {
+        let globalStart: Position
+        let globalEnd: Position
+        var globalRange: ClosedRange<Position> { globalStart...globalEnd }
+        
+        func toLocal(_ xGlobal: Position) -> Position { xGlobal - globalStart }
+        func toGlobal(_ xLocal: Position) -> Position { globalStart + xLocal }
+    }
     let components: [AtomicFinitePath]
+    private let contexts: [Context]
+
     var start: Point { components.first!.start }
     var end: Point { components.last!.end }
-    var startOrientation: Angle { components.first!.startOrientation }
-    var endOrientation: Angle { components.last!.endOrientation }
+    var startOrientation: CircleAngle { components.first!.startOrientation }
+    var endOrientation: CircleAngle { components.last!.endOrientation }
     var length: Distance { components.map{$0.length}.reduce(Distance(0.0), +) }
     var range: ClosedRange<Position> { Position(0.0)...length }
     var reverse: CompoundPath {
-        CompoundPath(checkedComponents: components.map{$0.reverse}.reversed())!
+        CompoundPath(checkedComponents: components.map{$0.reverse}.reversed())
     }
     var finitePathType: FinitePathType { .compound }
     
@@ -697,35 +582,6 @@ struct CompoundPath: FinitePath {
             return nil
         }
         return CompoundPath(checkedComponents: offsetAtomicFinitePaths)
-    }
-    
-    func offsetRight(by d: Distance) -> CompoundPath? {
-        let offsetAtomicFinitePaths = components.compactMap({ $0.offsetRight(by: d) })
-        guard offsetAtomicFinitePaths.count == components.count else {
-            return nil
-        }
-        return CompoundPath(checkedComponents: offsetAtomicFinitePaths)
-    }
-    
-    func normalize(_ x: Position) -> Position { x }
-    
-    private struct Context {
-        let globalStart: Position
-        let globalEnd: Position
-        var globalRange: ClosedRange<Position> { globalStart...globalEnd }
-        
-        func toLocal(_ xGlobal: Position) -> Position { xGlobal - globalStart }
-        func toGlobal(_ xLocal: Position) -> Position { globalStart + xLocal }
-    }
-    private var contexts: [Context] {
-        var contexts: [Context] = []
-        var globalStart = Position(0.0)
-        for component in components {
-            let globalEnd = globalStart + component.length
-            contexts.append(Context(globalStart: globalStart, globalEnd: globalEnd))
-            globalStart = globalEnd
-        }
-        return contexts
     }
     
     func component(at xGlobal: Position) -> (component: AtomicFinitePath, xLocal: Position)? {
@@ -756,7 +612,7 @@ struct CompoundPath: FinitePath {
         return component.point(at: xLocal)
     }
     
-    func orientation(at xGlobal: Position) -> Angle? {
+    func orientation(at xGlobal: Position) -> CircleAngle? {
         guard let (component, xLocal) = component(at: xGlobal) else {
             return nil
         }
@@ -878,7 +734,7 @@ struct CompoundPath: FinitePath {
         if paths.count == 1 {
             return SomeFinitePath(paths.first!)
         } else {
-            return .compound(CompoundPath(checkedComponents: paths)!)
+            return .compound(CompoundPath(checkedComponents: paths))
         }
     }
     
@@ -921,47 +777,53 @@ struct CompoundPath: FinitePath {
         return CompoundPath(checkedComponents: components)
     }
     
+    static func == (lhs: CompoundPath, rhs: CompoundPath) -> Bool {
+        lhs.components == rhs.components
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(components)
+    }
+    
     init?(components: [AtomicFinitePath]) {
         if components.count < 2 {
             return nil
         }
         for index in 0...components.count - 2 {
-            if distance(components[index].end,
-                        components[index + 1].start) >= Distance(0.01) {
-                return nil
-            }
-            var diff = abs(components[index].endOrientation -
-                           components[index + 1].startOrientation)
-            while diff >= 360.deg { diff -= 360.0.deg }
-            if diff > Angle(0.01) {
+            guard components[index].end == components[index + 1].start,
+                  components[index].endOrientation == components[index + 1].startOrientation else {
                 return nil
             }
         }
         self.init(checkedComponents: components)
     }
     
-    fileprivate init!(checkedComponents components: [AtomicFinitePath]) {
+    private init(checkedComponents components: [AtomicFinitePath]) {
         self.components = components
-    }
-        
-    fileprivate static let name: String = "CompoundPath"
-    private static let componentsLabel: String = "components"
-    
-    static func parseCode(with scanner: Scanner) -> CompoundPath? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let components: [AtomicFinitePath] = parseArgument(label: componentsLabel,
-                                                                     scanner: scanner) else {
-                return nil
-            }
-            return CompoundPath(components: components)
+        var x = 0.0.m
+        self.contexts = components.map{ (component) in
+            let globalStart = x
+            let globalEnd = x + component.length
+            x = globalEnd
+            return Context(globalStart: globalStart, globalEnd: globalEnd)
         }
     }
     
-    func printCode(with printer: Printer) {
-        printStruct(name: CompoundPath.name, printer: printer) {
-            print(label: CompoundPath.componentsLabel, argument: components, printer: printer)
-        }
+    private enum CodingKeys: String, CodingKey {
+        case components
     }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let components = try values.decode([AtomicFinitePath].self, forKey: .components)
+        self.init(checkedComponents: components)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var values = encoder.container(keyedBy: CodingKeys.self)
+        try values.encode(components, forKey: .components)
+    }
+    
 }
 
 enum SomeFinitePath: FinitePath {
@@ -983,14 +845,14 @@ enum SomeFinitePath: FinitePath {
         case .compound(let path): return path.end
         }
     }
-    var startOrientation: Angle {
+    var startOrientation: CircleAngle {
         switch self {
         case .linear(let path): return path.startOrientation
         case .circular(let path): return path.startOrientation
         case .compound(let path): return path.startOrientation
         }
     }
-    var endOrientation: Angle {
+    var endOrientation: CircleAngle {
         switch self {
         case .linear(let path): return path.endOrientation
         case .circular(let path): return path.endOrientation
@@ -1049,37 +911,6 @@ enum SomeFinitePath: FinitePath {
         }
     }
     
-    func offsetRight(by d: Distance) -> SomeFinitePath? {
-        switch self {
-        case .linear(let path):
-            if let offsetPath = path.offsetRight(by: d) {
-                return .linear(offsetPath)
-            } else {
-                return nil
-            }
-        case .circular(let path):
-            if let offsetPath = path.offsetRight(by: d) {
-                return .circular(offsetPath)
-            } else {
-                return nil
-            }
-        case .compound(let path):
-            if let offsetPath = path.offsetRight(by: d) {
-                return .compound(offsetPath)
-            } else {
-                return nil
-            }
-        }
-    }
-    
-    func normalize(_ x: Position) -> Position {
-        switch self {
-        case .linear(let path): return path.normalize(x)
-        case .circular(let path): return path.normalize(x)
-        case .compound(let path): return path.normalize(x)
-        }
-    }
-    
     func point(at x: Position) -> Point? {
         switch self {
         case .linear(let path): return path.point(at: x)
@@ -1088,7 +919,7 @@ enum SomeFinitePath: FinitePath {
         }
     }
     
-    func orientation(at x: Position) -> Angle? {
+    func orientation(at x: Position) -> CircleAngle? {
         switch self {
         case .linear(let path): return path.orientation(at: x)
         case .circular(let path): return path.orientation(at: x)
@@ -1147,6 +978,8 @@ enum SomeFinitePath: FinitePath {
         case (.circular(let a), .circular(let b)):
             if let path = CircularPath.combine(a, b) {
                 return .circular(path)
+            } else if let path = CompoundPath(components: [.circular(a), .circular(b)]) {
+                return .compound(path)
             } else {
                 return nil
             }
@@ -1210,38 +1043,14 @@ enum SomeFinitePath: FinitePath {
         }
     }
     
-    static func parseCode(with scanner: Scanner) -> SomeFinitePath? {
-        switch scanner.peek() {
-        case .identifier(LinearPath.name):
-            guard let path = LinearPath.parseCode(with: scanner) else { return nil }
-            return .linear(path)
-        case .identifier(CircularPath.name):
-            guard let path = CircularPath.parseCode(with: scanner) else { return nil }
-            return .circular(path)
-        case .identifier(CompoundPath.name):
-            guard let path = CompoundPath.parseCode(with: scanner) else { return nil }
-            return .compound(path)
-        default:
-            return nil
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        switch self {
-        case .linear(let path): return path.printCode(with: printer)
-        case .circular(let path): return path.printCode(with: printer)
-        case .compound(let path): return path.printCode(with: printer)
-        }
-    }
 }
 
 struct Loop: Path {
-    
     let underlying: SomeFinitePath
     var start: Point { underlying.start }
     var end: Point { underlying.end }
-    var startOrientation: Angle { underlying.startOrientation }
-    var endOrientation: Angle { underlying.endOrientation }
+    var startOrientation: CircleAngle { underlying.startOrientation }
+    var endOrientation: CircleAngle { underlying.endOrientation }
     var length: Distance { Distance(Float64.infinity) }
     var range: ClosedRange<Position> {
         Position(-Float64.infinity)...Position(Float64.infinity) }
@@ -1249,13 +1058,6 @@ struct Loop: Path {
     
     func offsetLeft(by d: Distance) -> Loop? {
         guard let offsetUnderlying = underlying.offsetLeft(by: d) else {
-            return nil
-        }
-        return Loop(underlying: offsetUnderlying)
-    }
-    
-    func offsetRight(by d: Distance) -> Loop? {
-        guard let offsetUnderlying = underlying.offsetRight(by: d) else {
             return nil
         }
         return Loop(underlying: offsetUnderlying)
@@ -1281,7 +1083,7 @@ struct Loop: Path {
         underlying.point(at: normalize(x))
     }
 
-    func orientation(at x: Position) -> Angle? {
+    func orientation(at x: Position) -> CircleAngle? {
         underlying.orientation(at: normalize(x))
     }
     
@@ -1326,24 +1128,4 @@ struct Loop: Path {
         self.underlying = underlying
     }
     
-    private static let name: String = "Loop"
-    private static let underlyingLabel: String = "underlying"
-    
-    static func parseCode(with scanner: Scanner) -> Loop? {
-        parseStruct(name: name, scanner: scanner) {
-            guard let underlying: SomeFinitePath = parseArgument(label: underlyingLabel,
-                                                                 scanner: scanner) else {
-                return nil
-            }
-            return Loop(underlying: underlying)
-        }
-    }
-    
-    func printCode(with printer: Printer) {
-        printStruct(name: Loop.name, printer: printer) {
-            print(label: Loop.underlyingLabel,
-                  argument: underlying,
-                  printer: printer)
-        }
-    }
 }
