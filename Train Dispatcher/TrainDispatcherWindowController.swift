@@ -9,8 +9,8 @@ import Foundation
 import Cocoa
 
 class TrainDispatcherWindowController: NSWindowController, MapViewDelegate {
-    var trainDispatcherDocument: TrainDispatcherDocument { document as! TrainDispatcherDocument }
-    var map: Map { trainDispatcherDocument.map }
+    var trainDispatcherDocument: TrainDispatcherDocument? { document as? TrainDispatcherDocument }
+    var map: Map? { trainDispatcherDocument?.map ?? nil }
 
     @IBOutlet var mapView: MapView?
     

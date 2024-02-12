@@ -11,7 +11,7 @@ import CoreGraphics
 import CoreText
 
 protocol MapViewDelegate: AnyObject {
-    var map: Map { get }
+    var map: Map? { get }
 }
 
 class MapView: NSView, ToolOwner, ViewContext {
