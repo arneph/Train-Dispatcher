@@ -129,7 +129,7 @@ final class TrackConnection {
     
     let point: Point
     let directionA: CircleAngle
-    var directionB: CircleAngle { CircleAngle(directionA + 180.0.deg) }
+    var directionB: CircleAngle { directionA.opposite }
     var pointAndDirectionA: PointAndOrientation {
         PointAndOrientation(point: point, orientation: directionA)
     }
@@ -142,6 +142,14 @@ final class TrackConnection {
         case .a: return directionA.asAngle
         case .b: return directionB.asAngle
         }
+    }
+    
+    func offsetLeft(by d: Distance, alongDirection direction: Direction = .a) -> Point {
+        point + d ** (orientation(inDirection: direction) + 90.0.deg)
+    }
+    
+    func offsetRight(by d: Distance, alongDirection direction: Direction = .a) -> Point {
+        offsetLeft(by: -d, alongDirection: direction)
     }
     
     fileprivate(set) var directionATracks: [Track] = []
@@ -163,7 +171,7 @@ final class TrackConnection {
         observers.forEach{ $0.added(track: track, toConnection: self, inDirection: direction) }
     }
     
-    fileprivate func swap(oldTrack: Track, newTrack: Track) {
+    fileprivate func replace(oldTrack: Track, newTrack: Track) {
         if directionATracks.contains(where: { $0 === oldTrack }) {
             directionATracks.removeAll{ $0 === oldTrack }
             directionATracks.append(newTrack)
@@ -338,11 +346,11 @@ final class TrackMap: Codable {
         tracks.removeAll{ $0 === trackA }
         tracks.removeAll{ $0 === trackB }
         if let startConnection = startConnection {
-            startConnection.swap(oldTrack: trackA, newTrack: newTrack)
+            startConnection.replace(oldTrack: trackA, newTrack: newTrack)
             observers.forEach{ $0.connectionChanged(startConnection, onMap: self) }
         }
         if let endConnection = endConnection {
-            endConnection.swap(oldTrack: trackB, newTrack: newTrack)
+            endConnection.replace(oldTrack: trackB, newTrack: newTrack)
             observers.forEach{ $0.connectionChanged(endConnection, onMap: self) }
         }
         trackA.informObserversOfReplacement(by: [newTrack], 
@@ -432,11 +440,11 @@ final class TrackMap: Codable {
         let splitTrackB = Track(path: splitPathB)
         if let connectionA = oldTrack.startConnection {
             splitTrackA.startConnection = connectionA
-            connectionA.swap(oldTrack: oldTrack, newTrack: splitTrackA)
+            connectionA.replace(oldTrack: oldTrack, newTrack: splitTrackA)
         }
         if let connectionB = oldTrack.endConnection {
             splitTrackB.endConnection = connectionB
-            connectionB.swap(oldTrack: oldTrack, newTrack: splitTrackB)
+            connectionB.replace(oldTrack: oldTrack, newTrack: splitTrackB)
         }
         let newConnection = TrackConnection(point: point, directionA: directionA)
         splitTrackA.endConnection = newConnection

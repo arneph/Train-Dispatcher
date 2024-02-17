@@ -25,6 +25,8 @@ struct CircleAngle: Equatable,
         self.value = CircleAngle.clamp(angle)
     }
     
+    var opposite: CircleAngle { CircleAngle(value + 180.0.deg) }
+    
     var asAngle: Angle { value }
     var withoutUnit: Float64 { value.withoutUnit }
     
@@ -52,7 +54,9 @@ func sin(_ orientation: CircleAngle) -> Float64 {
 }
 
 func absDiff(_ a: CircleAngle, _ b: CircleAngle) -> AngleDiff {
-    absDiff(a.asAngle, b.asAngle)
+    min(absDiff(a.asAngle, b.asAngle), 
+        min(absDiff(a.asAngle, b.asAngle - 360.0.deg),
+            absDiff(a.asAngle - 360.0.deg, b.asAngle)))
 }
 
 struct CircleRange: Equatable,

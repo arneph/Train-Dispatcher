@@ -7,44 +7,6 @@
 
 import Foundation
 
-struct ClosestTrackPointInfo {
-    let distance: Distance
-    let track: Track
-    var trackPath: SomeFinitePath { track.path }
-    let trackPathPosition: Position
-
-    let atomicPath: AtomicFinitePath
-    let atomicPathPosition: Position
-    
-    let point: Point
-    let orientation: CircleAngle
-    var pointAndOrientation: PointAndOrientation {
-        PointAndOrientation(point: point, orientation: orientation)
-    }
-    
-    var isTrackStart: Bool { trackPathPosition == 0.0.m }
-    var isTrackEnd: Bool { trackPathPosition == track.path.length }
-    
-    init(distance: Distance, track: Track, trackPathPosition: Position) {
-        self.distance = distance
-        self.track = track
-        self.trackPathPosition = trackPathPosition
-        
-        switch self.track.path {
-        case .linear(let path):
-            self.atomicPath = .linear(path)
-            self.atomicPathPosition = self.trackPathPosition
-        case .circular(let path):
-            self.atomicPath = .circular(path)
-            self.atomicPathPosition = self.trackPathPosition
-        case .compound(let path):
-            (self.atomicPath, self.atomicPathPosition) = path.component(at: self.trackPathPosition)!
-        }
-        self.point = atomicPath.point(at: atomicPathPosition)!
-        self.orientation = atomicPath.orientation(at: atomicPathPosition)!
-    }
-}
-
 final class Map: Codable {
     let trackMap: TrackMap
     var vehicles: [Vehicle] = [
@@ -69,20 +31,6 @@ final class Map: Codable {
                                         pathPosition: 30.0.m))]
     var containers: [Container] = [Container(center: Point(x: 0.0.m, y: 10.0.m),
                                              orientation: CircleAngle(60.0.deg))]
-    
-    func closestPointOnTrack(from point: Point) -> ClosestTrackPointInfo? {
-        var closest: ClosestTrackPointInfo?
-        for track in trackMap.tracks {
-            let candidate = track.path.closestPointOnPath(from: point)
-            if closest?.distance ?? Float64.infinity.m <= candidate.distance {
-                continue
-            }
-            closest = ClosestTrackPointInfo(distance: candidate.distance,
-                                            track: track,
-                                            trackPathPosition: candidate.x)
-        }
-        return closest
-    }
     
     init() {
         self.trackMap = TrackMap()

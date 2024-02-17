@@ -13,18 +13,31 @@ class TrackPen: Tool {
     private var map: Map { owner!.map }
     
     private enum PenPoint {
-        case freePoint(Point)
-        case trackMidPoint(ClosestTrackPointInfo)
-        case trackEndPoint(ClosestTrackPointInfo)
+        case free(Point)
+        case bound(TrackPoint)
+        case boundWithOffset(TrackPoint, Distance)
         
         var point: Point {
             switch self {
-            case .freePoint(let point):
-                return point
-            case .trackMidPoint(let info):
-                return info.point
-            case .trackEndPoint(let info):
-                return info.point
+            case .free(let point): return point
+            case .bound(let point): return point.point
+            case .boundWithOffset(let point, let offset): return point.offsetLeft(by: offset)
+            }
+        }
+        
+        var bindPoint: Point? {
+            switch self {
+            case .free: return nil
+            case .bound(let point): return point.point
+            case .boundWithOffset(let point, _): return point.point
+            }
+        }
+        
+        var distanceToBindPoint: Distance? {
+            switch self {
+            case .bound: return 0.0.m
+            case .boundWithOffset(_, let offset): return abs(offset)
+            case .free: return nil
             }
         }
     }
@@ -108,15 +121,9 @@ class TrackPen: Tool {
         switch state {
         case .none: break
         case .hovering(let penPoint):
-            switch penPoint {
-            case .freePoint: break
-            default:
-                cgContext.saveGState()
-                cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-                cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: penPoint.point,
-                                                                             length: 1.0.m)))
-                cgContext.restoreGState()
-            }
+            cgContext.saveGState()
+            TrackPen.draw(penPoint: penPoint, cgContext, viewContext)
+            cgContext.restoreGState()
         case .dragging(let penDrag):
             cgContext.saveGState()
             if let path = penDrag.proposal?.path {
@@ -124,7 +131,6 @@ class TrackPen: Tool {
                 cgContext.setLineWidth(max(viewContext.toViewDistance(trackBedWidth), 3.0))
                 cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
                 cgContext.strokePath()
-                
             } else {
                 cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
                 cgContext.setLineWidth(max(viewContext.toViewDistance(trackBedWidth / 4.0), 3.0))
@@ -133,139 +139,194 @@ class TrackPen: Tool {
                 cgContext.addLine(to: viewContext.toViewPoint(penDrag.end.point))
                 cgContext.strokePath()
             }
-            
-            let diameter = max(1.0.m, viewContext.toMapDistance(viewDistance: 8.0))
-            cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-            cgContext.fillEllipse(in: 
-                viewContext.toViewRect(Rect.square(around: penDrag.start.point,
-                                                   length: diameter)))
-            cgContext.fillEllipse(in:
-                viewContext.toViewRect(Rect.square(around: penDrag.end.point,
-                                                   length: diameter)))
+            TrackPen.draw(penPoint: penDrag.start, cgContext, viewContext)
+            TrackPen.draw(penPoint: penDrag.end, cgContext, viewContext)
             cgContext.restoreGState()
         }
     }
     
-    private func startPointFor(point: Point) -> PenPoint {
-        if let closestTrackPointInfo = map.closestPointOnTrack(from: point),
-            closestTrackPointInfo.distance <= 5.0.m {
-            if closestTrackPointInfo.isTrackStart || closestTrackPointInfo.isTrackEnd {
-                return .trackEndPoint(closestTrackPointInfo)
+    private static func draw(penPoint: PenPoint, 
+                             _ cgContext: CGContext,
+                             _ viewContext: ViewContext) {
+        let width = max(1.0.m, viewContext.toMapDistance(viewDistance: 8.0))
+        cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
+        switch penPoint {
+        case .boundWithOffset(let trackPoint, _):
+            cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
+            cgContext.setLineWidth(viewContext.toViewDistance(width / 4.0))
+            cgContext.setLineDash(phase: 0.0, lengths: [5.0, 5.0])
+            cgContext.move(to: viewContext.toViewPoint(trackPoint.point))
+            cgContext.addLine(to: viewContext.toViewPoint(penPoint.point))
+            cgContext.strokePath()
+            cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: trackPoint.point,
+                                                                         length: width)))
+        default: break
+        }
+        cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: penPoint.point,
+                                                                     length: width)))
+    }
+    
+    private func boundPenPointFor(point: Point) -> PenPoint? {
+        let penPointsFunc = { (p: TrackPoint) -> [PenPoint] in
+            [.bound(p), .boundWithOffset(p,  +5.0.m), .boundWithOffset(p,  -5.0.m),
+                        .boundWithOffset(p, +10.0.m), .boundWithOffset(p, -10.0.m),
+                        .boundWithOffset(p, +15.0.m), .boundWithOffset(p, -15.0.m)]
+        }
+        let compareFunc = { (a: PenPoint, b: PenPoint) -> Bool in
+            let da = distance(point, a.point)
+            let db = distance(point, b.point)
+            if da < db {
+                return true
+            } else if da > db {
+                return false
             } else {
-                return .trackMidPoint(closestTrackPointInfo)
+                return a.distanceToBindPoint! < b.distanceToBindPoint!
             }
         }
-        return .freePoint(point)
+        if let closestPenPointOfInterest = map.trackMap.pointsOfInterest
+            .flatMap(penPointsFunc)
+            .filter({ distance(point, $0.point) <= 10.0.m })
+            .sorted(by: compareFunc)
+            .first {
+            return closestPenPointOfInterest
+        }
+        if let closestPointInfo = map.trackMap.closestPointOnTrack(from: point) {
+            if (closestPointInfo.isTrackStart || closestPointInfo.isTrackEnd) &&
+                closestPointInfo.distance <= 10.0.m {
+                return .bound(closestPointInfo.asTrackPoint)
+            } else if closestPointInfo.distance <= trackBedWidth {
+                return .bound(closestPointInfo.asTrackPoint)
+            }
+        }
+        return nil
+    }
+    
+    private func startPointFor(point: Point) -> PenPoint {
+        if let boundPenPoint = boundPenPointFor(point: point) {
+            return boundPenPoint
+        }
+        return .free(point)
     }
 
     private func endPointFor(point: Point, startPoint: PenPoint) -> PenPoint {
-        if let closestTrackPointInfo = map.closestPointOnTrack(from: point),
-            closestTrackPointInfo.distance <= 5.0.m {
-            if closestTrackPointInfo.isTrackStart || closestTrackPointInfo.isTrackEnd {
-                return .trackEndPoint(closestTrackPointInfo)
-            } else {
-                return .trackMidPoint(closestTrackPointInfo)
-            }
+        if let boundPenPoint = boundPenPointFor(point: point) {
+            return boundPenPoint
         }
         switch startPoint {
-        case .trackEndPoint(let start):
-            let p = closestPointOnLine(through: start.point,
-                                       withOrientation: start.orientation.asAngle,
+        case .bound(let trackPoint):
+            guard trackPoint.isTrackStart || trackPoint.isTrackEnd else { break }
+            let p = closestPointOnLine(through: trackPoint.point,
+                                       withOrientation: trackPoint.directionA.asAngle,
                                        to: point)
             if distance(point, p) <= 5.0.m {
-                return .freePoint(p)
+                return .free(p)
             }
             break
         default:
             break
         }
-        return .freePoint(point)
+        return .free(point)
     }
     
     private static func proposal(from start: PenPoint, to end: PenPoint) -> TrackProposal? {
         switch (start, end) {
-        case (.freePoint(let start), .freePoint(let end)):
-            guard let path = LinearPath(start: start, end: end) else { return nil }
-            return TrackProposal(path: .linear(path), startConnection: .none, endConnection: .none)
-        case (.freePoint(let start), .trackMidPoint(let end)):
-            if let path = circularPath(fromTrackPoint: end, toFreePoint: start) {
-                return TrackProposal(path: .circular(path.reverse),
-                                     startConnection: .none,
-                                     endConnection: .toNewConnection(end.track,
-                                                                     end.trackPathPosition))
-            }
-            return nil
-        case (.trackMidPoint(let start), .freePoint(let end)):
-            if let path = circularPath(fromTrackPoint: start, toFreePoint: end) {
-                return TrackProposal(path: .circular(path),
-                                     startConnection: .toNewConnection(start.track,
-                                                                       start.trackPathPosition),
-                                     endConnection: .none)
-            }
-            return nil
-        case (.trackEndPoint(let start), .freePoint(let end)):
-            let path: SomeFinitePath
-            if let p = linearPath(fromTrackPoint: start, toFreePoint: end) {
-                path = .linear(p)
-            } else if let p = circularPath(fromTrackPoint: start, toFreePoint: end) {
-                path = .circular(p)
-            } else {
-                return nil
-            }
-            let startConnection: TrackMap.ConnectionOption
-            if start.isTrackStart {
-                if let connection = start.track.startConnection {
-                    let direction: TrackConnection.Direction =
-                        connection.directionA == start.orientation ? .a : .b
-                    startConnection = .toExistingConnection(connection, direction)
-                } else {
-                    startConnection = .toExistingTrack(start.track, .start)
-                }
-            } else {
-                if let connection = start.track.endConnection {
-                    let direction: TrackConnection.Direction =
-                        connection.directionA == start.orientation ? .b : .a
-                    startConnection = .toExistingConnection(connection, direction)
-                } else {
-                    startConnection = .toExistingTrack(start.track, .end)
-                }
-            }
-            return TrackProposal(path: path,
-                                 startConnection: startConnection,
-                                 endConnection: .none)
+        case (.free(let start), .free(let end)):
+            return proposal(from: start, to: end)
+        case (.free(let start), .boundWithOffset):
+            return proposal(from: start, to: end.point)
+        case (.boundWithOffset, .free(let end)):
+            return proposal(from: start.point, to: end)
+        case (.boundWithOffset, .boundWithOffset):
+            return proposal(from: start.point, to: end.point)
+        case (.free(let start), .bound(let end)):
+            return proposal(from: end, to: start)
+        case (.boundWithOffset, .bound(let end)):
+            return proposal(from: end, to: start.point)
+        case (.bound(let start), .free(let end)):
+            return proposal(from: start, to: end)
+        case (.bound(let start), .boundWithOffset):
+            return proposal(from: start, to: end.point)
         default:
             return nil
         }
     }
 
-    private static func linearPath(fromTrackPoint start: ClosestTrackPointInfo,
-                                   toFreePoint end: Point) -> LinearPath? {
-        guard let path = LinearPath(start: start.point, end: end),
-              canConnect(start.pointAndOrientation, path.startPointAndOrientation) else {
+    private static func proposal(from start: Point, to end: Point) -> TrackProposal? {
+        guard let path = LinearPath(start: start, end: end) else { return nil }
+        return TrackProposal(path: .linear(path), startConnection: .none, endConnection: .none)
+    }
+    
+    private static func proposal(from start: TrackPoint, to end: Point) -> TrackProposal? {
+        guard let (path, direction) = proposedPath(fromTrackPoint: start, toFreePoint: end) else {
             return nil
         }
-        return path
+        let connectionOption: TrackMap.ConnectionOption
+        switch start {
+        case .trackConnection(let connection):
+            connectionOption = .toExistingConnection(connection, direction)
+        case .trackPoint(let track, let x):
+            if start.isTrackStart {
+                connectionOption = .toExistingTrack(track, .start)
+            } else if start.isTrackEnd {
+                connectionOption = .toExistingTrack(track, .end)
+            } else {
+                connectionOption = .toNewConnection(track, x)
+            }
+        }
+        return TrackProposal(path: path, startConnection: connectionOption, endConnection: .none)
+    }
+    
+    private static func proposedPath(fromTrackPoint start: TrackPoint,
+                                     toFreePoint end: Point) -> (SomeFinitePath,
+                                                                 TrackConnection.Direction)? {
+        if let (path, direction) = linearPath(fromTrackPoint: start, toFreePoint: end) {
+            return (.linear(path), direction)
+        } else if let (path, direction) = circularPath(fromTrackPoint: start, toFreePoint: end) {
+            return (.circular(path), direction)
+        } else {
+            return nil
+        }
+    }
+    
+    private static func linearPath(fromTrackPoint start: TrackPoint,
+                                   toFreePoint end: Point) -> (LinearPath,
+                                                               TrackConnection.Direction)? {
+        guard let path = LinearPath(start: start.point, end: end) else { return nil }
+        if canConnect(start.pointAndDirectionA, path.startPointAndOrientation) {
+            return (path, .a)
+        } else if canConnect(start.pointAndDirectionB, path.startPointAndOrientation) {
+            return (path, .b)
+        } else {
+            return nil
+        }
     }
 
-    private static func circularPath(fromTrackPoint start: ClosestTrackPointInfo,
-                                     toFreePoint end: Point) -> CircularPath? {
-        var orientation = start.orientation.asAngle
-        var alpha = CircleAngle(angle(from: start.point, to: end) - orientation).asAngle
-        if alpha < -90.0.deg {
-            orientation += 180.0.deg
-            alpha += 180.0.deg
-        } else if alpha > 90.0.deg {
-            orientation += 180.0.deg
-            alpha -= 180.0.deg
+    private static func circularPath(fromTrackPoint start: TrackPoint,
+                                     toFreePoint end: Point) -> (CircularPath,
+                                                                 TrackConnection.Direction)? {
+        let tangentAngle = CircleAngle(angle(from: start.point, to: end))
+        let direction: TrackConnection.Direction
+        let orientation: CircleAngle
+        if absDiff(tangentAngle, start.directionA) < absDiff(tangentAngle, start.directionB) {
+            direction = .a
+            orientation = start.directionA
+        } else {
+            direction = .b
+            orientation = start.directionB
         }
+        let alpha = CircleAngle(tangentAngle - orientation.asAngle).asAngle
         let dist = distance(start.point, end)
         let radius = dist / 2.0 / sin(alpha)
         let center = start.point + (orientation + 90.0.deg) ** radius
-        return CircularPath(center: center,
-                            radius: abs(radius),
-                            startAngle: CircleAngle(angle(from: center, to: start.point)),
-                            endAngle: CircleAngle(angle(from: center, to: end)),
-                            direction: alpha >= 0.0.deg ? .positive : .negative)
+        if let path = CircularPath(center: center,
+                                   radius: abs(radius),
+                                   startAngle: CircleAngle(angle(from: center, to: start.point)),
+                                   endAngle: CircleAngle(angle(from: center, to: end)),
+                                   direction: alpha >= 0.0.deg ? .positive : .negative) {
+            return (path, direction)
+        } else {
+            return nil
+        }
     }
     
 }

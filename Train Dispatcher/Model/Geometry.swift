@@ -181,5 +181,5 @@ func closestPointOnLine(through p: Point,
 func closestPointOnLine(through a: Point, andThrough b: Point, to target: Point) -> Point {
     let l = direction(from: a, to: b)
     let d = direction(from: a, to: target)
-    return a + d * (scalar(d, l) / scalar(l, l))
+    return a + l * (scalar(d, l) / scalar(l, l))
 }

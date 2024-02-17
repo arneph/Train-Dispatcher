@@ -33,6 +33,16 @@ final class CircleAngle_Tests: XCTestCase {
         XCTAssertEqual(CircleAngle(-600.0.deg).asAngle, +120.0.deg)
     }
     
+    func testComputesCorrectAbsDiff() {
+        XCTAssertEqual(absDiff(CircleAngle(   0.0.deg), CircleAngle(   0.0.deg)),  0.0.deg)
+        XCTAssertEqual(absDiff(CircleAngle(   0.0.deg), CircleAngle(  10.0.deg)), 10.0.deg)
+        XCTAssertEqual(absDiff(CircleAngle(  10.0.deg), CircleAngle(   0.0.deg)), 10.0.deg)
+        XCTAssertEqual(absDiff(CircleAngle(+175.0.deg), CircleAngle(-175.0.deg)), 10.0.deg)
+        XCTAssertEqual(absDiff(CircleAngle(-175.0.deg), CircleAngle(+175.0.deg)), 10.0.deg)
+        XCTAssertEqual(absDiff(CircleAngle(+175.0.deg), CircleAngle(+175.0.deg)),  0.0.deg)
+        XCTAssertEqual(absDiff(CircleAngle(-175.0.deg), CircleAngle(-175.0.deg)),  0.0.deg)
+    }
+    
 }
 
 final class CircleRange_Tests: XCTestCase {

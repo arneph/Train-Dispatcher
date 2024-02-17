@@ -565,6 +565,8 @@ struct CompoundPath: FinitePath {
     let components: [AtomicFinitePath]
     private let contexts: [Context]
 
+    var componentSplitPositions: [Position] { contexts.dropFirst().map{ $0.globalStart } }
+    
     var start: Point { components.first!.start }
     var end: Point { components.last!.end }
     var startOrientation: CircleAngle { components.first!.startOrientation }
