@@ -12,33 +12,36 @@ class TrackPen: Tool {
     private weak var owner: ToolOwner?
     private var map: Map { owner!.map }
     
-    private enum PenPoint {
-        case free(Point)
-        case bound(TrackPoint)
-        case boundWithOffset(TrackPoint, Distance)
+    private struct PenPoint {
+        enum Target {
+            case free(Point)
+            case bound(TrackPoint)
+        }
+        struct Hint {
+            let base: TrackPoint
+            let offset: Distance
+            
+            var distance: Distance { return abs(offset) }
+        }
+        
+        let target: Target
+        let hint: Hint?
         
         var point: Point {
-            switch self {
+            switch target {
             case .free(let point): return point
             case .bound(let point): return point.point
-            case .boundWithOffset(let point, let offset): return point.offsetLeft(by: offset)
             }
         }
         
-        var bindPoint: Point? {
-            switch self {
-            case .free: return nil
-            case .bound(let point): return point.point
-            case .boundWithOffset(let point, _): return point.point
-            }
+        init(_ target: Target) {
+            self.target = target
+            self.hint = nil
         }
         
-        var distanceToBindPoint: Distance? {
-            switch self {
-            case .bound: return 0.0.m
-            case .boundWithOffset(_, let offset): return abs(offset)
-            case .free: return nil
-            }
+        init(target: Target, hint: Hint) {
+            self.target = target
+            self.hint = hint
         }
     }
     
@@ -149,28 +152,39 @@ class TrackPen: Tool {
                              _ cgContext: CGContext,
                              _ viewContext: ViewContext) {
         let width = max(1.0.m, viewContext.toMapDistance(viewDistance: 8.0))
-        cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-        switch penPoint {
-        case .boundWithOffset(let trackPoint, _):
-            cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
+        if let hint = penPoint.hint {
+            let hintColor: CGColor
+            switch penPoint.target {
+            case .free: hintColor = CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0)
+            case .bound: hintColor = CGColor.init(gray: 0.5, alpha: 1.0)
+            }
+            cgContext.setStrokeColor(hintColor)
             cgContext.setLineWidth(viewContext.toViewDistance(width / 4.0))
             cgContext.setLineDash(phase: 0.0, lengths: [5.0, 5.0])
-            cgContext.move(to: viewContext.toViewPoint(trackPoint.point))
+            cgContext.move(to: viewContext.toViewPoint(hint.base.point))
             cgContext.addLine(to: viewContext.toViewPoint(penPoint.point))
             cgContext.strokePath()
-            cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: trackPoint.point,
+            cgContext.setFillColor(hintColor)
+            cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: hint.base.point,
                                                                          length: width)))
-        default: break
         }
+        cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
         cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: penPoint.point,
                                                                      length: width)))
     }
-    
+        
     private func boundPenPointFor(point: Point) -> PenPoint? {
+        let penPointOffsetFunc = { (p: TrackPoint, d: Distance) -> PenPoint in
+            PenPoint(target: .free(p.offsetLeft(by: d)), hint: PenPoint.Hint(base: p, offset: d))
+        }
         let penPointsFunc = { (p: TrackPoint) -> [PenPoint] in
-            [.bound(p), .boundWithOffset(p,  +5.0.m), .boundWithOffset(p,  -5.0.m),
-                        .boundWithOffset(p, +10.0.m), .boundWithOffset(p, -10.0.m),
-                        .boundWithOffset(p, +15.0.m), .boundWithOffset(p, -15.0.m)]
+            [PenPoint(.bound(p)),
+             penPointOffsetFunc(p,  +5.0.m),
+             penPointOffsetFunc(p, +10.0.m),
+             penPointOffsetFunc(p, +15.0.m),
+             penPointOffsetFunc(p,  -5.0.m),
+             penPointOffsetFunc(p, -10.0.m),
+             penPointOffsetFunc(p, -15.0.m)]
         }
         let compareFunc = { (a: PenPoint, b: PenPoint) -> Bool in
             let da = distance(point, a.point)
@@ -180,7 +194,7 @@ class TrackPen: Tool {
             } else if da > db {
                 return false
             } else {
-                return a.distanceToBindPoint! < b.distanceToBindPoint!
+                return a.hint == nil && b.hint != nil
             }
         }
         if let closestPenPointOfInterest = map.trackMap.pointsOfInterest
@@ -188,14 +202,25 @@ class TrackPen: Tool {
             .filter({ distance(point, $0.point) <= 10.0.m })
             .sorted(by: compareFunc)
             .first {
-            return closestPenPointOfInterest
+            switch closestPenPointOfInterest.target {
+            case .free:
+                if let closestPointInfo =
+                    map.trackMap.closestPointOnTrack(from: closestPenPointOfInterest.point),
+                   closestPointInfo.distance == 0.0.m {
+                    return PenPoint(target: .bound(closestPointInfo.asTrackPoint),
+                                    hint: closestPenPointOfInterest.hint!)
+                }
+                return closestPenPointOfInterest
+            case .bound:
+                return closestPenPointOfInterest
+            }
         }
         if let closestPointInfo = map.trackMap.closestPointOnTrack(from: point) {
             if (closestPointInfo.isTrackStart || closestPointInfo.isTrackEnd) &&
                 closestPointInfo.distance <= 10.0.m {
-                return .bound(closestPointInfo.asTrackPoint)
+                return PenPoint(.bound(closestPointInfo.asTrackPoint))
             } else if closestPointInfo.distance <= trackBedWidth {
-                return .bound(closestPointInfo.asTrackPoint)
+                return PenPoint(.bound(closestPointInfo.asTrackPoint))
             }
         }
         return nil
@@ -205,48 +230,38 @@ class TrackPen: Tool {
         if let boundPenPoint = boundPenPointFor(point: point) {
             return boundPenPoint
         }
-        return .free(point)
+        return PenPoint(.free(point))
     }
 
     private func endPointFor(point: Point, startPoint: PenPoint) -> PenPoint {
         if let boundPenPoint = boundPenPointFor(point: point) {
             return boundPenPoint
         }
-        switch startPoint {
+        switch startPoint.target {
         case .bound(let trackPoint):
             guard trackPoint.isTrackStart || trackPoint.isTrackEnd else { break }
             let p = closestPointOnLine(through: trackPoint.point,
                                        withOrientation: trackPoint.directionA.asAngle,
                                        to: point)
             if distance(point, p) <= 5.0.m {
-                return .free(p)
+                return PenPoint(.free(p))
             }
             break
         default:
             break
         }
-        return .free(point)
+        return PenPoint(.free(point))
     }
     
     private static func proposal(from start: PenPoint, to end: PenPoint) -> TrackProposal? {
-        switch (start, end) {
+        switch (start.target, end.target) {
         case (.free(let start), .free(let end)):
             return proposal(from: start, to: end)
-        case (.free(let start), .boundWithOffset):
-            return proposal(from: start, to: end.point)
-        case (.boundWithOffset, .free(let end)):
-            return proposal(from: start.point, to: end)
-        case (.boundWithOffset, .boundWithOffset):
-            return proposal(from: start.point, to: end.point)
         case (.free(let start), .bound(let end)):
             return proposal(from: end, to: start)
-        case (.boundWithOffset, .bound(let end)):
-            return proposal(from: end, to: start.point)
         case (.bound(let start), .free(let end)):
             return proposal(from: start, to: end)
-        case (.bound(let start), .boundWithOffset):
-            return proposal(from: start, to: end.point)
-        default:
+        case (.bound(_), .bound(_)):
             return nil
         }
     }
