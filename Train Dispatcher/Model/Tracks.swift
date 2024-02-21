@@ -16,6 +16,24 @@ fileprivate let sleeperWidth = 0.25.m
 fileprivate let minSleeperOffset = 0.6.m
 let trackBedWidth = sleeperLength + 1.5.m
 
+func isValid(trackPath path: SomeFinitePath) -> Bool {
+    switch path {
+    case .circular(let path):
+        return path.radius >= 100.0.m && path.circleRange.absDelta >= 5.0.deg
+    case .linear(let path):
+        return path.length >= 5.0.m
+    case .compound(let path):
+        return path.components.allSatisfy{
+            switch $0 {
+            case .circular(let component):
+                return component.radius >= 100.0.m && component.circleRange.absDelta >= 5.0.deg
+            case .linear(let component):
+                return component.length >= 5.0.m
+            }
+        }
+    }
+}
+
 typealias PositionUpdateFunc = (Position) -> (Position)
 typealias TrackAndPostionUpdateFunc = (Position) -> (Track, Position)
 

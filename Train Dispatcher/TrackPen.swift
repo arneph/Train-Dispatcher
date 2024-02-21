@@ -49,6 +49,17 @@ class TrackPen: Tool {
         let path: SomeFinitePath
         let startConnection: TrackMap.ConnectionOption
         let endConnection: TrackMap.ConnectionOption
+        let valid: Bool
+        
+        init(path: SomeFinitePath, 
+             startConnection: TrackMap.ConnectionOption,
+             endConnection: TrackMap.ConnectionOption) {
+            self.path = path
+            self.startConnection = startConnection
+            self.endConnection = endConnection
+            self.valid = isValid(trackPath: path)
+            
+        }
     }
     
     private struct PenDrag {
@@ -111,7 +122,8 @@ class TrackPen: Tool {
         case .dragging(let oldPenDrag):
             let penStartPoint = oldPenDrag.start
             let penEndPoint = endPointFor(point: point, startPoint: penStartPoint)
-            if let proposal = TrackPen.proposal(from: penStartPoint, to: penEndPoint) {
+            if let proposal = TrackPen.proposal(from: penStartPoint, to: penEndPoint),
+                proposal.valid {
                 let _ = map.trackMap.addTrack(withPath: proposal.path,
                                               startConnection: proposal.startConnection,
                                               endConnection: proposal.endConnection)
@@ -129,10 +141,14 @@ class TrackPen: Tool {
             cgContext.restoreGState()
         case .dragging(let penDrag):
             cgContext.saveGState()
-            if let path = penDrag.proposal?.path {
-                trace(path: path, cgContext, viewContext)
-                cgContext.setLineWidth(max(viewContext.toViewDistance(trackBedWidth), 3.0))
-                cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
+            if let proposal = penDrag.proposal {
+                trace(path: proposal.path, cgContext, viewContext)
+                cgContext.setLineWidth(viewContext.toViewDistance(trackBedWidth))
+                if proposal.valid {
+                    cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
+                } else {
+                    cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5))
+                }
                 cgContext.strokePath()
             } else {
                 cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
