@@ -155,6 +155,14 @@ struct CircleRange: Equatable,
         }
     }
     
+    static func range(from base: Point, between a: Point, and b: Point) -> CircleRange {
+        let alpha1 = CircleAngle(angle(from: base, to: a))
+        let alpha2 = CircleAngle(angle(from: base, to: b))
+        let range1 = CircleRange(start: alpha1, end: alpha2, direction: .positive)
+        let range2 = CircleRange(start: alpha1, end: alpha2, direction: .negative)
+        return range1.absDelta <= range2.absDelta ? range1 : range2
+    }
+    
     var description: String {
         if delta == 360.0.deg {
             return start.description + " (full circle)"

@@ -206,8 +206,8 @@ struct LinearPath: FinitePath {
         let a = distance²(start, end)
         let b = 2.0 * scalar(Train_Dispatcher.direction(from: start, to: end),
                              Train_Dispatcher.direction(from: from, to: start))
-        let c = distance²(start, from) - pow2(r)
-        let d = pow2(b) - 4.0 * a * c
+        let c = distance²(start, from) - pow²(r)
+        let d = pow²(b) - 4.0 * a * c
         if d < Distance⁴(0.0) {
             return []
         } else if d == Distance⁴(0.0) {
@@ -342,7 +342,7 @@ struct CircularPath: FinitePath {
         if distToCenter == abs(radius - distToPoints) || distToCenter == radius + distToPoints {
             return circleRange.contains(baseAngle) ? [toPosition(baseAngle)] : []
         }
-        let l = (pow2(radius) + pow2(distToCenter) - pow2(distToPoints)) / (2.0 * distToCenter)
+        let l = (pow²(radius) + pow²(distToCenter) - pow²(distToPoints)) / (2.0 * distToCenter)
         let angleOffset = Angle(acos(l / radius))
         let angle1 = CircleAngle(baseAngle - angleOffset)
         let angle2 = CircleAngle(baseAngle + angleOffset)

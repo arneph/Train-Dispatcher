@@ -31,7 +31,7 @@ struct Meters: Unit {
 }
 struct Meters² : Unit {
     static func toString(_ v: Float64) -> String {
-        abs(v) >= 1000000.0 ? String(format: "%.1fkm²", v / 1000000.0) : String(format: "%.2m²", v)
+        abs(v) >= 1000000.0 ? String(format: "%.1fkm²", v / 1000000.0) : String(format: "%.2fm²", v)
     }
 }
 struct Meters³: Unit {
@@ -191,6 +191,9 @@ extension Double {
     var deg: Angle { Angle(self / 180.0 * Float64.pi) }
     var s: Duration { Duration(self) }
     var m: Distance { Distance(self) }
+    var m²: Distance² { Distance²(self) }
+    var m³: Distance³ { Distance³(self) }
+    var m⁴: Distance⁴ { Distance⁴(self) }
 }
 
 func abs<T>(_ q: Quantity<T>) -> Quantity<T> {
@@ -221,23 +224,23 @@ func angle(from a: Point, to b: Point) -> Angle {
     Angle(atan2((b.y - a.y).withoutUnit, (b.x - a.x).withoutUnit))
 }
 
-func pow2(_ d: Duration) -> Duration² {
+func pow²(_ d: Duration) -> Duration² {
     Duration²(pow(d.value, 2.0))
 }
 
-func pow2(_ d: Distance) -> Distance² {
+func pow²(_ d: Distance) -> Distance² {
     Distance²(pow(d.value, 2.0))
 }
 
-func pow2(_ d: Distance²) -> Distance⁴ {
+func pow²(_ d: Distance²) -> Distance⁴ {
     Distance⁴(pow(d.value, 2.0))
 }
 
-func pow3(_ d: Duration) -> Duration³ {
+func pow³(_ d: Duration) -> Duration³ {
     Duration³(pow(d.value, 3.0))
 }
 
-func pow2(_ s: Speed) -> Speed² {
+func pow²(_ s: Speed) -> Speed² {
     Speed²(pow(s.value, 2.0))
 }
 
@@ -272,7 +275,7 @@ func normalize(_ direction: Direction) -> Direction {
 }
 
 func scalar(_ a: Direction, _ b: Direction) -> Distance² {
-    Distance²(a.x.value * b.x.value + a.y.value * b.y.value)
+    a.x * b.x + a.y * b.y
 }
 
 func * (lhs: Float64, rhs: Direction) -> Direction {

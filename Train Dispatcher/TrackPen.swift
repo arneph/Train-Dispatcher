@@ -172,7 +172,7 @@ class TrackPen: Tool {
         cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: penPoint.point,
                                                                      length: width)))
     }
-        
+
     private func boundPenPointFor(point: Point) -> PenPoint? {
         let penPointOffsetFunc = { (p: TrackPoint, d: Distance) -> PenPoint in
             PenPoint(target: .free(p.offsetLeft(by: d)), hint: PenPoint.Hint(base: p, offset: d))
@@ -256,39 +256,32 @@ class TrackPen: Tool {
     private static func proposal(from start: PenPoint, to end: PenPoint) -> TrackProposal? {
         switch (start.target, end.target) {
         case (.free(let start), .free(let end)):
-            return proposal(from: start, to: end)
+            return proposal(fromFreePoint:  start, toFreePoint:  end)
         case (.free(let start), .bound(let end)):
-            return proposal(from: end, to: start)
+            return proposal(fromTrackPoint: end,   toFreePoint:  start)
         case (.bound(let start), .free(let end)):
-            return proposal(from: start, to: end)
-        case (.bound(_), .bound(_)):
-            return nil
+            return proposal(fromTrackPoint: start, toFreePoint:  end)
+        case (.bound(let start), .bound(let end)):
+            return proposal(fromTrackPoint: start, toTrackPoint: end)
         }
     }
 
-    private static func proposal(from start: Point, to end: Point) -> TrackProposal? {
+    private static func proposal(fromFreePoint start: Point,
+                                 toFreePoint end: Point) -> TrackProposal? {
         guard let path = LinearPath(start: start, end: end) else { return nil }
         return TrackProposal(path: .linear(path), startConnection: .none, endConnection: .none)
     }
     
-    private static func proposal(from start: TrackPoint, to end: Point) -> TrackProposal? {
-        guard let (path, direction) = proposedPath(fromTrackPoint: start, toFreePoint: end) else {
+    private static func proposal(fromTrackPoint start: TrackPoint,
+                                 toFreePoint end: Point) -> TrackProposal? {
+        guard let (path, startDirection) = proposedPath(fromTrackPoint: start, 
+                                                        toFreePoint: end) else {
             return nil
         }
-        let connectionOption: TrackMap.ConnectionOption
-        switch start {
-        case .trackConnection(let connection):
-            connectionOption = .toExistingConnection(connection, direction)
-        case .trackPoint(let track, let x):
-            if start.isTrackStart {
-                connectionOption = .toExistingTrack(track, .start)
-            } else if start.isTrackEnd {
-                connectionOption = .toExistingTrack(track, .end)
-            } else {
-                connectionOption = .toNewConnection(track, x)
-            }
-        }
-        return TrackProposal(path: path, startConnection: connectionOption, endConnection: .none)
+        return TrackProposal(path: path, 
+                             startConnection: connectionOption(forTrackPoint: start,
+                                                               direction: startDirection),
+                             endConnection: .none)
     }
     
     private static func proposedPath(fromTrackPoint start: TrackPoint,
@@ -341,6 +334,98 @@ class TrackPen: Tool {
             return (path, direction)
         } else {
             return nil
+        }
+    }
+    
+    private static func proposal(fromTrackPoint start: TrackPoint,
+                                 toTrackPoint end: TrackPoint) -> TrackProposal? {
+        switch (start, end) {
+        case (.trackConnection(let connectionA), .trackConnection(let connectionB)):
+            guard connectionA !== connectionB else { return nil }
+        case (.trackConnection(let connection), .trackPoint(let track, _)):
+            guard !connection.allTracks.contains(where: { $0 === track }) else { return nil }
+        case (.trackPoint(let track, _), .trackConnection(let connection)):
+            guard !connection.allTracks.contains(where: { $0 === track }) else { return nil }
+        case (.trackPoint(let trackA, _), .trackPoint(let trackB, _)):
+            guard trackA !== trackB else { return nil }
+        }
+        guard let (path, startDirection, endDirection) = proposedPath(fromTrackPoint: start,
+                                                                      toTrackPoint: end) else {
+            return nil
+        }
+        return TrackProposal(path: path, 
+                             startConnection: connectionOption(forTrackPoint: start,
+                                                               direction: startDirection),
+                             endConnection: connectionOption(forTrackPoint: end,
+                                                             direction: endDirection))
+    }
+    
+    private static func proposedPath(fromTrackPoint start: TrackPoint,
+                                     toTrackPoint end: TrackPoint) -> (SomeFinitePath, 
+                                                                       TrackConnection.Direction,
+                                                                       TrackConnection.Direction)? {
+        let alphaStartToEnd = CircleAngle(angle(from: start.point, to: end.point))
+        let alphaEndToStart = alphaStartToEnd.opposite
+        let alpha1 = absDiff(CircleAngle(start.directionA + 90.0.deg),
+                              alphaStartToEnd) <= 90.0.deg ?
+            start.directionA + 90.0.deg : start.directionA - 90.0.deg
+        let alpha2 = absDiff(CircleAngle(end.directionA + 90.0.deg),
+                              alphaEndToStart) <= 90.0.deg ?
+            end.directionA + 90.0.deg   : end.directionA - 90.0.deg
+        let v = 1.0.m ** alpha2 - 1.0.m ** alpha1
+        let d = direction(from: start.point, to: end.point)
+        let a = length²(v) - 4.0.m²
+        let b = 2.0 * scalar(d, v)
+        let c = length²(d)
+        let x: Float64
+        if a == 0.0.m² {
+            x = -c / b
+        } else {
+            let discriminant = pow²(b) - 4.0 * a * c
+            if discriminant < 0.0.m⁴ {
+                return nil
+            } else if discriminant == 0.0.m⁴ {
+                x = -b / (2.0 * a)
+            } else {
+                let x1 = (-b + sqrt(discriminant)) / (2.0 * a)
+                let x2 = (-b - sqrt(discriminant)) / (2.0 * a)
+                x = max(x1, x2)
+            }
+        }
+        if x <= 0.0 {
+            return nil
+        }
+        let r = Distance(x)
+        let c1 = start.point + r ** alpha1
+        let c2 = end.point + r ** alpha2
+        let range1 = CircleRange.range(from: c1, between: start.point, and: c2)
+        let range2 = CircleRange.range(from: c2, between: c1, and: end.point)
+        let circle1 = CircularPath(center: c1, radius: r, circleRange: range1)!
+        let circle2 = CircularPath(center: c2, radius: r, circleRange: range2)!
+        if let path = CompoundPath(components: [.circular(circle1), .circular(circle2)]) {
+            let startDirection: TrackConnection.Direction =
+                absDiff(alphaStartToEnd, start.directionA) <= 90.0.deg ? .a : .b
+            let endDirection: TrackConnection.Direction =
+                absDiff(alphaEndToStart, end.directionA) <= 90.0.deg ? .a : .b
+            return (.compound(path), startDirection, endDirection)
+        } else {
+            return nil
+        }
+    }
+    
+    private static func connectionOption(forTrackPoint point: TrackPoint,
+                                         direction: TrackConnection.Direction) -> TrackMap.ConnectionOption {
+        switch point {
+        case .trackConnection(let connection):
+            return .toExistingConnection(connection, direction)
+        case .trackPoint(let track, let x):
+            if point.isTrackStart {
+                return .toExistingTrack(track, .start)
+            } else if point.isTrackEnd {
+                return .toExistingTrack(track, .end)
+            } else {
+                return .toNewConnection(track, x)
+            }
         }
     }
     
