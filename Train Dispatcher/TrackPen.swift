@@ -190,6 +190,7 @@ class TrackPen: Tool {
     }
 
     private func boundPenPointFor(point: Point) -> PenPoint? {
+        let maxDistance = min(10.0.m, owner!.toMapDistance(viewDistance: 20.0))
         let penPointOffsetFunc = { (p: TrackPoint, d: Distance) -> PenPoint in
             PenPoint(target: .free(p.offsetLeft(by: d)), hint: PenPoint.Hint(base: p, offset: d))
         }
@@ -215,7 +216,7 @@ class TrackPen: Tool {
         }
         if let closestPenPointOfInterest = map.trackMap.pointsOfInterest
             .flatMap(penPointsFunc)
-            .filter({ distance(point, $0.point) <= 10.0.m })
+            .filter({ distance(point, $0.point) <= maxDistance })
             .sorted(by: compareFunc)
             .first {
             switch closestPenPointOfInterest.target {
@@ -233,7 +234,7 @@ class TrackPen: Tool {
         }
         if let closestPointInfo = map.trackMap.closestPointOnTrack(from: point) {
             if (closestPointInfo.isTrackStart || closestPointInfo.isTrackEnd) &&
-                closestPointInfo.distance <= 10.0.m {
+                closestPointInfo.distance <= maxDistance {
                 return PenPoint(.bound(closestPointInfo.asTrackPoint))
             } else if closestPointInfo.distance <= trackBedWidth {
                 return PenPoint(.bound(closestPointInfo.asTrackPoint))

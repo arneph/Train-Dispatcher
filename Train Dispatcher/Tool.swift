@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ToolOwner: AnyObject {
+protocol ToolOwner: AnyObject, ViewContext {
     var map: Map { get }
     
     func stateChanged(tool: Tool)
