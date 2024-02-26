@@ -137,7 +137,7 @@ extension TrackMap {
         var closest: ClosestTrackPointInfo?
         for track in tracks {
             let candidate = track.path.closestPointOnPath(from: point)
-            if closest?.distance ?? Float64.infinity.m <= candidate.distance {
+            if let closest = closest, candidate.distance > closest.distance {
                 continue
             }
             closest = ClosestTrackPointInfo(distance: candidate.distance,

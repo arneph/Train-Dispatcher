@@ -200,7 +200,7 @@ struct LinearPath: FinitePath {
         let distToStart = Train_Dispatcher.distance(target, start)
         let distToEnd = Train_Dispatcher.distance(target, end)
         if distToStart < distToEnd {
-            return ClosestPathPointInfo(distance: distToStart, 
+            return ClosestPathPointInfo(distance: distToStart,
                                         x: 0.0.m,
                                         atomicPathInfo: .singleAtomicPath(.linear),
                                         specialCase: .start)
