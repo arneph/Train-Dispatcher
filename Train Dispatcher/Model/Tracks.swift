@@ -172,7 +172,13 @@ final class TrackConnection {
     
     fileprivate(set) var directionATracks: [Track] = []
     fileprivate(set) var directionBTracks: [Track] = []
-    var allTracks: [Track] { directionATracks + directionBTracks }
+    var allTracks: [Track] {
+        directionATracks + directionBTracks.filter{ bTrack in
+            !directionATracks.contains{ aTrack in
+                aTrack === bTrack
+            }
+        }
+    }
     
     func tracks(inDirection direction: Direction) -> [Track] {
         switch direction {
@@ -181,12 +187,18 @@ final class TrackConnection {
         }
     }
     
-    fileprivate func add(track: Track, inDirection direction: Direction) {
-        switch direction {
-        case .a: directionATracks.append(track)
-        case .b: directionBTracks.append(track)
+    fileprivate func add(track: Track) {
+        assert(track.path.start == point || track.path.end == point)
+        if track.path.startPointAndOrientation == pointAndDirectionA ||
+            track.path.endPointAndOrientation == pointAndDirectionB {
+            directionATracks.append(track)
+            observers.forEach{ $0.added(track: track, toConnection: self, inDirection: .a) }
         }
-        observers.forEach{ $0.added(track: track, toConnection: self, inDirection: direction) }
+        if track.path.startPointAndOrientation == pointAndDirectionB || 
+            track.path.endPointAndOrientation == pointAndDirectionA {
+            directionBTracks.append(track)
+            observers.forEach{ $0.added(track: track, toConnection: self, inDirection: .b) }
+        }
     }
     
     fileprivate func replace(oldTrack: Track, newTrack: Track) {
@@ -260,21 +272,21 @@ final class TrackMap: Codable {
     enum ConnectionOption {
         case none
         case toExistingTrack(Track, PathExtremity)
-        case toExistingConnection(TrackConnection, TrackConnection.Direction)
+        case toExistingConnection(TrackConnection)
         case toNewConnection(Track, Position)
     }
     
     private enum NonMergingConnectionOption {
         case none
-        case toExistingConnection(TrackConnection, TrackConnection.Direction)
+        case toExistingConnection(TrackConnection)
         case toNewConnection(Track, Position)
         
         init?(_ connectionOption: ConnectionOption) {
             switch connectionOption {
             case .none: self = .none
             case .toExistingTrack: return nil
-            case .toExistingConnection(let connection, let direction):
-                self = .toExistingConnection(connection, direction)
+            case .toExistingConnection(let connection):
+                self = .toExistingConnection(connection)
             case .toNewConnection(let track, let x):
                 self = .toNewConnection(track, x)
             }
@@ -408,21 +420,31 @@ final class TrackMap: Codable {
         switch startConnection {
         case .none:
             break
-        case .toExistingConnection(let connection, let direction):
+        case .toExistingConnection(let connection):
             track.startConnection = connection
-            connection.add(track: track, inDirection: direction)
+            connection.add(track: track)
             observers.forEach{ $0.connectionChanged(connection, onMap: self) }
         case .toNewConnection(let existingTrack, let x):
-            let newConnection = split(oldTrack: existingTrack, at: x)
-            track.startConnection = newConnection
-            if newConnection.directionA == track.path.startOrientation {
-                newConnection.add(track: track, inDirection: .a)
-            } else if newConnection.directionB == track.path.startOrientation {
-                newConnection.add(track: track, inDirection: .b)
+            let newConnection: TrackConnection
+            if x == 0.0.m {
+                newConnection = TrackConnection(point: existingTrack.path.start,
+                                                directionA: existingTrack.path.startOrientation)
+                newConnection.add(track: existingTrack)
+                existingTrack.startConnection = newConnection
+                connections.append(newConnection)
+                observers.forEach{ $0.added(connection: newConnection, toMap: self) }
+            } else if x == existingTrack.path.length {
+                newConnection = TrackConnection(point: existingTrack.path.end,
+                                                directionA: existingTrack.path.endOrientation)
+                newConnection.add(track: existingTrack)
+                existingTrack.endConnection = newConnection
+                connections.append(newConnection)
+                observers.forEach{ $0.added(connection: newConnection, toMap: self) }
             } else {
-                assertionFailure("Expected Track.path.startOrientation to match one " +
-                                 "TrackConnection direction.")
+                newConnection = split(oldTrack: existingTrack, at: x)
             }
+            track.startConnection = newConnection
+            newConnection.add(track: track)
         }
     }
     
@@ -430,21 +452,31 @@ final class TrackMap: Codable {
         switch endConnection {
         case .none:
             break
-        case .toExistingConnection(let connection, let direction):
+        case .toExistingConnection(let connection):
             track.endConnection = connection
-            connection.add(track: track, inDirection: direction)
+            connection.add(track: track)
             observers.forEach{ $0.connectionChanged(connection, onMap: self) }
         case .toNewConnection(let existingTrack, let x):
-            let newConnection = split(oldTrack: existingTrack, at: x)
-            track.endConnection = newConnection
-            if newConnection.directionA == track.path.endOrientation {
-                newConnection.add(track: track, inDirection: .b)
-            } else if newConnection.directionB == track.path.endOrientation {
-                newConnection.add(track: track, inDirection: .a)
+            let newConnection: TrackConnection
+            if x == 0.0.m {
+                newConnection = TrackConnection(point: existingTrack.path.start,
+                                                directionA: existingTrack.path.startOrientation)
+                newConnection.add(track: existingTrack)
+                existingTrack.startConnection = newConnection
+                connections.append(newConnection)
+                observers.forEach{ $0.added(connection: newConnection, toMap: self) }
+            } else if x == existingTrack.path.length {
+                newConnection = TrackConnection(point: existingTrack.path.end,
+                                                directionA: existingTrack.path.endOrientation)
+                newConnection.add(track: existingTrack)
+                existingTrack.endConnection = newConnection
+                connections.append(newConnection)
+                observers.forEach{ $0.added(connection: newConnection, toMap: self) }
             } else {
-                assertionFailure("Expected Track.path.endOrientation to match one " +
-                                 "TrackConnection direction.")
+                newConnection = split(oldTrack: existingTrack, at: x)
             }
+            track.endConnection = newConnection
+            newConnection.add(track: track)
         }
     }
     
@@ -467,8 +499,8 @@ final class TrackMap: Codable {
         let newConnection = TrackConnection(point: point, directionA: directionA)
         splitTrackA.endConnection = newConnection
         splitTrackB.startConnection = newConnection
-        newConnection.add(track: splitTrackA, inDirection: .b)
-        newConnection.add(track: splitTrackB, inDirection: .a)
+        newConnection.add(track: splitTrackA)
+        newConnection.add(track: splitTrackB)
         tracks.removeAll{ $0 === oldTrack }
         tracks.append(splitTrackA)
         tracks.append(splitTrackB)

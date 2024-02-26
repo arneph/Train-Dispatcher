@@ -11,7 +11,7 @@ import XCTest
 
 final class Geometry_Tests: XCTestCase {
     
-    func testFindClosestPointOnLineThroughTwoPoints() {
+    func testFindsClosestPointOnLineThroughTwoPoints() {
         XCTAssertEqual(closestPointOnLine(through: Point(x: -50.0.m, y: 0.0.m),
                                           andThrough: Point(x: 0.0.m, y: 0.0.m),
                                           to: Point(x: -20.0.m, y: 5.0.m)),
@@ -26,7 +26,7 @@ final class Geometry_Tests: XCTestCase {
                        Point(x: +20.0.m, y: 0.0.m))
     }
     
-    func testFindClosestPointOnLineThroughPointWithDirection() {
+    func testFindsClosestPointOnLineThroughPointWithDirection() {
         XCTAssertEqual(closestPointOnLine(through: Point(x: -50.0.m, y: 0.0.m),
                                           withDirection: Direction(x: 123.0.m, y: 0.0.m),
                                           to: Point(x: -20.0.m, y: 5.0.m)),
@@ -41,7 +41,7 @@ final class Geometry_Tests: XCTestCase {
                        Point(x: +20.0.m, y: 0.0.m))
     }
     
-    func testFindClosestPointOnLineThroughPointWithOrientation() {
+    func testFindsClosestPointOnLineThroughPointWithOrientation() {
         XCTAssertEqual(closestPointOnLine(through: Point(x: -50.0.m, y: 0.0.m),
                                           withOrientation: 0.0.deg,
                                           to: Point(x: -20.0.m, y: 5.0.m)),

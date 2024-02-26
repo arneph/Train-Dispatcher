@@ -11,7 +11,7 @@ import XCTest
 
 final class Tracks_Tests: XCTestCase {
     
-    func testAddingSingleTrackSucceeds() {
+    func testAddsSingleTrack() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -37,7 +37,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssert(trackObserver.calls.isEmpty)
     }
     
-    func testRemovingSingleTrackSucceeds() {
+    func testRemovesSingleTrack() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -60,7 +60,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testConnectingTrackStartAndTrackStartWithLinearPathSucceeds() {
+    func testConnectsTrackStartAndTrackStartWithLinearPath() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -113,7 +113,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testConnectingTrackStartAndTrackEndWithLinearPathSucceeds() {
+    func testConnectsTrackStartAndTrackEndWithLinearPath() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -166,7 +166,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testConnectingTrackEndAndTrackStartWithLinearPathSucceeds() {
+    func testConnectsTrackEndAndTrackStartWithLinearPath() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -15.0.m, y: 0.0.m),
@@ -219,7 +219,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testConnectingTrackEndAndTrackEndWithLinearPathSucceeds() {
+    func testConnectsTrackEndAndTrackEndWithLinearPath() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -15.0.m, y: 0.0.m),
@@ -272,7 +272,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testConnectingTracksWithCircularPathSucceeds() {
+    func testConnectsTracksWithCircularPath() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -20.0.m, y: 0.0.m),
@@ -334,7 +334,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testExtendingTrackStartWithPathStartSucceeds() {
+    func testExtendsTrackStartWithPathStart() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -392,7 +392,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testExtendingTrackStartWithPathEndSucceeds() {
+    func testExtendsTrackStartWithPathEnd() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -434,7 +434,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testExtendingTrackEndWithPathStartSucceeds() {
+    func testExtendsTrackEndWithPathStart() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -476,7 +476,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testExtendingTrackEndWithPathEndSucceeds() {
+    func testExtendsTrackEndWithPathEnd() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track = map.addTrack(withPath: .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
@@ -518,7 +518,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testAddingTrackToNewConnectionAtStartSucceeds() {
+    func testAddsTrackToNewConnectionAtStart() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let oldTrack = map.addTrack(withPath:
@@ -590,7 +590,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssert(newConnectionObserver.calls.isEmpty)
     }
     
-    func testAddingTrackToNewConnectionAtEndSucceeds() {
+    func testAddsTrackToNewConnectionAtEnd() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let oldTrack = map.addTrack(withPath:
@@ -662,7 +662,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssert(newConnectionObserver.calls.isEmpty)
     }
     
-    func testAddingTrackToExistingConnectionAtStartSucceeds() {
+    func testAddsTrackToExistingConnectionAtStart() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let tmpTrack = map.addTrack(withPath:
@@ -697,7 +697,7 @@ final class Tracks_Tests: XCTestCase {
                                        startAngle: CircleAngle(90.0.deg),
                                        endAngle: CircleAngle(120.0.deg),
                                        direction: .positive)!),
-                                  startConnection: .toExistingConnection(connection, .b),
+                                  startConnection: .toExistingConnection(connection),
                                   endConnection: .none)
         let curve2Observer = TestTrackObserver(for: curve2)
         
@@ -758,7 +758,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testAddingTrackToExistingConnectionAtEndSucceeds() {
+    func testAddsTrackToExistingConnectionAtEnd() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let tmpTrack = map.addTrack(withPath:
@@ -794,7 +794,7 @@ final class Tracks_Tests: XCTestCase {
                                        endAngle: CircleAngle(90.0.deg),
                                        direction: .positive)!),
                                   startConnection: .none,
-                                  endConnection: .toExistingConnection(connection, .a))
+                                  endConnection: .toExistingConnection(connection))
         let curve2Observer = TestTrackObserver(for: curve2)
         
         XCTAssertEqual(map.tracks.count, 4)
@@ -854,7 +854,7 @@ final class Tracks_Tests: XCTestCase {
         ])
     }
     
-    func testExtendingTrackStartToNewConnection() {
+    func testExtendsTrackStartToNewConnection() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath:
@@ -938,7 +938,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssert(connectionObserver.calls.isEmpty)
     }
     
-    func testExtendingTrackEndToNewConnection() {
+    func testExtendsTrackEndToNewConnection() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
         let track1 = map.addTrack(withPath:
@@ -1022,6 +1022,218 @@ final class Tracks_Tests: XCTestCase {
         XCTAssert(connectionObserver.calls.isEmpty)
     }
     
+    func testJoinsTrackStartAndTrackStartWithNewConnection() {
+        let map = TrackMap()
+        let mapObserver = TestTrackMapObserver(for: map)
+        let track1 = map.addTrack(withPath:
+                .linear(LinearPath(start: Point(x: 10.0.m, y: 0.0.m),
+                                   end: Point(x: 10.0.m, y: 100.0.m))!),
+                                  startConnection: .none,
+                                  endConnection: .none)
+        let track1Observer = TestTrackObserver(for: track1)
+        let track2 = map.addTrack(withPath:
+                .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                       radius: 100.0.m,
+                                       startAngle: CircleAngle(180.0.deg),
+                                       endAngle: CircleAngle(90.0.deg),
+                                       direction: .negative)!),
+                                  startConnection: .toNewConnection(track1, 0.0.m),
+                                  endConnection: .none)
+        let track2Observer = TestTrackObserver(for: track2)
+        
+        XCTAssertEqual(map.tracks.count, 2)
+        XCTAssert(map.tracks.contains{ $0 === track1 })
+        XCTAssert(map.tracks.contains{ $0 === track2 })
+        XCTAssertEqual(map.connections.count, 1)
+        let connection = map.connections[0]
+        XCTAssertEqual(track1.path, .linear(LinearPath(start: Point(x: 10.0.m, y: 0.0.m),
+                                                       end: Point(x: 10.0.m, y: 100.0.m))!))
+        XCTAssert(track1.startConnection === connection)
+        XCTAssertNil(track1.endConnection)
+        XCTAssertEqual(track2.path, .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                                           radius: 100.0.m,
+                                                           startAngle: CircleAngle(180.0.deg),
+                                                           endAngle: CircleAngle(90.0.deg),
+                                                           direction: .negative)!))
+        XCTAssert(track2.startConnection === connection)
+        XCTAssertNil(track2.endConnection)
+        XCTAssertEqual(connection.point, Point(x: 10.0.m, y: 0.0.m))
+        XCTAssertEqual(connection.directionA, CircleAngle(+90.0.deg))
+        XCTAssertEqual(connection.directionB, CircleAngle(-90.0.deg))
+        XCTAssertEqual(connection.directionATracks.count, 2)
+        XCTAssert(connection.directionATracks.contains{ $0 === track1 })
+        XCTAssert(connection.directionATracks.contains{ $0 === track2 })
+        XCTAssertEqual(connection.directionBTracks.count, 0)
+        XCTAssertEqual(mapObserver.calls, [
+            .addedTrack(track1, map),
+            .addedConnection(connection, map),
+            .addedTrack(track2, map),
+        ])
+        XCTAssertEqual(track1Observer.calls, [
+            .startConnectionChanged(track1, nil)
+        ])
+        XCTAssert(track2Observer.calls.isEmpty)
+    }
+    
+    func testJoinsTrackStartAndTrackEndWithNewConnection() {
+        let map = TrackMap()
+        let mapObserver = TestTrackMapObserver(for: map)
+        let track1 = map.addTrack(withPath:
+                .linear(LinearPath(start: Point(x: 10.0.m, y: 0.0.m),
+                                   end: Point(x: 10.0.m, y: 100.0.m))!),
+                                  startConnection: .none,
+                                  endConnection: .none)
+        let track1Observer = TestTrackObserver(for: track1)
+        let track2 = map.addTrack(withPath:
+                .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                       radius: 100.0.m,
+                                       startAngle: CircleAngle(90.0.deg),
+                                       endAngle: CircleAngle(180.0.deg),
+                                       direction: .positive)!),
+                                  startConnection: .none,
+                                  endConnection: .toNewConnection(track1, 0.0.m))
+        let track2Observer = TestTrackObserver(for: track2)
+        
+        XCTAssertEqual(map.tracks.count, 2)
+        XCTAssert(map.tracks.contains{ $0 === track1 })
+        XCTAssert(map.tracks.contains{ $0 === track2 })
+        XCTAssertEqual(map.connections.count, 1)
+        let connection = map.connections[0]
+        XCTAssertEqual(track1.path, .linear(LinearPath(start: Point(x: 10.0.m, y: 0.0.m),
+                                                       end: Point(x: 10.0.m, y: 100.0.m))!))
+        XCTAssert(track1.startConnection === connection)
+        XCTAssertNil(track1.endConnection)
+        XCTAssertEqual(track2.path, .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                                           radius: 100.0.m,
+                                                           startAngle: CircleAngle(90.0.deg),
+                                                           endAngle: CircleAngle(180.0.deg),
+                                                           direction: .positive)!))
+        XCTAssertNil(track2.startConnection)
+        XCTAssert(track2.endConnection === connection)
+        XCTAssertEqual(connection.point, Point(x: 10.0.m, y: 0.0.m))
+        XCTAssertEqual(connection.directionA, CircleAngle(+90.0.deg))
+        XCTAssertEqual(connection.directionB, CircleAngle(-90.0.deg))
+        XCTAssertEqual(connection.directionATracks.count, 2)
+        XCTAssert(connection.directionATracks.contains{ $0 === track1 })
+        XCTAssert(connection.directionATracks.contains{ $0 === track2 })
+        XCTAssertEqual(connection.directionBTracks.count, 0)
+        XCTAssertEqual(mapObserver.calls, [
+            .addedTrack(track1, map),
+            .addedConnection(connection, map),
+            .addedTrack(track2, map),
+        ])
+        XCTAssertEqual(track1Observer.calls, [
+            .startConnectionChanged(track1, nil)
+        ])
+        XCTAssert(track2Observer.calls.isEmpty)
+    }
+    
+    func testJoinsTrackEndAndTrackStartWithNewConnection() {
+        let map = TrackMap()
+        let mapObserver = TestTrackMapObserver(for: map)
+        let track1 = map.addTrack(withPath:
+                .linear(LinearPath(start: Point(x: 10.0.m, y: 100.0.m),
+                                   end: Point(x: 10.0.m, y: 0.0.m))!),
+                                  startConnection: .none,
+                                  endConnection: .none)
+        let track1Observer = TestTrackObserver(for: track1)
+        let track2 = map.addTrack(withPath:
+                .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                       radius: 100.0.m,
+                                       startAngle: CircleAngle(180.0.deg),
+                                       endAngle: CircleAngle(90.0.deg),
+                                       direction: .negative)!),
+                                  startConnection: .toNewConnection(track1, 100.0.m),
+                                  endConnection: .none)
+        let track2Observer = TestTrackObserver(for: track2)
+        
+        XCTAssertEqual(map.tracks.count, 2)
+        XCTAssert(map.tracks.contains{ $0 === track1 })
+        XCTAssert(map.tracks.contains{ $0 === track2 })
+        XCTAssertEqual(map.connections.count, 1)
+        let connection = map.connections[0]
+        XCTAssertEqual(track1.path, .linear(LinearPath(start: Point(x: 10.0.m, y: 100.0.m),
+                                                       end: Point(x: 10.0.m, y: 0.0.m))!))
+        XCTAssertNil(track1.startConnection)
+        XCTAssert(track1.endConnection === connection)
+        XCTAssertEqual(track2.path, .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                                           radius: 100.0.m,
+                                                           startAngle: CircleAngle(180.0.deg),
+                                                           endAngle: CircleAngle(90.0.deg),
+                                                           direction: .negative)!))
+        XCTAssert(track2.startConnection === connection)
+        XCTAssertNil(track2.endConnection)
+        XCTAssertEqual(connection.point, Point(x: 10.0.m, y: 0.0.m))
+        XCTAssertEqual(connection.directionA, CircleAngle(-90.0.deg))
+        XCTAssertEqual(connection.directionB, CircleAngle(+90.0.deg))
+        XCTAssertEqual(connection.directionATracks.count, 0)
+        XCTAssertEqual(connection.directionBTracks.count, 2)
+        XCTAssert(connection.directionBTracks.contains{ $0 === track1 })
+        XCTAssert(connection.directionBTracks.contains{ $0 === track2 })
+        XCTAssertEqual(mapObserver.calls, [
+            .addedTrack(track1, map),
+            .addedConnection(connection, map),
+            .addedTrack(track2, map),
+        ])
+        XCTAssertEqual(track1Observer.calls, [
+            .endConnectionChanged(track1, nil)
+        ])
+        XCTAssert(track2Observer.calls.isEmpty)
+    }
+    
+    func testJoinsTrackEndAndTrackEndWithNewConnection() {
+        let map = TrackMap()
+        let mapObserver = TestTrackMapObserver(for: map)
+        let track1 = map.addTrack(withPath:
+                .linear(LinearPath(start: Point(x: 10.0.m, y: 100.0.m),
+                                   end: Point(x: 10.0.m, y: 0.0.m))!),
+                                  startConnection: .none,
+                                  endConnection: .none)
+        let track1Observer = TestTrackObserver(for: track1)
+        let track2 = map.addTrack(withPath:
+                .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                       radius: 100.0.m,
+                                       startAngle: CircleAngle(90.0.deg),
+                                       endAngle: CircleAngle(180.0.deg),
+                                       direction: .positive)!),
+                                  startConnection: .none,
+                                  endConnection: .toNewConnection(track1, 100.0.m))
+        let track2Observer = TestTrackObserver(for: track2)
+        
+        XCTAssertEqual(map.tracks.count, 2)
+        XCTAssert(map.tracks.contains{ $0 === track1 })
+        XCTAssert(map.tracks.contains{ $0 === track2 })
+        XCTAssertEqual(map.connections.count, 1)
+        let connection = map.connections[0]
+        XCTAssertEqual(track1.path, .linear(LinearPath(start: Point(x: 10.0.m, y: 100.0.m),
+                                                       end: Point(x: 10.0.m, y: 0.0.m))!))
+        XCTAssertNil(track1.startConnection)
+        XCTAssert(track1.endConnection === connection)
+        XCTAssertEqual(track2.path, .circular(CircularPath(center: Point(x: 110.0.m, y: 0.0.m),
+                                                           radius: 100.0.m,
+                                                           startAngle: CircleAngle(90.0.deg),
+                                                           endAngle: CircleAngle(180.0.deg),
+                                                           direction: .positive)!))
+        XCTAssertNil(track2.startConnection)
+        XCTAssert(track2.endConnection === connection)
+        XCTAssertEqual(connection.point, Point(x: 10.0.m, y: 0.0.m))
+        XCTAssertEqual(connection.directionA, CircleAngle(-90.0.deg))
+        XCTAssertEqual(connection.directionB, CircleAngle(+90.0.deg))
+        XCTAssertEqual(connection.directionATracks.count, 0)
+        XCTAssertEqual(connection.directionBTracks.count, 2)
+        XCTAssert(connection.directionBTracks.contains{ $0 === track1 })
+        XCTAssert(connection.directionBTracks.contains{ $0 === track2 })
+        XCTAssertEqual(mapObserver.calls, [
+            .addedTrack(track1, map),
+            .addedConnection(connection, map),
+            .addedTrack(track2, map),
+        ])
+        XCTAssertEqual(track1Observer.calls, [
+            .endConnectionChanged(track1, nil)
+        ])
+        XCTAssert(track2Observer.calls.isEmpty)
+    }
+    
     static func encodeAndDecode(_ original: TrackMap) throws -> TrackMap {
         let encoder = JSONEncoder()
         let encoded = try encoder.encode(original)
@@ -1029,14 +1241,14 @@ final class Tracks_Tests: XCTestCase {
         return try decoder.decode(TrackMap.self, from: encoded)
     }
     
-    func testEncodingAndDecodingEmptyTrackMapSucceeds() throws {
+    func testEncodesAndDecodesEmptyTrackMap() throws {
         let original = TrackMap()
         let result = try Tracks_Tests.encodeAndDecode(original)
         XCTAssert(result.tracks.isEmpty)
         XCTAssert(result.connections.isEmpty)
     }
     
-    func testEncodingAndDecodingTrackMapWithSingleTrackSucceeds() throws {
+    func testEncodesAndDecodesTrackMapWithSingleTrack() throws {
         let path: SomeFinitePath = .linear(LinearPath(start: Point(x: -5.0.m, y: 0.0.m),
                                                       end: Point(x: +5.0.m, y: 0.0.m))!)
         let originalMap = TrackMap()

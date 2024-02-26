@@ -291,67 +291,57 @@ class TrackPen: Tool {
     
     private static func proposal(fromTrackPoint start: TrackPoint,
                                  toFreePoint end: Point) -> TrackProposal? {
-        guard let (path, startDirection) = proposedPath(fromTrackPoint: start, 
-                                                        toFreePoint: end) else {
+        guard let path = proposedPath(fromTrackPoint: start, toFreePoint: end) else {
             return nil
         }
         return TrackProposal(path: path, 
-                             startConnection: connectionOption(forTrackPoint: start,
-                                                               direction: startDirection),
+                             startConnection: 
+                                connectionOption(forTrackPoint: start,
+                                                 newTrackPathOrientation: path.startOrientation)!,
                              endConnection: .none)
     }
     
     private static func proposedPath(fromTrackPoint start: TrackPoint,
-                                     toFreePoint end: Point) -> (SomeFinitePath,
-                                                                 TrackConnection.Direction)? {
-        if let (path, direction) = linearPath(fromTrackPoint: start, toFreePoint: end) {
-            return (.linear(path), direction)
-        } else if let (path, direction) = circularPath(fromTrackPoint: start, toFreePoint: end) {
-            return (.circular(path), direction)
+                                     toFreePoint end: Point) -> SomeFinitePath? {
+        if let path = linearPath(fromTrackPoint: start, toFreePoint: end) {
+            return .linear(path)
+        } else if let path = circularPath(fromTrackPoint: start, toFreePoint: end) {
+            return .circular(path)
         } else {
             return nil
         }
     }
     
     private static func linearPath(fromTrackPoint start: TrackPoint,
-                                   toFreePoint end: Point) -> (LinearPath,
-                                                               TrackConnection.Direction)? {
+                                   toFreePoint end: Point) -> LinearPath? {
         guard let path = LinearPath(start: start.point, end: end) else { return nil }
         if canConnect(start.pointAndDirectionA, path.startPointAndOrientation) {
-            return (path, .a)
+            return path
         } else if canConnect(start.pointAndDirectionB, path.startPointAndOrientation) {
-            return (path, .b)
+            return path
         } else {
             return nil
         }
     }
 
     private static func circularPath(fromTrackPoint start: TrackPoint,
-                                     toFreePoint end: Point) -> (CircularPath,
-                                                                 TrackConnection.Direction)? {
+                                     toFreePoint end: Point) -> CircularPath? {
         let tangentAngle = CircleAngle(angle(from: start.point, to: end))
-        let direction: TrackConnection.Direction
         let orientation: CircleAngle
         if absDiff(tangentAngle, start.directionA) < absDiff(tangentAngle, start.directionB) {
-            direction = .a
             orientation = start.directionA
         } else {
-            direction = .b
             orientation = start.directionB
         }
         let alpha = CircleAngle(tangentAngle - orientation.asAngle).asAngle
         let dist = distance(start.point, end)
         let radius = dist / 2.0 / sin(alpha)
         let center = start.point + (orientation + 90.0.deg) ** radius
-        if let path = CircularPath(center: center,
-                                   radius: abs(radius),
-                                   startAngle: CircleAngle(angle(from: center, to: start.point)),
-                                   endAngle: CircleAngle(angle(from: center, to: end)),
-                                   direction: alpha >= 0.0.deg ? .positive : .negative) {
-            return (path, direction)
-        } else {
-            return nil
-        }
+        return CircularPath(center: center,
+                            radius: abs(radius),
+                            startAngle: CircleAngle(angle(from: center, to: start.point)),
+                            endAngle: CircleAngle(angle(from: center, to: end)),
+                            direction: alpha >= 0.0.deg ? .positive : .negative)
     }
     
     private static func proposal(fromTrackPoint start: TrackPoint,
@@ -366,21 +356,21 @@ class TrackPen: Tool {
         case (.trackPoint(let trackA, _), .trackPoint(let trackB, _)):
             guard trackA !== trackB else { return nil }
         }
-        guard let (path, startDirection, endDirection) = proposedPath(fromTrackPoint: start,
-                                                                      toTrackPoint: end) else {
+        guard let path = proposedPath(fromTrackPoint: start, toTrackPoint: end) else {
             return nil
         }
         return TrackProposal(path: path, 
-                             startConnection: connectionOption(forTrackPoint: start,
-                                                               direction: startDirection),
-                             endConnection: connectionOption(forTrackPoint: end,
-                                                             direction: endDirection))
+                             startConnection: 
+                                connectionOption(forTrackPoint: start,
+                                                 newTrackPathOrientation: path.startOrientation)!,
+                             endConnection:
+                                connectionOption(forTrackPoint: end,
+                                                 newTrackPathOrientation:
+                                                    path.endOrientation.opposite)!)
     }
     
     private static func proposedPath(fromTrackPoint start: TrackPoint,
-                                     toTrackPoint end: TrackPoint) -> (SomeFinitePath, 
-                                                                       TrackConnection.Direction,
-                                                                       TrackConnection.Direction)? {
+                                     toTrackPoint end: TrackPoint) -> SomeFinitePath? {
         let alphaStartToEnd = CircleAngle(angle(from: start.point, to: end.point))
         let alphaEndToStart = alphaStartToEnd.opposite
         let alpha1 = absDiff(CircleAngle(start.directionA + 90.0.deg),
@@ -420,26 +410,37 @@ class TrackPen: Tool {
         let circle1 = CircularPath(center: c1, radius: r, circleRange: range1)!
         let circle2 = CircularPath(center: c2, radius: r, circleRange: range2)!
         if let path = CompoundPath(components: [.circular(circle1), .circular(circle2)]) {
-            let startDirection: TrackConnection.Direction =
-                absDiff(alphaStartToEnd, start.directionA) <= 90.0.deg ? .a : .b
-            let endDirection: TrackConnection.Direction =
-                absDiff(alphaEndToStart, end.directionA) <= 90.0.deg ? .a : .b
-            return (.compound(path), startDirection, endDirection)
+            return .compound(path)
         } else {
             return nil
         }
     }
     
-    private static func connectionOption(forTrackPoint point: TrackPoint,
-                                         direction: TrackConnection.Direction) -> TrackMap.ConnectionOption {
+    private static func connectionOption(
+            forTrackPoint point: TrackPoint,
+            newTrackPathOrientation orientation: CircleAngle) -> TrackMap.ConnectionOption? {
         switch point {
         case .trackConnection(let connection):
-            return .toExistingConnection(connection, direction)
+            return .toExistingConnection(connection)
         case .trackPoint(let track, let x):
             if point.isTrackStart {
-                return .toExistingTrack(track, .start)
+                if track.path.startOrientation == orientation {
+                    return .toNewConnection(track, 0.0.m)
+                } else if track.path.startOrientation == orientation.opposite {
+                    return .toExistingTrack(track, .start)
+                } else {
+                    assertionFailure("Expected newTrackPathOrientation to be aligned with track.")
+                    return nil
+                }
             } else if point.isTrackEnd {
-                return .toExistingTrack(track, .end)
+                if track.path.endOrientation == orientation {
+                    return .toExistingTrack(track, .end)
+                } else if track.path.endOrientation == orientation.opposite {
+                    return .toNewConnection(track, track.path.length)
+                } else {
+                    assertionFailure("Expected newTrackPathOrientation to be aligned with track.")
+                    return nil
+                }
             } else {
                 return .toNewConnection(track, x)
             }
