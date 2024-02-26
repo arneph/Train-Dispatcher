@@ -7,8 +7,8 @@
 
 import Foundation
 
-fileprivate let minDistance = 0.01.m
-fileprivate let minAngle = 0.1.deg
+fileprivate let minDistance = 0.001.m
+fileprivate let minAngle = 0.001.deg
 
 let epsilon = Distance(1e-6)
 
@@ -79,6 +79,9 @@ protocol Path: Equatable, Hashable, Codable {
     func point(at x: Position) -> Point?
     func orientation(at x: Position) -> CircleAngle?
     func pointAndOrientation(at x: Position) -> PointAndOrientation?
+    
+    func forwardAtomicPathType(at x: Position) -> AtomicPathType?
+    func backwardAtomicPathType(at x: Position) -> AtomicPathType?
     
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo
     func pointsOnPath(atDistance d: Distance, from p: Point) -> [Position]
@@ -174,6 +177,13 @@ struct LinearPath: FinitePath {
             return nil
         }
         return orientation
+    }
+    
+    func forwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        if 0.0.m <= x && x < length { .linear } else { nil }
+    }
+    func backwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        if 0.0.m < x && x <= length { .linear } else { nil }
     }
     
     func closestPointOnPath(from target: Point) -> ClosestPathPointInfo {
@@ -312,6 +322,13 @@ struct CircularPath: FinitePath {
         return toOrientation(x)
     }
     
+    func forwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        if 0.0.m <= x && x < length { .circular } else { nil }
+    }
+    func backwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        if 0.0.m < x && x <= length { .circular } else { nil }
+    }
+    
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
         let circleAngle = CircleAngle(angle(from: center, to: p))
         if circleRange.contains(circleAngle) {
@@ -387,7 +404,7 @@ struct CircularPath: FinitePath {
     init?(center: Point,
           radius: Distance,
           circleRange: CircleRange) {
-        if radius < minDistance || circleRange.absDelta < minAngle {
+        if radius * circleRange.absDelta.withoutUnit < 0.001.m {
             return nil
         }
         self.center = center
@@ -497,6 +514,19 @@ enum AtomicFinitePath: FinitePath {
         }
     }
     
+    func forwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        switch self {
+        case .linear(let path): path.forwardAtomicPathType(at: x)
+        case .circular(let path): path.forwardAtomicPathType(at: x)
+        }
+    }
+    func backwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        switch self {
+        case .linear(let path): path.backwardAtomicPathType(at: x)
+        case .circular(let path): path.backwardAtomicPathType(at: x)
+        }
+    }
+    
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
         switch self {
         case .linear(let path): path.closestPointOnPath(from: p)
@@ -596,8 +626,8 @@ struct CompoundPath: FinitePath {
     }
     
     private func indexAndAtomicFinitePath(at xGlobal: Position) -> (index: Int,
-                                                             component: AtomicFinitePath,
-                                                             xLocal: Position)? {
+                                                                    component: AtomicFinitePath,
+                                                                    xLocal: Position)? {
         for (index, componentAndContext) in zip(components, contexts).enumerated() {
             let (component, context) = componentAndContext
             if isApproximatelyInRange(x: xGlobal, range: context.globalRange) {
@@ -619,6 +649,28 @@ struct CompoundPath: FinitePath {
             return nil
         }
         return component.orientation(at: xLocal)
+    }
+    
+    func forwardAtomicPathType(at xGlobal: Position) -> AtomicPathType? {
+        guard let (index, component, xLocal) = indexAndAtomicFinitePath(at: xGlobal) else {
+            return nil
+        }
+        if index < components.count - 1 && xLocal == component.length {
+            return components[index + 1].forwardAtomicPathType(at: 0.0.m)
+        } else {
+            return component.forwardAtomicPathType(at: xLocal)
+        }
+    }
+    
+    func backwardAtomicPathType(at xGlobal: Position) -> AtomicPathType? {
+        guard let (index, component, xLocal) = indexAndAtomicFinitePath(at: xGlobal) else {
+            return nil
+        }
+        if index > 0 && xLocal == 0.0.m {
+            return components[index - 1].backwardAtomicPathType(at: components[index - 1].length)
+        } else {
+            return component.backwardAtomicPathType(at: xLocal)
+        }
     }
     
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
@@ -929,6 +981,22 @@ enum SomeFinitePath: FinitePath {
         }
     }
     
+    func forwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        switch self {
+        case .linear(let path): path.forwardAtomicPathType(at: x)
+        case .circular(let path): path.forwardAtomicPathType(at: x)
+        case .compound(let path): path.forwardAtomicPathType(at: x)
+        }
+    }
+    
+    func backwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        switch self {
+        case .linear(let path): path.backwardAtomicPathType(at: x)
+        case .circular(let path): path.backwardAtomicPathType(at: x)
+        case .compound(let path): path.backwardAtomicPathType(at: x)
+        }
+    }
+    
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
         switch self {
         case .linear(let path): path.closestPointOnPath(from: p)
@@ -1071,8 +1139,8 @@ struct Loop: Path {
     
     private func normalizeWithDelta(_ x: Position) -> (normalized: Position,
                                                             delta: Distance) {
-        var delta = Distance(0.0)
-        while x + delta < Position(0.0) {
+        var delta = 0.0.m
+        while x + delta < 0.0.m {
             delta += underlying.length
         }
         while x + delta >= underlying.length {
@@ -1087,6 +1155,19 @@ struct Loop: Path {
 
     func orientation(at x: Position) -> CircleAngle? {
         underlying.orientation(at: normalize(x))
+    }
+    
+    func forwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        underlying.forwardAtomicPathType(at: normalize(x))
+    }
+    
+    func backwardAtomicPathType(at x: Position) -> AtomicPathType? {
+        let normalizedX = normalize(x)
+        if normalizedX == 0.0.m {
+            return underlying.backwardAtomicPathType(at: underlying.length)
+        } else {
+            return underlying.backwardAtomicPathType(at: normalizedX)
+        }
     }
     
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {

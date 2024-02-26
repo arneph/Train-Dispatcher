@@ -36,7 +36,6 @@ enum TrackPoint {
         PointAndOrientation(point: point, orientation: directionB)
     }
     
-    
     func offsetLeft(by d: Distance) -> Point {
         switch self {
         case .trackConnection(let connection):
@@ -58,6 +57,20 @@ enum TrackPoint {
         switch self {
         case .trackConnection: true
         case .trackPoint(let track, let x): x == track.path.length
+        }
+    }
+    
+    var isStraighInDirectionA: Bool {
+        switch self {
+        case .trackConnection(let connection): connection.directionAStraightTrack != nil
+        case .trackPoint(let track, let x): track.path.forwardAtomicPathType(at: x) == .linear
+        }
+    }
+    
+    var isStraightInDirectionB: Bool {
+        switch self {
+        case .trackConnection(let connection): connection.directionBStraightTrack != nil
+        case .trackPoint(let track, let x): track.path.backwardAtomicPathType(at: x) == .linear
         }
     }
     

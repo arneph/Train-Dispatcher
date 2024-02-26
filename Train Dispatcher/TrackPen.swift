@@ -371,6 +371,46 @@ class TrackPen: Tool {
     
     private static func proposedPath(fromTrackPoint start: TrackPoint,
                                      toTrackPoint end: TrackPoint) -> SomeFinitePath? {
+        if let path = proposedStraightPath(fromTrackPoint: start, toTrackPoint: end) {
+            .linear(path)
+        } else if let path = proposedOneCurvePath(fromTrackPoint: start, toTrackPoint: end) {
+            path
+        } else if let path = proposedTwoCurvePath(fromTrackPoint: start, toTrackPoint: end) {
+            path
+        } else {
+            nil
+        }
+    }
+    
+    private static func proposedStraightPath(fromTrackPoint start: TrackPoint,
+                                             toTrackPoint end: TrackPoint) -> LinearPath? {
+        guard let path = LinearPath(start: start.point, end: end.point) else {
+            return nil
+        }
+        if start.directionA == path.orientation {
+            guard !start.isStraighInDirectionA else { return nil }
+        } else if start.directionB == path.orientation {
+            guard !start.isStraightInDirectionB else { return nil }
+        } else {
+            return nil
+        }
+        if end.directionA == path.orientation {
+            guard !end.isStraightInDirectionB else { return  nil }
+        } else if end.directionB == path.orientation {
+            guard !end.isStraighInDirectionA else { return nil }
+        } else {
+            return nil
+        }
+        return path
+    }
+    
+    private static func proposedOneCurvePath(fromTrackPoint start: TrackPoint,
+                                             toTrackPoint end: TrackPoint) -> SomeFinitePath? {
+        return nil
+    }
+    
+    private static func proposedTwoCurvePath(fromTrackPoint start: TrackPoint,
+                                             toTrackPoint end: TrackPoint) -> SomeFinitePath? {
         let alphaStartToEnd = CircleAngle(angle(from: start.point, to: end.point))
         let alphaEndToStart = alphaStartToEnd.opposite
         let alpha1 = absDiff(CircleAngle(start.directionA + 90.0.deg),
@@ -407,8 +447,10 @@ class TrackPen: Tool {
         let c2 = end.point + r ** alpha2
         let range1 = CircleRange.range(from: c1, between: start.point, and: c2)
         let range2 = CircleRange.range(from: c2, between: c1, and: end.point)
-        let circle1 = CircularPath(center: c1, radius: r, circleRange: range1)!
-        let circle2 = CircularPath(center: c2, radius: r, circleRange: range2)!
+        guard let circle1 = CircularPath(center: c1, radius: r, circleRange: range1),
+              let circle2 = CircularPath(center: c2, radius: r, circleRange: range2) else {
+            return nil
+        }
         if let path = CompoundPath(components: [.circular(circle1), .circular(circle2)]) {
             return .compound(path)
         } else {

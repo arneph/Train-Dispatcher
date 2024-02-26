@@ -73,6 +73,9 @@ final class Track {
     var leftRail: SomeFinitePath
     var rightRail: SomeFinitePath
     
+    var atomicPathTypeAtStart: AtomicPathType { path.forwardAtomicPathType(at: 0.0.m)! }
+    var atomicPathTypeAtEnd: AtomicPathType { path.backwardAtomicPathType(at: path.length)! }
+    
     fileprivate func set(path: SomeFinitePath, positionOffset xOffset: Distance) {
         self.path = path
         observers.forEach{ $0.pathChanged(forTrack: self, withPositionUpdate: { $0 + xOffset }) }
@@ -184,6 +187,19 @@ final class TrackConnection {
         switch direction {
         case .a: directionATracks
         case .b: directionBTracks
+        }
+    }
+    
+    var directionAStraightTrack: Track? {
+        directionATracks.first{
+            ($0.startConnection === self && $0.atomicPathTypeAtStart == .linear) ||
+            ($0.endConnection === self && $0.atomicPathTypeAtEnd == .linear)
+        }
+    }
+    var directionBStraightTrack: Track? {
+        directionBTracks.first{
+            ($0.startConnection === self && $0.atomicPathTypeAtStart == .linear) ||
+            ($0.endConnection === self && $0.atomicPathTypeAtEnd == .linear)
         }
     }
     
