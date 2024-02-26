@@ -19,16 +19,16 @@ final class TestTrackConnectionObserver: TrackConnectionObserver {
         static func == (lhs: Call, rhs: Call) -> Bool {
             switch (lhs, rhs) {
             case (.addedTrack(let lt, let lc, let ld), .addedTrack(let rt, let rc, let rd)):
-                return lt === rt && lc === rc && ld == rd
+                lt === rt && lc === rc && ld == rd
             case (.replacedTrack(let lo, let ln, let lc, let ld),
                   .replacedTrack(let ro, let rn, let rc, let rd)):
-                return lo === ro && ln === rn && lc === rc && ld == rd
+                lo === ro && ln === rn && lc === rc && ld == rd
             case (.removedTrack(let lt, let lc), .removedTrack(let rt, let rc)):
-                return lt === rt && lc === rc
+                lt === rt && lc === rc
             case (.removed(let lc), .removed(let rc)):
-                return lc === rc
+                lc === rc
             default:
-                return false
+                false
             }
         }
     }

@@ -74,7 +74,7 @@ enum EncodedVehicle: Codable {
     
     var underlying: Vehicle {
         switch self {
-        case .container(let vehicle): return vehicle
+        case .container(let vehicle): vehicle
         }
     }
     

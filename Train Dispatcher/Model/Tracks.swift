@@ -19,16 +19,16 @@ let trackBedWidth = sleeperLength + 1.5.m
 func isValid(trackPath path: SomeFinitePath) -> Bool {
     switch path {
     case .circular(let path):
-        return path.radius >= 100.0.m && path.circleRange.absDelta >= 5.0.deg
+        path.radius >= 100.0.m && path.circleRange.absDelta >= 5.0.deg
     case .linear(let path):
-        return path.length >= 5.0.m
+        path.length >= 5.0.m
     case .compound(let path):
-        return path.components.allSatisfy{
+        path.components.allSatisfy{
             switch $0 {
             case .circular(let component):
-                return component.radius >= 100.0.m && component.circleRange.absDelta >= 5.0.deg
+                component.radius >= 100.0.m && component.circleRange.absDelta >= 5.0.deg
             case .linear(let component):
-                return component.length >= 5.0.m
+                component.length >= 5.0.m
             }
         }
     }
@@ -157,8 +157,8 @@ final class TrackConnection {
     
     func orientation(inDirection direction: Direction) -> Angle {
         switch direction {
-        case .a: return directionA.asAngle
-        case .b: return directionB.asAngle
+        case .a: directionA.asAngle
+        case .b: directionB.asAngle
         }
     }
     
@@ -182,8 +182,8 @@ final class TrackConnection {
     
     func tracks(inDirection direction: Direction) -> [Track] {
         switch direction {
-        case .a: return directionATracks
-        case .b: return directionBTracks
+        case .a: directionATracks
+        case .b: directionBTracks
         }
     }
     

@@ -25,9 +25,9 @@ final class Container: Object {
     var objectPosition: ObjectPosition {
         switch positioning {
         case .freely(let position):
-            return position
+            position
         case .byOwner(let owner):
-            return owner.position(for: self)
+            owner.position(for: self)
         }
     }
     var center: Point { objectPosition.center }

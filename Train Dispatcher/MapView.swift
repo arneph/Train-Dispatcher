@@ -257,9 +257,9 @@ class MapView: NSView, ToolOwner, ViewContext {
     override static func defaultAnimation(forKey key: NSAnimatablePropertyKey) -> Any? {
         switch key {
         case "mapCGPointAtViewCenter", "mapScale":
-            return CABasicAnimation()
+            CABasicAnimation()
         default:
-            return super.defaultAnimation(forKey: key)
+            super.defaultAnimation(forKey: key)
         }
     }
     
@@ -268,9 +268,9 @@ class MapView: NSView, ToolOwner, ViewContext {
     var style: Style {
         switch effectiveAppearance.name {
         case .darkAqua:
-            return .dark
+            .dark
         default:
-            return .light
+            .light
         }
     }
     
@@ -300,19 +300,19 @@ class MapView: NSView, ToolOwner, ViewContext {
     
     private var gridScale: Float64 {
         if mapScale >= 20.0 {
-            return 1.0
+            1.0
         } else if mapScale >= 10.0 {
-            return 2.0
+            2.0
         } else if mapScale >= 2.0 {
-            return 10.0
+            10.0
         } else if mapScale >= 1.0 {
-            return 20.0
+            20.0
         } else if mapScale >= 0.2 {
-            return 100.0
+            100.0
         } else if mapScale >= 0.1 {
-            return 200.0
+            200.0
         } else {
-            return 1000.0
+            1000.0
         }
     }
     

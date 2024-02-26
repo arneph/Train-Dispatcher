@@ -34,17 +34,17 @@ final class TestTrackObserver: TrackObserver {
         static func == (lhs: Call, rhs: Call) -> Bool {
             switch (lhs, rhs) {
             case (.pathChanged(let lt, let lf), .pathChanged(let rt, let rf)):
-                return lt === rt && lf == rf
+                lt === rt && lf == rf
             case (.startConnectionChanged(let lt, let lc), .startConnectionChanged(let rt, let rc)):
-                return lt === rt && lc === rc
+                lt === rt && lc === rc
             case (.endConnectionChanged(let lt, let lc), .endConnectionChanged(let rt, let rc)):
-                return lt === rt && lc === rc
+                lt === rt && lc === rc
             case (.replaced(let lo, let ln, let lf), .replaced(let ro, let rn, let rf)):
-                return lo === ro && zip(ln, rn).allSatisfy{ $0 === $1 } && lf == rf
+                lo === ro && zip(ln, rn).allSatisfy{ $0 === $1 } && lf == rf
             case (.removed(let lt), .removed(let rt)):
-                return lt === rt
+                lt === rt
             default:
-                return false
+                false
             }
         }
     }

@@ -13,20 +13,20 @@ enum TrackPoint {
     
     var point: Point {
         switch self {
-        case .trackConnection(let connection): return connection.point
-        case .trackPoint(let track, let x): return track.path.point(at: x)!
+        case .trackConnection(let connection): connection.point
+        case .trackPoint(let track, let x): track.path.point(at: x)!
         }
     }
     var directionA: CircleAngle {
         switch self {
-        case .trackConnection(let connection): return connection.directionA
-        case .trackPoint(let track, let x): return track.path.orientation(at: x)!
+        case .trackConnection(let connection): connection.directionA
+        case .trackPoint(let track, let x): track.path.orientation(at: x)!
         }
     }
     var directionB: CircleAngle {
         switch self {
-        case .trackConnection(let connection): return connection.directionB
-        case .trackPoint(let track, let x): return track.path.orientation(at: x)!.opposite
+        case .trackConnection(let connection): connection.directionB
+        case .trackPoint(let track, let x): track.path.orientation(at: x)!.opposite
         }
     }
     var pointAndDirectionA: PointAndOrientation {
@@ -40,9 +40,9 @@ enum TrackPoint {
     func offsetLeft(by d: Distance) -> Point {
         switch self {
         case .trackConnection(let connection):
-            return connection.offsetLeft(by: d)
+            connection.offsetLeft(by: d)
         case .trackPoint(let track, let x):
-            return track.path.point(at: x)! + d ** (track.path.orientation(at: x)! + 90.0.deg)
+            track.path.point(at: x)! + d ** (track.path.orientation(at: x)! + 90.0.deg)
         }
     }
     
@@ -50,14 +50,14 @@ enum TrackPoint {
     
     var isTrackStart: Bool {
         switch self {
-        case .trackConnection: return true
-        case .trackPoint(_, let x): return x == 0.0.m
+        case .trackConnection: true
+        case .trackPoint(_, let x): x == 0.0.m
         }
     }
     var isTrackEnd: Bool {
         switch self {
-        case .trackConnection: return true
-        case .trackPoint(let track, let x): return x == track.path.length
+        case .trackConnection: true
+        case .trackPoint(let track, let x): x == track.path.length
         }
     }
     
@@ -82,19 +82,19 @@ struct ClosestTrackPointInfo {
     var isTrackEnd: Bool { trackPathPosition == track.path.length }
     var connection: TrackConnection? {
         if isTrackStart {
-            return track.startConnection
+            track.startConnection
         } else if isTrackEnd {
-            return track.endConnection
+            track.endConnection
         } else {
-            return nil
+            nil
         }
     }
     
     var asTrackPoint: TrackPoint {
         if let connection {
-            return .trackConnection(connection)
+            .trackConnection(connection)
         } else {
-            return .trackPoint(track, trackPathPosition)
+            .trackPoint(track, trackPathPosition)
         }
     }
     
@@ -141,9 +141,8 @@ extension TrackMap {
         tracks.flatMap{ (track) -> [TrackPoint] in
             switch track.path {
             case .compound(let path):
-                return path.componentSplitPositions.map{ .trackPoint(track, $0) }
-            default:
-                return []
+                path.componentSplitPositions.map{ .trackPoint(track, $0) }
+            default: []
             }
         }
     }

@@ -39,9 +39,9 @@ enum FinitePathType: Equatable, Hashable, Codable {
     
     var atomicPathType: AtomicPathType? {
         switch self {
-        case .linear: return .linear
-        case .circular: return .circular
-        case .compound: return nil
+        case .linear: .linear
+        case .circular: .circular
+        case .compound: nil
         }
     }
     
@@ -222,12 +222,12 @@ struct LinearPath: FinitePath {
     
     func firstPointOnPath(atDistance d: Distance,
                           after min: Position) -> Position? {
-        return pointsOnPath(atDistance: d, from: point(at: min)!).filter{ min <= $0 }.first
+        pointsOnPath(atDistance: d, from: point(at: min)!).filter{ min <= $0 }.first
     }
     
     func lastPointOnPath(atDistance d: Distance,
                          before max: Position) -> Position? {
-        return pointsOnPath(atDistance: d, from: point(at: max)!).filter{ $0 <= max }.last
+        pointsOnPath(atDistance: d, from: point(at: max)!).filter{ $0 <= max }.last
     }
     
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
@@ -263,8 +263,8 @@ struct CircularPath: FinitePath {
     
     private func toOrientation(_ a: CircleAngle) -> CircleAngle {
         switch circleRange.direction {
-        case .positive: return CircleAngle(a + 90.0.deg)
-        case .negative: return CircleAngle(a - 90.0.deg)
+        case .positive: CircleAngle(a + 90.0.deg)
+        case .negative: CircleAngle(a - 90.0.deg)
         }
     }
     
@@ -351,12 +351,12 @@ struct CircularPath: FinitePath {
     
     func firstPointOnPath(atDistance d: Distance,
                           after min: Position) -> Position? {
-        return pointsOnPath(atDistance: d, from: point(at: min)!).filter{ min <= $0 }.first
+        pointsOnPath(atDistance: d, from: point(at: min)!).filter{ min <= $0 }.first
     }
     
     func lastPointOnPath(atDistance d: Distance,
                          before max: Position) -> Position? {
-        return pointsOnPath(atDistance: d, from: point(at: max)!).filter{ $0 <= max }.last
+        pointsOnPath(atDistance: d, from: point(at: max)!).filter{ $0 <= max }.last
     }
     
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
@@ -419,50 +419,50 @@ enum AtomicFinitePath: FinitePath {
     
     var start: Point {
         switch self {
-        case .linear(let path): return path.start
-        case .circular(let path): return path.start
+        case .linear(let path): path.start
+        case .circular(let path): path.start
         }
     }
     var end: Point {
         switch self {
-        case .linear(let path): return path.end
-        case .circular(let path): return path.end
+        case .linear(let path): path.end
+        case .circular(let path): path.end
         }
     }
     var startOrientation: CircleAngle {
         switch self {
-        case .linear(let path): return path.startOrientation
-        case .circular(let path): return path.startOrientation
+        case .linear(let path): path.startOrientation
+        case .circular(let path): path.startOrientation
         }
     }
     var endOrientation: CircleAngle {
         switch self {
-        case .linear(let path): return path.endOrientation
-        case .circular(let path): return path.endOrientation
+        case .linear(let path): path.endOrientation
+        case .circular(let path): path.endOrientation
         }
     }
     var length: Distance {
         switch self {
-        case .linear(let path): return path.length
-        case .circular(let path): return path.length
+        case .linear(let path): path.length
+        case .circular(let path): path.length
         }
     }
     var range: ClosedRange<Position> {
         switch self {
-        case .linear(let path): return path.range
-        case .circular(let path): return path.range
+        case .linear(let path): path.range
+        case .circular(let path): path.range
         }
     }
     var reverse: AtomicFinitePath {
         switch self {
-        case .linear(let path): return .linear(path.reverse)
-        case .circular(let path): return .circular(path.reverse)
+        case .linear(let path): .linear(path.reverse)
+        case .circular(let path): .circular(path.reverse)
         }
     }
     var finitePathType: FinitePathType {
         switch self {
-        case .linear: return .linear
-        case .circular: return .circular
+        case .linear: .linear
+        case .circular: .circular
         }
     }
     
@@ -470,65 +470,65 @@ enum AtomicFinitePath: FinitePath {
         switch self {
         case .linear(let path):
             if let offsetPath = path.offsetLeft(by: d) {
-                return .linear(offsetPath)
+                .linear(offsetPath)
             } else {
-                return nil
+                nil
             }
         case .circular(let path):
             if let offsetPath = path.offsetLeft(by: d) {
-                return .circular(offsetPath)
+                .circular(offsetPath)
             } else {
-                return nil
+                nil
             }
         }
     }
         
     func point(at x: Position) -> Point? {
         switch self {
-        case .linear(let path): return path.point(at: x)
-        case .circular(let path): return path.point(at: x)
+        case .linear(let path): path.point(at: x)
+        case .circular(let path): path.point(at: x)
         }
     }
     
     func orientation(at x: Position) -> CircleAngle? {
         switch self {
-        case .linear(let path): return path.orientation(at: x)
-        case .circular(let path): return path.orientation(at: x)
+        case .linear(let path): path.orientation(at: x)
+        case .circular(let path): path.orientation(at: x)
         }
     }
     
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
         switch self {
-        case .linear(let path): return path.closestPointOnPath(from: p)
-        case .circular(let path): return path.closestPointOnPath(from: p)
+        case .linear(let path): path.closestPointOnPath(from: p)
+        case .circular(let path): path.closestPointOnPath(from: p)
         }
     }
     
     func pointsOnPath(atDistance d: Distance, from p: Point) -> [Position] {
         switch self {
-        case .linear(let path): return path.pointsOnPath(atDistance: d, from: p)
-        case .circular(let path): return path.pointsOnPath(atDistance: d, from: p)
+        case .linear(let path): path.pointsOnPath(atDistance: d, from: p)
+        case .circular(let path): path.pointsOnPath(atDistance: d, from: p)
         }
     }
     
     func firstPointOnPath(atDistance d: Distance, after x: Position) -> Position? {
         switch self {
-        case .linear(let path): return path.firstPointOnPath(atDistance: d, after: x)
-        case .circular(let path): return path.firstPointOnPath(atDistance: d, after: x)
+        case .linear(let path): path.firstPointOnPath(atDistance: d, after: x)
+        case .circular(let path): path.firstPointOnPath(atDistance: d, after: x)
         }
     }
     
     func lastPointOnPath(atDistance d: Distance, before x: Position) -> Position? {
         switch self {
-        case .linear(let path): return path.lastPointOnPath(atDistance: d, before: x)
-        case .circular(let path): return path.lastPointOnPath(atDistance: d, before: x)
+        case .linear(let path): path.lastPointOnPath(atDistance: d, before: x)
+        case .circular(let path): path.lastPointOnPath(atDistance: d, before: x)
         }
     }
     
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
         switch self {
-        case .linear(let path): return path.split(at: x)
-        case .circular(let path): return path.split(at:x)
+        case .linear(let path): path.split(at: x)
+        case .circular(let path): path.split(at:x)
         }
     }
     
@@ -536,18 +536,18 @@ enum AtomicFinitePath: FinitePath {
         switch (a, b) {
         case (.linear(let a), .linear(let b)):
             if let path = LinearPath.combine(a, b) {
-                return .linear(path)
+                .linear(path)
             } else {
-                return nil
+                nil
             }
         case (.circular(let a), .circular(let b)):
             if let path = CircularPath.combine(a, b) {
-                return .circular(path)
+                .circular(path)
             } else {
-                return nil
+                nil
             }
         case (.linear, .circular), (.circular, .linear):
-            return nil
+            nil
         }
     }
     
@@ -734,9 +734,9 @@ struct CompoundPath: FinitePath {
     
     private static func combine(splitPaths paths: [AtomicFinitePath]) -> SomeFinitePath {
         if paths.count == 1 {
-            return SomeFinitePath(paths.first!)
+            SomeFinitePath(paths.first!)
         } else {
-            return .compound(CompoundPath(checkedComponents: paths))
+            .compound(CompoundPath(checkedComponents: paths))
         }
     }
     
@@ -835,58 +835,58 @@ enum SomeFinitePath: FinitePath {
     
     var start: Point {
         switch self {
-        case .linear(let path): return path.start
-        case .circular(let path): return path.start
-        case .compound(let path): return path.start
+        case .linear(let path): path.start
+        case .circular(let path): path.start
+        case .compound(let path): path.start
         }
     }
     var end: Point {
         switch self {
-        case .linear(let path): return path.end
-        case .circular(let path): return path.end
-        case .compound(let path): return path.end
+        case .linear(let path): path.end
+        case .circular(let path): path.end
+        case .compound(let path): path.end
         }
     }
     var startOrientation: CircleAngle {
         switch self {
-        case .linear(let path): return path.startOrientation
-        case .circular(let path): return path.startOrientation
-        case .compound(let path): return path.startOrientation
+        case .linear(let path): path.startOrientation
+        case .circular(let path): path.startOrientation
+        case .compound(let path): path.startOrientation
         }
     }
     var endOrientation: CircleAngle {
         switch self {
-        case .linear(let path): return path.endOrientation
-        case .circular(let path): return path.endOrientation
-        case .compound(let path): return path.endOrientation
+        case .linear(let path): path.endOrientation
+        case .circular(let path): path.endOrientation
+        case .compound(let path): path.endOrientation
         }
     }
     var length: Distance {
         switch self {
-        case .linear(let path): return path.length
-        case .circular(let path): return path.length
-        case .compound(let path): return path.length
+        case .linear(let path): path.length
+        case .circular(let path): path.length
+        case .compound(let path): path.length
         }
     }
     var range: ClosedRange<Position> {
         switch self {
-        case .linear(let path): return path.range
-        case .circular(let path): return path.range
-        case .compound(let path): return path.range
+        case .linear(let path): path.range
+        case .circular(let path): path.range
+        case .compound(let path): path.range
         }
     }
     var reverse: SomeFinitePath {
         switch self {
-        case .linear(let path): return .linear(path.reverse)
-        case .circular(let path): return .circular(path.reverse)
-        case .compound(let path): return .compound(path.reverse)
+        case .linear(let path): .linear(path.reverse)
+        case .circular(let path): .circular(path.reverse)
+        case .compound(let path): .compound(path.reverse)
         }
     }
     var finitePathType: FinitePathType {
         switch self {
-        case .linear: return .linear
-        case .circular: return .circular
-        case .compound: return .compound
+        case .linear: .linear
+        case .circular: .circular
+        case .compound: .compound
         }
     }
     
@@ -894,78 +894,78 @@ enum SomeFinitePath: FinitePath {
         switch self {
         case .linear(let path):
             if let offsetPath = path.offsetLeft(by: d) {
-                return .linear(offsetPath)
+                .linear(offsetPath)
             } else {
-                return nil
+                nil
             }
         case .circular(let path):
             if let offsetPath = path.offsetLeft(by: d) {
-                return .circular(offsetPath)
+                .circular(offsetPath)
             } else {
-                return nil
+                nil
             }
         case .compound(let path):
             if let offsetPath = path.offsetLeft(by: d) {
-                return .compound(offsetPath)
+                .compound(offsetPath)
             } else {
-                return nil
+                nil
             }
         }
     }
     
     func point(at x: Position) -> Point? {
         switch self {
-        case .linear(let path): return path.point(at: x)
-        case .circular(let path): return path.point(at: x)
-        case .compound(let path): return path.point(at: x)
+        case .linear(let path): path.point(at: x)
+        case .circular(let path): path.point(at: x)
+        case .compound(let path): path.point(at: x)
         }
     }
     
     func orientation(at x: Position) -> CircleAngle? {
         switch self {
-        case .linear(let path): return path.orientation(at: x)
-        case .circular(let path): return path.orientation(at: x)
-        case .compound(let path): return path.orientation(at: x)
+        case .linear(let path): path.orientation(at: x)
+        case .circular(let path): path.orientation(at: x)
+        case .compound(let path): path.orientation(at: x)
         }
     }
     
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo {
         switch self {
-        case .linear(let path): return path.closestPointOnPath(from: p)
-        case .circular(let path): return path.closestPointOnPath(from: p)
-        case .compound(let path): return path.closestPointOnPath(from: p)
+        case .linear(let path): path.closestPointOnPath(from: p)
+        case .circular(let path): path.closestPointOnPath(from: p)
+        case .compound(let path): path.closestPointOnPath(from: p)
         }
     }
     
     func pointsOnPath(atDistance d: Distance, from p: Point) -> [Position] {
         switch self {
-        case .linear(let path): return path.pointsOnPath(atDistance: d, from: p)
-        case .circular(let path): return path.pointsOnPath(atDistance: d, from: p)
-        case .compound(let path): return path.pointsOnPath(atDistance: d, from: p)
+        case .linear(let path): path.pointsOnPath(atDistance: d, from: p)
+        case .circular(let path): path.pointsOnPath(atDistance: d, from: p)
+        case .compound(let path): path.pointsOnPath(atDistance: d, from: p)
         }
     }
     
     func firstPointOnPath(atDistance d: Distance, after x: Position) -> Position? {
         switch self {
-        case .linear(let path): return path.firstPointOnPath(atDistance: d, after: x)
-        case .circular(let path): return path.firstPointOnPath(atDistance: d, after: x)
-        case .compound(let path): return path.firstPointOnPath(atDistance: d, after: x)
+        case .linear(let path): path.firstPointOnPath(atDistance: d, after: x)
+        case .circular(let path): path.firstPointOnPath(atDistance: d, after: x)
+        case .compound(let path): path.firstPointOnPath(atDistance: d, after: x)
         }
     }
     
     func lastPointOnPath(atDistance d: Distance, before x: Position) -> Position? {
         switch self {
-        case .linear(let path): return path.lastPointOnPath(atDistance: d, before: x)
-        case .circular(let path): return path.lastPointOnPath(atDistance: d, before: x)
-        case .compound(let path): return path.lastPointOnPath(atDistance: d, before: x)
+        case .linear(let path): path.lastPointOnPath(atDistance: d, before: x)
+        case .circular(let path): path.lastPointOnPath(atDistance: d, before: x)
+        case .compound(let path): path.lastPointOnPath(atDistance: d, before: x)
         }
     }
     
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
         switch self {
-        case .linear(let path): return path.split(at: x)
-        case .circular(let path): return path.split(at:x)
-        case .compound(let path): return path.split(at:x)
+        case .linear(let path): path.split(at: x)
+        case .circular(let path): path.split(at:x)
+        case .compound(let path): path.split(at:x)
         }
     }
     
@@ -973,59 +973,59 @@ enum SomeFinitePath: FinitePath {
         switch (a, b) {
         case (.linear(let a), .linear(let b)):
             if let path = LinearPath.combine(a, b) {
-                return .linear(path)
+                .linear(path)
             } else {
-                return nil
+                nil
             }
         case (.circular(let a), .circular(let b)):
             if let path = CircularPath.combine(a, b) {
-                return .circular(path)
+                .circular(path)
             } else if let path = CompoundPath(components: [.circular(a), .circular(b)]) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.linear(let a), .circular(let b)):
             if let path = CompoundPath(components: [.linear(a), .circular(b)]) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.circular(let a), .linear(let b)):
             if let path = CompoundPath(components: [.circular(a), .linear(b)]) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.linear(let a), .compound(let b)):
             if let path = CompoundPath.combine(.linear(a), b) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.circular(let a), .compound(let b)):
             if let path = CompoundPath.combine(.circular(a), b) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.compound(let a), .linear(let b)):
             if let path = CompoundPath.combine(a, .linear(b)) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.compound(let a), .circular(let b)):
             if let path = CompoundPath.combine(a, .circular(b)) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         case (.compound(let a), .compound(let b)):
             if let path = CompoundPath.combine(a, b) {
-                return .compound(path)
+                .compound(path)
             } else {
-                return nil
+                nil
             }
         }
     }
@@ -1039,9 +1039,9 @@ enum SomeFinitePath: FinitePath {
     
     var atomic: AtomicFinitePath? {
         switch self {
-        case .linear(let path): return .linear(path)
-        case .circular(let path): return .circular(path)
-        case .compound: return nil
+        case .linear(let path): .linear(path)
+        case .circular(let path): .circular(path)
+        case .compound: nil
         }
     }
     

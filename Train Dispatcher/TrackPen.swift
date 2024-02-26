@@ -21,7 +21,7 @@ class TrackPen: Tool {
             let base: TrackPoint
             let offset: Distance
             
-            var distance: Distance { return abs(offset) }
+            var distance: Distance { abs(offset) }
         }
         
         let target: Target
@@ -29,8 +29,8 @@ class TrackPen: Tool {
         
         var point: Point {
             switch target {
-            case .free(let point): return point
-            case .bound(let point): return point.point
+            case .free(let point): point
+            case .bound(let point): point.point
             }
         }
         
@@ -273,13 +273,13 @@ class TrackPen: Tool {
     private static func proposal(from start: PenPoint, to end: PenPoint) -> TrackProposal? {
         switch (start.target, end.target) {
         case (.free(let start), .free(let end)):
-            return proposal(fromFreePoint:  start, toFreePoint:  end)
+            proposal(fromFreePoint:  start, toFreePoint:  end)
         case (.free(let start), .bound(let end)):
-            return proposal(fromTrackPoint: end,   toFreePoint:  start)
+            proposal(fromTrackPoint: end,   toFreePoint:  start)
         case (.bound(let start), .free(let end)):
-            return proposal(fromTrackPoint: start, toFreePoint:  end)
+            proposal(fromTrackPoint: start, toFreePoint:  end)
         case (.bound(let start), .bound(let end)):
-            return proposal(fromTrackPoint: start, toTrackPoint: end)
+            proposal(fromTrackPoint: start, toTrackPoint: end)
         }
     }
 

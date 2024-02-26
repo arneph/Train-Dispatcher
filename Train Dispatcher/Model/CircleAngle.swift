@@ -69,14 +69,14 @@ struct CircleRange: Equatable,
 
         var description: String {
             switch self {
-            case .positive: return "positive"
-            case .negative: return "negative"
+            case .positive: "positive"
+            case .negative: "negative"
             }
         }
         var debugDescription: String {
             switch self {
-            case .positive: return "positive"
-            case .negative: return "negative"
+            case .positive: "positive"
+            case .negative: "negative"
             }
         }
     }
@@ -96,8 +96,8 @@ struct CircleRange: Equatable,
     var hasFullExtent: Bool { absDelta == 360.0.deg }
     var withOppositeExtent: CircleRange {
         switch direction {
-        case .positive: return CircleRange(start: end, delta: +360.0.deg - delta)
-        case .negative: return CircleRange(start: end, delta: -360.0.deg - delta)
+        case .positive: CircleRange(start: end, delta: +360.0.deg - delta)
+        case .negative: CircleRange(start: end, delta: -360.0.deg - delta)
         }
     }
     
@@ -105,15 +105,15 @@ struct CircleRange: Equatable,
         switch direction {
         case .positive:
             if endAngle >= startAngle {
-                return startAngle <= orientation.asAngle && orientation.asAngle <= endAngle
+                startAngle <= orientation.asAngle && orientation.asAngle <= endAngle
             } else {
-                return startAngle <= orientation.asAngle || orientation.asAngle <= endAngle
+                startAngle <= orientation.asAngle || orientation.asAngle <= endAngle
             }
         case .negative:
             if startAngle >= endAngle {
-                return endAngle <= orientation.asAngle && orientation.asAngle <= startAngle
+                endAngle <= orientation.asAngle && orientation.asAngle <= startAngle
             } else {
-                return endAngle <= orientation.asAngle || orientation.asAngle <= startAngle
+                endAngle <= orientation.asAngle || orientation.asAngle <= startAngle
             }
         }
     }
@@ -165,11 +165,11 @@ struct CircleRange: Equatable,
     
     var description: String {
         if delta == 360.0.deg {
-            return start.description + " (full circle)"
+            start.description + " (full circle)"
         } else if delta == 0.0.deg {
-            return start.description + " (empty circle)"
+            start.description + " (empty circle)"
         } else {
-            return start.description + "..." + end.description + " (" + direction.description + ")"
+            start.description + "..." + end.description + " (" + direction.description + ")"
         }
     }
     var debugDescription: String {

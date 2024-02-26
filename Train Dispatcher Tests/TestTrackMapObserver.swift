@@ -22,21 +22,21 @@ final class TestTrackMapObserver: TrackMapObserver {
         static func == (lhs: Call, rhs: Call) -> Bool {
             switch (lhs, rhs) {
             case (.addedTrack(let lt, let lm), .addedTrack(let rt, let rm)):
-                return lt === rt && lm === rm
+                lt === rt && lm === rm
             case (.replacedTrack(let lo, let ln, let lm), .replacedTrack(let ro, let rn, let rm)):
-                return lo === ro && zip(ln, rn).allSatisfy{ $0 === $1 } && lm === rm
+                lo === ro && zip(ln, rn).allSatisfy{ $0 === $1 } && lm === rm
             case (.removedTrack(let lt, let lm), .removedTrack(let rt, let rm)):
-                return lt === rt && lm === rm
+                lt === rt && lm === rm
             case (.addedConnection(let lc, let lm), .addedConnection(let rc, let rm)):
-                return lc === rc && lm === rm
+                lc === rc && lm === rm
             case (.removedConnection(let lc, let lm), .removedConnection(let rc, let rm)):
-                return lc === rc && lm === rm
+                lc === rc && lm === rm
             case (.trackChanged(let lt, let lm), .trackChanged(let rt, let rm)):
-                return lt === rt && lm === rm
+                lt === rt && lm === rm
             case (.connectionChanged(let lc, let lm), .connectionChanged(let rc, let rm)):
-                return lc === rc && lm === rm
+                lc === rc && lm === rm
             default:
-                return false
+                false
             }
         }
     }
