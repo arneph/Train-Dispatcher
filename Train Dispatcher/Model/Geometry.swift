@@ -10,10 +10,7 @@ import Foundation
 struct Point : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
     let x: Position
     let y: Position
-    
-    var xValue: Float64 { x.withoutUnit }
-    var yValue: Float64 { y.withoutUnit }
-    
+        
     var asRect: Rect { Rect(orign: self, size: Size.zero) }
     
     init(x: Position, y: Position) {
@@ -28,13 +25,31 @@ struct Point : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebu
 
 typealias Direction = Point
 
+struct NormDirection {
+    let x: Float64
+    let y: Float64
+    var angle: Angle { Angle(atan2(y, x)) }
+    
+    init?(_ direction: Direction) {
+        let length = length(direction)
+        guard length != 0.0.m else { return nil }
+        self.x = direction.x / length
+        self.y = direction.y / length
+    }
+    
+    init(angle: Angle) {
+        self.x = cos(angle)
+        self.y = sin(angle)
+    }
+    
+    var description: String { String(format: "(%.3f, %.3f)", x, y) }
+    var debugDescription: String { String(format: "(%.3f, %.3f)", x, y) }
+}
+
 struct Size : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
     let width: Distance
     let height: Distance
-    
-    var widthValue: Float64 { width.withoutUnit }
-    var heightValue: Float64 { height.withoutUnit }
-    
+        
     static let zero = Size(width: Distance(0.0),
                            height: Distance(0.0))
     
@@ -66,12 +81,7 @@ struct Rect : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebug
     
     var minXY: Point { origin }
     var maxXY: Point { Point(x: x + width, y: y + height) }
-    
-    var xValue: Float64 { origin.xValue }
-    var yValue: Float64 { origin.yValue }
-    var widthValue: Float64 { size.widthValue }
-    var heightValue: Float64 { size.heightValue }
-    
+        
     var bounds: Rect { self }
     
     func insetBy(dx: Distance, dy: Distance) -> Rect {
@@ -128,18 +138,6 @@ struct Rect : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebug
     
 }
 
-func direction(from a: Point, to b: Point) -> Direction {
-    Direction(x: b.x - a.x, y: b.y - a.y)
-}
-
-func distance(_ a: Point, _ b: Point) -> Distance {
-    length(direction(from: a, to: b))
-}
-
-func distance²(_ a: Point, _ b: Point) -> Distance² {
-    length²(direction(from: a, to: b))
-}
-
 func + (lhs: Point, rhs: Direction) -> Point {
     Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
@@ -156,6 +154,67 @@ func -= (lhs: inout Point, rhs: Direction) {
     lhs = lhs - rhs
 }
 
+func * (lhs: Float64, rhs: Direction) -> Direction {
+    Direction(x: lhs * rhs.x,
+              y: lhs * rhs.y)
+}
+
+func * (lhs: Direction, rhs: Float64) -> Direction {
+    Direction(x: lhs.x * rhs,
+              y: lhs.y * rhs)
+}
+
+func * (lhs: Distance, rhs: NormDirection) -> Direction {
+    Direction(x: lhs * rhs.x,
+              y: lhs * rhs.y)
+}
+
+func * (lhs: NormDirection, rhs: Distance) -> Direction {
+    Direction(x: lhs.x * rhs,
+              y: lhs.y * rhs)
+}
+
+func / (lhs: Direction, rhs: Float64) -> Direction {
+    Direction(x: lhs.x / rhs,
+              y: lhs.y / rhs)
+}
+
+func angle(from a: Point, to b: Point) -> Angle {
+    Angle(atan2((b.y - a.y).withoutUnit, (b.x - a.x).withoutUnit))
+}
+
+func length(_ direction: Direction) -> Distance {
+    Distance(hypot(direction.x.withoutUnit, direction.y.withoutUnit))
+}
+
+func length²(_ direction: Direction) -> Distance² {
+    pow²(direction.x) + pow²(direction.y)
+}
+
+func scalar(_ a: Direction, _ b: Direction) -> Distance² {
+    a.x * b.x + a.y * b.y
+}
+
+func scalar(_ a: Direction, _ b: NormDirection) -> Distance {
+    a.x * b.x + a.y * b.y
+}
+
+func cross(_ a: Direction, _ b: Direction) -> Distance² {
+    a.x * b.y - a.y * b.x
+}
+
+func direction(from a: Point, to b: Point) -> Direction {
+    Direction(x: b.x - a.x, y: b.y - a.y)
+}
+
+func distance(_ a: Point, _ b: Point) -> Distance {
+    length(direction(from: a, to: b))
+}
+
+func distance²(_ a: Point, _ b: Point) -> Distance² {
+    length²(direction(from: a, to: b))
+}
+
 infix operator **: MultiplicationPrecedence
 
 func ** (lhs: Distance, rhs: Angle) -> Direction {
@@ -166,20 +225,52 @@ func ** (lhs: Angle, rhs: Distance) -> Direction {
     Direction(x: rhs * cos(lhs), y: rhs * sin(lhs))
 }
 
-func closestPointOnLine(through p: Point, 
-                        withOrientation orientation: Angle,
-                        to target: Point) -> Point {
-    closestPointOnLine(through: p, andThrough: p + 1.0.m ** orientation, to: target)
-}
-
-func closestPointOnLine(through p: Point, 
-                        withDirection direction: Direction,
-                        to target: Point) -> Point {
-    closestPointOnLine(through: p, andThrough: p + direction, to: target)
-}
-
-func closestPointOnLine(through a: Point, andThrough b: Point, to target: Point) -> Point {
-    let l = direction(from: a, to: b)
-    let d = direction(from: a, to: target)
-    return a + l * (scalar(d, l) / scalar(l, l))
+struct Line {
+    let base: Point
+    let direction: NormDirection
+    var orientation: Angle { direction.angle }
+    
+    init?(base: Point, direction: Direction) {
+        guard let normDireciton = NormDirection(direction) else { return nil }
+        self.base = base
+        self.direction = normDireciton
+    }
+    
+    init?(through a: Point, and b: Point) {
+        guard let normDirection = NormDirection(Train_Dispatcher.direction(from: a, to: b)) else {
+            return nil
+        }
+        self.base = a
+        self.direction = normDirection
+    }
+    
+    init(base: Point, orientation: Angle) {
+        self.base = base
+        self.direction = NormDirection(angle: orientation)
+    }
+    
+    func point(at s: Distance) -> Point {
+        base + direction * s
+    }
+    
+    func closestPoint(to target: Point) -> Point {
+        let d = Train_Dispatcher.direction(from: base, to: target)
+        return base + direction * scalar(d, direction)
+    }
+    
+    static func intersection(_ a: Line, _ b: Line) -> Point? {
+        let p1 = a.base
+        let p2 = a.base + a.direction * 1.0.m
+        let p3 = b.base
+        let p4 = b.base + b.direction * 1.0.m
+        let d12 = p1 - p2
+        let d34 = p3 - p4
+        let denominator = cross(d12, d34)
+        guard denominator != 0.0.m² else { return nil }
+        let c1 = cross(p1, p2)
+        let c2 = cross(p3, p4)
+        let x = (c1 * d34.x - d12.x * c2) / denominator
+        let y = (c1 * d34.y - d12.y * c2) / denominator
+        return Point(x: x, y: y)
+    }
 }

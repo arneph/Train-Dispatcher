@@ -1,5 +1,5 @@
 //
-//  Physics.swift
+//  Units.swift
 //  Train Dispatcher
 //
 //  Created by Arne Philipeit on 11/27/23.
@@ -216,13 +216,7 @@ func sin(_ angle: Angle) -> Float64 {
     sin(angle.withoutUnit)
 }
 
-func absDiff(_ a: Angle, _ b: Angle) -> AngleDiff {
-    Angle(abs(a.withoutUnit - b.withoutUnit))
-}
-
-func angle(from a: Point, to b: Point) -> Angle {
-    Angle(atan2((b.y - a.y).withoutUnit, (b.x - a.x).withoutUnit))
-}
+func absDiff(_ a: Angle, _ b: Angle) -> AngleDiff { abs(a - b) }
 
 func pow²(_ d: Duration) -> Duration² {
     Duration²(pow(d.value, 2.0))
@@ -260,46 +254,24 @@ func sqrt(_ s: Speed²) -> Speed {
     Speed(sqrt(s.value))
 }
 
-func length(_ direction: Direction) -> Distance {
-    Distance(hypot(direction.x.value, direction.y.value))
+func * (lhs: Distance, rhs: AngleDiff) -> Distance {
+    Distance(lhs.value * rhs.value)
 }
 
-func length²(_ direction: Direction) -> Distance² {
-    Distance²(pow(direction.x.value, 2.0) +
-                  pow(direction.y.value, 2.0))
-}
-
-func normalize(_ direction: Direction) -> Direction {
-    let l = length(direction).value
-    return Direction(x: direction.x / l, y: direction.y / l)
-}
-
-func scalar(_ a: Direction, _ b: Direction) -> Distance² {
-    a.x * b.x + a.y * b.y
-}
-
-func * (lhs: Float64, rhs: Direction) -> Direction {
-    Direction(x: lhs * rhs.x,
-              y: lhs * rhs.y)
-}
-
-func * (lhs: Direction, rhs: Float64) -> Direction {
-    Direction(x: lhs.x * rhs,
-              y: lhs.y * rhs)
-}
-
-func * (lhs: Distance, rhs: Direction) -> Direction {
-    Direction(x: lhs.value * rhs.x,
-              y: lhs.value * rhs.y)
-}
-
-func * (lhs: Direction, rhs: Distance) -> Direction {
-    Direction(x: lhs.x * rhs.value,
-              y: lhs.y * rhs.value)
+func * (lhs: AngleDiff, rhs: Distance) -> Distance {
+    Distance(lhs.value * rhs.value)
 }
 
 func * (lhs: Distance, rhs: Distance) -> Distance² {
     Distance²(lhs.value * rhs.value)
+}
+
+func * (lhs: Distance², rhs: Distance) -> Distance³ {
+    Distance³(lhs.value * rhs.value)
+}
+
+func * (lhs: Distance, rhs: Distance²) -> Distance³ {
+    Distance³(lhs.value * rhs.value)
 }
 
 func * (lhs: Distance², rhs: Distance²) -> Distance⁴ {
@@ -358,6 +330,10 @@ func / (lhs: Distance², rhs: Distance) -> Distance {
     Distance(lhs.value / rhs.value)
 }
 
+func / (lhs: Distance³, rhs: Distance²) -> Distance {
+    Distance(lhs.value / rhs.value)
+}
+
 func / (lhs: Distance, rhs: Speed) -> Duration {
     Duration(lhs.value / rhs.value)
 }
@@ -380,11 +356,6 @@ func / (lhs: Force, rhs: ForceChange) -> Duration {
 
 func / (lhs: Force, rhs: Duration) -> ForceChange {
     ForceChange(lhs.value / rhs.value)
-}
-
-func / (lhs: Direction, rhs: Float64) -> Direction {
-    Direction(x: lhs.x / rhs,
-              y: lhs.y / rhs)
 }
 
 func / (lhs: Float64, rhs: Acceleration) -> Acceleration⁻¹ {

@@ -97,13 +97,13 @@ class MapView: NSView, ToolOwner, ViewContext {
     }
     
     func toViewPoint(_ mapPoint: Point) -> CGPoint {
-        CGPoint(x: bounds.midX + mapScale * (mapPoint - mapPointAtViewCenter).xValue,
-                y: bounds.midY + mapScale * (mapPoint - mapPointAtViewCenter).yValue)
+        CGPoint(x: bounds.midX + mapScale * (mapPoint - mapPointAtViewCenter).x.withoutUnit,
+                y: bounds.midY + mapScale * (mapPoint - mapPointAtViewCenter).y.withoutUnit)
     }
     
     func toViewSize(_ mapSize: Size) -> CGSize {
-        CGSize(width: mapScale * mapSize.widthValue,
-               height: mapScale * mapSize.heightValue)
+        CGSize(width: mapScale * mapSize.width.withoutUnit,
+               height: mapScale * mapSize.height.withoutUnit)
     }
     
     func toViewRect(_ mapRect: Rect) -> CGRect {
@@ -199,10 +199,10 @@ class MapView: NSView, ToolOwner, ViewContext {
                                   y: Distance(-event.scrollingDeltaY / mapScale))
             if event.modifierFlags.contains(.option) {
                 let p = mapPointAtViewCenter + delta
-                mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+                mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             } else {
                 let p = mapPointAtViewCenter - delta
-                mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+                mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             }
         } else {
             mapScale *= 1.0 + 0.01 * event.scrollingDeltaY
@@ -216,7 +216,7 @@ class MapView: NSView, ToolOwner, ViewContext {
         let mapOldDelta = mapPointAtViewCenter - mapMagnificationCenter
         let mapNewDelta = mapOldDelta / f
         let p = mapPointAtViewCenter + mapNewDelta
-        mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+        mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
         mapScale *= f
     }
     
@@ -229,16 +229,16 @@ class MapView: NSView, ToolOwner, ViewContext {
             switch c {
             case Character(UnicodeScalar(NSUpArrowFunctionKey)!), "w":
                 let p = mapPointAtViewCenter + Direction(x: Distance(0.0), y: vOffset)
-                animator().mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+                animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case Character(UnicodeScalar(NSDownArrowFunctionKey)!), "s":
                 let p = mapPointAtViewCenter - Direction(x: Distance(0.0), y: vOffset)
-                animator().mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+                animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case Character(UnicodeScalar(NSLeftArrowFunctionKey)!), "a":
                 let p = mapPointAtViewCenter - Direction(x: hOffset, y: Distance(0.0))
-                animator().mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+                animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case Character(UnicodeScalar(NSRightArrowFunctionKey)!), "d":
                 let p = mapPointAtViewCenter + Direction(x: hOffset, y: Distance(0.0))
-                animator().mapCGPointAtViewCenter = CGPoint(x: p.xValue, y: p.yValue)
+                animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case "q":
                 animator().mapScale = mapScale / zFactor
             case "e":

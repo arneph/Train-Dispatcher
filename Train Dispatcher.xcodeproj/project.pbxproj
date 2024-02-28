@@ -31,7 +31,7 @@
 		14E0826A2B156E0E00AA29C2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082682B156E0E00AA29C2 /* MainMenu.xib */; };
 		14E082732B156E9600AA29C2 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082722B156E9600AA29C2 /* MapView.swift */; };
 		14E082752B156F3000AA29C2 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082742B156F3000AA29C2 /* Geometry.swift */; };
-		14E082772B156F7000AA29C2 /* Physics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082762B156F7000AA29C2 /* Physics.swift */; };
+		14E082772B156F7000AA29C2 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082762B156F7000AA29C2 /* Units.swift */; };
 		14E0827C2B158F7600AA29C2 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827B2B158F7600AA29C2 /* Container.swift */; };
 		14E0827E2B18227A00AA29C2 /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827D2B18227A00AA29C2 /* Drawing.swift */; };
 		14E082802B18299600AA29C2 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827F2B18299600AA29C2 /* Map.swift */; };
@@ -76,7 +76,7 @@
 		14E0826C2B156E0E00AA29C2 /* Train_Dispatcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Train_Dispatcher.entitlements; sourceTree = "<group>"; };
 		14E082722B156E9600AA29C2 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		14E082742B156F3000AA29C2 /* Geometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
-		14E082762B156F7000AA29C2 /* Physics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physics.swift; sourceTree = "<group>"; };
+		14E082762B156F7000AA29C2 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		14E0827B2B158F7600AA29C2 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		14E0827D2B18227A00AA29C2 /* Drawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
 		14E0827F2B18299600AA29C2 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 		14E082782B156F7700AA29C2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				14E082762B156F7000AA29C2 /* Physics.swift */,
+				14E082762B156F7000AA29C2 /* Units.swift */,
 				14E082742B156F3000AA29C2 /* Geometry.swift */,
 				1465C8202B6B49140042332D /* CircleAngle.swift */,
 				1465C7FC2B5B54580042332D /* Path.swift */,
@@ -300,7 +300,7 @@
 				14E082822B1829BB00AA29C2 /* Tracks.swift in Sources */,
 				14E082752B156F3000AA29C2 /* Geometry.swift in Sources */,
 				1465C8212B6B49140042332D /* CircleAngle.swift in Sources */,
-				14E082772B156F7000AA29C2 /* Physics.swift in Sources */,
+				14E082772B156F7000AA29C2 /* Units.swift in Sources */,
 				14E0827E2B18227A00AA29C2 /* Drawing.swift in Sources */,
 				14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */,
 				14A2AB932B4035000044861E /* Vehicle.swift in Sources */,

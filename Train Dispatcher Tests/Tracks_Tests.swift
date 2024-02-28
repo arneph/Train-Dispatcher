@@ -330,7 +330,7 @@ final class Tracks_Tests: XCTestCase {
         ])
         XCTAssertEqual(track2Observer.calls, [
             .replaced(track2, [resultTrack], 
-                      { (resultTrack, 40.0.m + 90.0.deg.withoutUnit * 200.0.m - $0) })
+                      { (resultTrack, 40.0.m + 90.0.deg * 200.0.m - $0) })
         ])
     }
     
@@ -388,7 +388,7 @@ final class Tracks_Tests: XCTestCase {
             .trackChanged(track, map),
         ])
         XCTAssertEqual(trackObserver.calls, [
-            .pathChanged(track, { $0 + 70.0.deg.withoutUnit * 99.0.m }),
+            .pathChanged(track, { $0 + 70.0.deg * 99.0.m }),
         ])
     }
     
@@ -430,7 +430,7 @@ final class Tracks_Tests: XCTestCase {
             .trackChanged(track, map),
         ])
         XCTAssertEqual(trackObserver.calls, [
-            .pathChanged(track, { $0 + 70.0.deg.withoutUnit * 99.0.m }),
+            .pathChanged(track, { $0 + 70.0.deg * 99.0.m }),
         ])
     }
     
@@ -925,7 +925,7 @@ final class Tracks_Tests: XCTestCase {
             .addedConnection(connection, map),
         ])
         XCTAssertEqual(track1Observer.calls, [
-            .pathChanged(track1, { $0 + 90.0.deg.withoutUnit * 120.0.m }),
+            .pathChanged(track1, { $0 + 90.0.deg * 120.0.m }),
             .startConnectionChanged(track1, nil),
         ])
         XCTAssertEqual(track2Observer.calls, [

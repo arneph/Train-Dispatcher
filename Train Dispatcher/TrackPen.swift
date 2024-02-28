@@ -257,9 +257,8 @@ class TrackPen: Tool {
         switch startPoint.target {
         case .bound(let trackPoint):
             guard trackPoint.isTrackStart || trackPoint.isTrackEnd else { break }
-            let p = closestPointOnLine(through: trackPoint.point,
-                                       withOrientation: trackPoint.directionA.asAngle,
-                                       to: point)
+            let p = Line(base: trackPoint.point,
+                         orientation: trackPoint.directionA.asAngle).closestPoint(to: point)
             if distance(point, p) <= 5.0.m {
                 return PenPoint(.free(p))
             }

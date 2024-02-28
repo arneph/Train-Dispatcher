@@ -151,7 +151,7 @@ struct LinearPath: FinitePath {
     var startOrientation: CircleAngle { orientation }
     var endOrientation: CircleAngle { orientation }
     var direction: Direction { Train_Dispatcher.direction(from: start, to: end) }
-    var normDirection: Direction { Train_Dispatcher.normalize(direction) }
+    var normDirection: NormDirection { NormDirection(direction)! }
     var length: Distance { distance(start, end) }
     var range: ClosedRange<Position> { Position(0.0)...length }
     var reverse: LinearPath { LinearPath(start: end, end: start)! }
@@ -282,7 +282,7 @@ struct CircularPath: FinitePath {
     var end: Point { center + radius ** circleRange.endAngle }
     var startOrientation: CircleAngle { toOrientation(circleRange.start) }
     var endOrientation: CircleAngle { toOrientation(circleRange.end) }
-    var length: Distance { radius * circleRange.absDelta.withoutUnit }
+    var length: Distance { radius * circleRange.absDelta }
     var range: ClosedRange<Position> { Position(0.0)...length }
     var reverse: CircularPath {
         CircularPath(center: center, radius: radius, circleRange: circleRange.flipped)!
@@ -404,7 +404,7 @@ struct CircularPath: FinitePath {
     init?(center: Point,
           radius: Distance,
           circleRange: CircleRange) {
-        if radius * circleRange.absDelta.withoutUnit < 0.001.m {
+        if radius * circleRange.absDelta < 0.001.m {
             return nil
         }
         self.center = center
