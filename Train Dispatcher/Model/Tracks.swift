@@ -19,16 +19,15 @@ let trackBedWidth = sleeperLength + 1.5.m
 func isValid(trackPath path: SomeFinitePath) -> Bool {
     switch path {
     case .circular(let path):
-        path.radius >= 100.0.m && path.circleRange.absDelta >= 5.0.deg
+        path.radius >= 100.0.m && path.length >= 5.0.m
     case .linear(let path):
         path.length >= 5.0.m
     case .compound(let path):
-        path.components.allSatisfy{
+        path.length >= 5.0.m && path.components.allSatisfy{
             switch $0 {
             case .circular(let component):
-                component.radius >= 100.0.m && component.circleRange.absDelta >= 5.0.deg
-            case .linear(let component):
-                component.length >= 5.0.m
+                component.radius >= 100.0.m
+            case .linear: true
             }
         }
     }

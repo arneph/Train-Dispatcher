@@ -11,7 +11,8 @@ struct CircleAngle: Equatable,
                     Hashable,
                     Codable,
                     CustomStringConvertible,
-                    CustomDebugStringConvertible {
+                    CustomDebugStringConvertible,
+                    CustomReflectable {
     private let value: Angle
     
     private static func clamp(_ a: Angle) -> Angle {
@@ -43,6 +44,7 @@ struct CircleAngle: Equatable,
     
     var description: String { asAngle.description }
     var debugDescription: String { asAngle.debugDescription }
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }
 
 func cos(_ orientation: CircleAngle) -> Float64 {
@@ -63,7 +65,8 @@ struct CircleRange: Equatable,
                     Hashable,
                     Codable,
                     CustomStringConvertible,
-                    CustomDebugStringConvertible {
+                    CustomDebugStringConvertible,
+                    CustomReflectable {
     enum Direction: CustomStringConvertible, CustomDebugStringConvertible {
         case positive, negative
 
@@ -85,6 +88,8 @@ struct CircleRange: Equatable,
     let delta: AngleDiff
     var end: CircleAngle { CircleAngle(start + delta) }
 
+    var middle: CircleAngle { CircleAngle(start + 0.5 * delta) }
+    
     var absDelta: AngleDiff { abs(delta) }
     var direction: Direction { delta >= 0.0.deg ? .positive : .negative }
     var flipped: CircleRange { CircleRange(start: end, delta: -delta) }
@@ -176,4 +181,5 @@ struct CircleRange: Equatable,
         start.debugDescription + "..." + end.debugDescription +
         " (" + direction.debugDescription + ")"
     }
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }

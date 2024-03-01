@@ -58,7 +58,6 @@ class TrackPen: Tool {
             self.startConnection = startConnection
             self.endConnection = endConnection
             self.valid = isValid(trackPath: path)
-            
         }
     }
     
@@ -302,9 +301,15 @@ class TrackPen: Tool {
     
     private static func proposedPath(fromTrackPoint start: TrackPoint,
                                      toFreePoint end: Point) -> SomeFinitePath? {
-        if let path = linearPath(fromTrackPoint: start, toFreePoint: end) {
+        let linearPath = linearPath(fromTrackPoint: start, toFreePoint: end)
+        let circularPath = circularPath(fromTrackPoint: start, toFreePoint: end)
+        if let path = linearPath, isValid(trackPath: .linear(path)) {
             return .linear(path)
-        } else if let path = circularPath(fromTrackPoint: start, toFreePoint: end) {
+        } else if let path = circularPath, isValid(trackPath: .circular(path)) {
+            return .circular(path)
+        } else if let path = linearPath {
+            return .linear(path)
+        } else if let path = circularPath {
             return .circular(path)
         } else {
             return nil
@@ -370,14 +375,23 @@ class TrackPen: Tool {
     
     private static func proposedPath(fromTrackPoint start: TrackPoint,
                                      toTrackPoint end: TrackPoint) -> SomeFinitePath? {
-        if let path = proposedStraightPath(fromTrackPoint: start, toTrackPoint: end) {
-            .linear(path)
-        } else if let path = proposedOneCurvePath(fromTrackPoint: start, toTrackPoint: end) {
-            path
-        } else if let path = proposedTwoCurvePath(fromTrackPoint: start, toTrackPoint: end) {
-            path
+        let linearPath = proposedStraightPath(fromTrackPoint: start, toTrackPoint: end)
+        let oneCurvePath = proposedOneCurvePath(fromTrackPoint: start, toTrackPoint: end)
+        let twoCurvePath = proposedTwoCurvePath(fromTrackPoint: start, toTrackPoint: end)
+        if let path = linearPath, isValid(trackPath: .linear(path)) {
+            return .linear(path)
+        } else if let path = oneCurvePath, isValid(trackPath: path) {
+            return path
+        } else if let path = twoCurvePath, isValid(trackPath: path) {
+            return path
+        } else if let path = linearPath {
+            return .linear(path)
+        } else if let path = oneCurvePath {
+            return path
+        } else if let path = twoCurvePath {
+            return path
         } else {
-            nil
+            return nil
         }
     }
     
@@ -405,7 +419,53 @@ class TrackPen: Tool {
     
     private static func proposedOneCurvePath(fromTrackPoint start: TrackPoint,
                                              toTrackPoint end: TrackPoint) -> SomeFinitePath? {
-        return nil
+        let l1 = Line(base: start.point, orientation: start.directionA.asAngle)
+        let l2 = Line(base: end.point, orientation: end.directionA.asAngle)
+        guard let p = Line.intersection(l1, l2) else { return nil }
+        let rangeAtP = CircleRange.range(from: p, between: start.point, and: end.point)
+        let d1 = distance(p, start.point)
+        let d2 = distance(p, end.point)
+        let d = min(d1, d2)
+        let h = d / cos(0.5 * rangeAtP.absDelta)
+        let radius = d * tan(0.5 * rangeAtP.absDelta)
+        let center = p + h ** rangeAtP.middle.asAngle
+        if d1 < d2 {
+            let q = p + d ** rangeAtP.endAngle
+            let rangeAtCenter = CircleRange.range(from: center,
+                                                  between: start.point,
+                                                  and: q)
+            guard let circularPath = CircularPath(center: center,
+                                                  radius: radius,
+                                                  circleRange: rangeAtCenter),
+                  let linearPath = LinearPath(start: q, end: end.point),
+                  let compoundPath = CompoundPath(components: [.circular(circularPath),
+                                                               .linear(linearPath)]) else {
+                return nil
+            }
+            return .compound(compoundPath)
+        } else if d2 < d1 {
+            let q = p + d ** rangeAtP.startAngle
+            let rangeAtCenter = CircleRange.range(from: center,
+                                                  between: q,
+                                                  and: end.point)
+            guard let linearPath = LinearPath(start: start.point, end: q),
+                  let circularPath = CircularPath(center: center,
+                                                  radius: radius,
+                                                  circleRange: rangeAtCenter),
+                  let compoundPath = CompoundPath(components: [.linear(linearPath),
+                                                               .circular(circularPath)]) else {
+                return nil
+            }
+            return .compound(compoundPath)
+        } else {
+            let rangeAtCenter = CircleRange.range(from: center,
+                                                  between: start.point,
+                                                  and: end.point)
+            guard let path = CircularPath(center: center,
+                                          radius: radius,
+                                          circleRange: rangeAtCenter) else { return nil }
+            return .circular(path)
+        }
     }
     
     private static func proposedTwoCurvePath(fromTrackPoint start: TrackPoint,

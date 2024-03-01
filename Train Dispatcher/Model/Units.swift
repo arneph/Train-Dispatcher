@@ -76,7 +76,8 @@ struct Quantity<T: Unit> : Equatable,
                            Comparable,
                            Codable,
                            CustomStringConvertible,
-                           CustomDebugStringConvertible {
+                           CustomDebugStringConvertible,
+                           CustomReflectable {
     fileprivate let value: Float64
     
     init(_ value: Int) {
@@ -148,6 +149,7 @@ struct Quantity<T: Unit> : Equatable,
         
     var description: String { T.toString(value) }
     var debugDescription: String { T.toString(value) }
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }
 
 typealias Angle = Quantity<Radians>
@@ -214,6 +216,10 @@ func cos(_ angle: Angle) -> Float64 {
 
 func sin(_ angle: Angle) -> Float64 {
     sin(angle.withoutUnit)
+}
+
+func tan(_ angle: Angle) -> Float64 {
+    tan(angle.withoutUnit)
 }
 
 func absDiff(_ a: Angle, _ b: Angle) -> AngleDiff { abs(a - b) }

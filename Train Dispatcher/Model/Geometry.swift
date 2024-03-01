@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct Point : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
+struct Point: Equatable,
+              Hashable,
+              Codable,
+              CustomStringConvertible,
+              CustomDebugStringConvertible,
+              CustomReflectable {
     let x: Position
     let y: Position
         
@@ -20,12 +25,17 @@ struct Point : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebu
     
     var description: String { "(" + x.description + ", " + y.description + ")" }
     var debugDescription: String { "(" + x.debugDescription + ", " + y.debugDescription + ")" }
-    
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }
 
 typealias Direction = Point
 
-struct NormDirection {
+struct NormDirection: Equatable, 
+                      Hashable,
+                      Codable,
+                      CustomStringConvertible,
+                      CustomDebugStringConvertible,
+                      CustomReflectable {
     let x: Float64
     let y: Float64
     var angle: Angle { Angle(atan2(y, x)) }
@@ -44,9 +54,15 @@ struct NormDirection {
     
     var description: String { String(format: "(%.3f, %.3f)", x, y) }
     var debugDescription: String { String(format: "(%.3f, %.3f)", x, y) }
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }
 
-struct Size : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
+struct Size: Equatable,
+             Hashable,
+             Codable,
+             CustomStringConvertible,
+             CustomDebugStringConvertible,
+             CustomReflectable{
     let width: Distance
     let height: Distance
         
@@ -60,10 +76,15 @@ struct Size : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebug
     
     var description: String { width.description + " x " + height.description }
     var debugDescription: String { width.debugDescription + " x " + height.debugDescription }
-    
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }
 
-struct Rect : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
+struct Rect : Equatable,
+              Hashable,
+              Codable,
+              CustomStringConvertible,
+              CustomDebugStringConvertible,
+              CustomReflectable {
     let origin: Point
     let size: Size
     
@@ -135,7 +156,7 @@ struct Rect : Equatable, Hashable, Codable, CustomStringConvertible, CustomDebug
     
     var description: String { minXY.description + "..." + maxXY.description }
     var debugDescription: String { minXY.debugDescription + "..." + maxXY.debugDescription }
-    
+    var customMirror: Mirror { Mirror(reflecting: self.description) }
 }
 
 func + (lhs: Point, rhs: Direction) -> Point {
