@@ -5,115 +5,165 @@
 //  Created by Arne Philipeit on 11/27/23.
 //
 
-import Foundation
+import Base
 import Cocoa
 import CoreGraphics
 import CoreText
+import Foundation
+import Tracks
 
 protocol MapViewDelegate: AnyObject {
     var map: Map? { get }
+    var changeManager: ChangeManager? { get }
 }
 
-class MapView: NSView, ToolOwner, ViewContext {
+class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewContext {
     var delegate: MapViewDelegate? {
+        willSet {
+            if delegate !== newValue {
+                delegate?.map?.trackMap.remove(observer: self)
+            }
+        }
         didSet {
             if oldValue !== delegate {
+                delegate?.map?.trackMap.add(observer: self)
                 needsDisplay = true
             }
         }
     }
-    var map: Map { delegate?.map ?? Map() }
-    
+    var map: Map? { delegate?.map }
+    var changeManager: ChangeManager? { delegate?.changeManager }
+
+    func mapChanged(oldMap: Map) {
+        oldMap.trackMap.remove(observer: self)
+        map?.trackMap.add(observer: self)
+        needsDisplay = true
+    }
+
+    // MARK: - MapObserver
+    func added(track: Track, toMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    func replaced(track oldTrack: Track, withTracks newTracks: [Track], onMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    func removed(track oldTrack: Track, fromMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    func added(connection: TrackConnection, toMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    func removed(connection oldConnection: TrackConnection, fromMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    func trackChanged(_ track: Track, onMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    func connectionChanged(_ connection: TrackConnection, onMap map: TrackMap) {
+        needsDisplay = true
+    }
+
     // MARK: - Display State
     static let maxMapScale = 100.0
     static let minMapScale = 0.01
-    
-    var mapPointAtViewCenter: Point { Point(x: Position(mapCGPointAtViewCenter.x),
-                                            y: Position(mapCGPointAtViewCenter.y)) }
+
+    var mapPointAtViewCenter: Point {
+        Point(x: Position(mapCGPointAtViewCenter.x), y: Position(mapCGPointAtViewCenter.y))
+    }
     @objc dynamic var mapCGPointAtViewCenter: CGPoint = CGPoint(x: 0.0, y: 0.0) {
         didSet { needsDisplay = true }
     }
     @objc dynamic var mapScale: CGFloat = 10.0 {
         didSet {
-            if (mapScale < MapView.minMapScale) {
+            if mapScale < MapView.minMapScale {
                 mapScale = MapView.minMapScale
             }
-            if (mapScale > MapView.maxMapScale) {
+            if mapScale > MapView.maxMapScale {
                 mapScale = MapView.maxMapScale
             }
             needsDisplay = true
         }
     }
-    
+
     // MARK: - Tool
     private var tool: Tool? {
         didSet { needsDisplay = true }
     }
-    
+
     func stateChanged(tool: Tool) {
         needsDisplay = true
     }
-    
+
     // MARK: - init
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         tool = TrackPen(owner: self)
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         tool = TrackPen(owner: self)
     }
-    
+
     // MARK: - NSView notifications
     override func viewDidMoveToWindow() {
         window?.acceptsMouseMovedEvents = true
     }
-    
+
     // MARK: - Conversion (ViewContext)
     func toMapDistance(viewDistance: CGFloat) -> Distance {
         Distance(viewDistance / mapScale)
     }
-    
+
     func toMapPoint(viewPoint: CGPoint) -> Point {
-        mapPointAtViewCenter + Point(x: Position((viewPoint.x - bounds.midX) / mapScale),
-                                     y: Position((viewPoint.y - bounds.midY) / mapScale))
+        mapPointAtViewCenter
+            + Point(
+                x: Position((viewPoint.x - bounds.midX) / mapScale),
+                y: Position((viewPoint.y - bounds.midY) / mapScale))
     }
-    
+
     func toMapSize(viewSize: CGSize) -> Size {
-        Size(width: Distance(viewSize.width / mapScale),
-             height: Distance(viewSize.height / mapScale))
+        Size(
+            width: Distance(viewSize.width / mapScale), height: Distance(viewSize.height / mapScale)
+        )
     }
-    
+
     func toMapRect(viewRect: CGRect) -> Rect {
-        Rect(orign: toMapPoint(viewPoint: viewRect.origin),
-             size: toMapSize(viewSize: viewRect.size))
+        Rect(
+            orign: toMapPoint(viewPoint: viewRect.origin), size: toMapSize(viewSize: viewRect.size))
     }
-    
+
     func toViewAngle(_ angle: Angle) -> CGFloat { angle.withoutUnit }
-    
+
     func toViewDistance(_ distance: Distance) -> CGFloat {
         mapScale * distance.withoutUnit
     }
-    
+
     func toViewPoint(_ mapPoint: Point) -> CGPoint {
-        CGPoint(x: bounds.midX + mapScale * (mapPoint - mapPointAtViewCenter).x.withoutUnit,
-                y: bounds.midY + mapScale * (mapPoint - mapPointAtViewCenter).y.withoutUnit)
+        CGPoint(
+            x: bounds.midX + mapScale * (mapPoint - mapPointAtViewCenter).x.withoutUnit,
+            y: bounds.midY + mapScale * (mapPoint - mapPointAtViewCenter).y.withoutUnit)
     }
-    
+
     func toViewSize(_ mapSize: Size) -> CGSize {
-        CGSize(width: mapScale * mapSize.width.withoutUnit,
-               height: mapScale * mapSize.height.withoutUnit)
+        CGSize(
+            width: mapScale * mapSize.width.withoutUnit,
+            height: mapScale * mapSize.height.withoutUnit)
     }
-    
+
     func toViewRect(_ mapRect: Rect) -> CGRect {
-        CGRect(origin: toViewPoint(mapRect.origin),
-               size: toViewSize(mapRect.size))
+        CGRect(origin: toViewPoint(mapRect.origin), size: toViewSize(mapRect.size))
     }
-    
+
     // MARK: - Event handling
-    override var acceptsFirstResponder: Bool { return true }
-    
+    override var acceptsFirstResponder: Bool { true }
+
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         switch menuItem.action {
         case #selector(toggleGrid(_:)):
@@ -123,7 +173,7 @@ class MapView: NSView, ToolOwner, ViewContext {
             menuItem.state = showScale ? .on : .off
             return true
         case #selector(zoomImageToActualSize(_:)):
-            return true
+            return mapScale != 10.0
         case #selector(zoomImageToFit(_:)):
             return true
         case #selector(zoomIn(_:)):
@@ -134,69 +184,70 @@ class MapView: NSView, ToolOwner, ViewContext {
             return false
         }
     }
-    
+
     @IBAction func toggleGrid(_ sender: NSMenuItem) {
         showGrid = !showGrid
     }
-    
+
     @IBAction func toggleScale(_ sender: NSMenuItem) {
         showScale = !showScale
     }
-    
+
     @IBAction func zoomImageToActualSize(_ sender: NSMenuItem) {
         animator().mapScale = 10.0
     }
-    
+
     @IBAction func zoomImageToFit(_ sender: NSMenuItem) {
-        
+
     }
-    
+
     @IBAction func zoomIn(_ sender: NSMenuItem) {
         animator().mapScale = mapScale * 2.0
     }
-    
+
     @IBAction func zoomOut(_ sender: NSMenuItem) {
         animator().mapScale = mapScale / 2.0
     }
-    
+
     override func mouseEntered(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
         tool?.mouseEntered(point: mapPoint)
     }
-    
+
     override func mouseMoved(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
         tool?.mouseMoved(point: mapPoint)
     }
-    
+
     override func mouseExited(with event: NSEvent) {
         tool?.mouseExited()
     }
-    
+
     override func mouseDown(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
         tool?.mouseDown(point: mapPoint)
     }
-    
+
     override func mouseDragged(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
         tool?.mouseDragged(point: mapPoint)
     }
-    
+
     override func mouseUp(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
         tool?.mouseUp(point: mapPoint)
     }
-        
+
     override func scrollWheel(with event: NSEvent) {
         if event.modifierFlags.contains(.shift) {
-            let delta = Direction(x: Distance(+event.scrollingDeltaX / mapScale),
-                                  y: Distance(-event.scrollingDeltaY / mapScale))
+            let delta = Direction(
+                x: Distance(+event.scrollingDeltaX / mapScale),
+                y: Distance(-event.scrollingDeltaY / mapScale))
             if event.modifierFlags.contains(.option) {
                 let p = mapPointAtViewCenter + delta
                 mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
@@ -219,7 +270,7 @@ class MapView: NSView, ToolOwner, ViewContext {
         mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
         mapScale *= f
     }
-    
+
     override func keyDown(with event: NSEvent) {
         let hOffset = Distance(0.2 * bounds.width / mapScale)
         let vOffset = Distance(0.2 * bounds.height / mapScale)
@@ -252,7 +303,7 @@ class MapView: NSView, ToolOwner, ViewContext {
             super.keyDown(with: event)
         }
     }
-    
+
     // MARK: - Animation
     override static func defaultAnimation(forKey key: NSAnimatablePropertyKey) -> Any? {
         switch key {
@@ -262,7 +313,7 @@ class MapView: NSView, ToolOwner, ViewContext {
             super.defaultAnimation(forKey: key)
         }
     }
-    
+
     // MARK: - Drawing
     var context: CGContext { NSGraphicsContext.current!.cgContext }
     var style: Style {
@@ -273,31 +324,33 @@ class MapView: NSView, ToolOwner, ViewContext {
             .light
         }
     }
-    
+
     private var showGrid = true {
         didSet { needsDisplay = true }
     }
     private var showScale = true {
         didSet { needsDisplay = true }
     }
-    
+
     override func draw(_ viewRect: CGRect) {
         let mapRect = toMapRect(viewRect: viewRect)
-        
+
         if showGrid {
             drawGrid(mapRect)
         }
-        
-        map.trackMap.tracks.draw(context, self)
-        map.vehicles.forEach{ $0.draw(context, self) }
-        map.containers.forEach{ $0.draw(context, self) }
+
+        if let map = map {
+            Tracks.draw(tracks: map.trackMap.tracks, context, self)
+            map.vehicles.forEach { $0.draw(context, self) }
+            map.containers.forEach { $0.draw(context, self) }
+        }
         tool?.draw(context, self)
-        
+
         if showScale {
             drawScale()
         }
     }
-    
+
     private var gridScale: Float64 {
         if mapScale >= 20.0 {
             1.0
@@ -315,17 +368,17 @@ class MapView: NSView, ToolOwner, ViewContext {
             1000.0
         }
     }
-    
+
     private func drawGrid(_ rect: Rect) {
         context.saveGState()
-        
+
         switch style {
         case .light:
             context.setStrokeColor(CGColor.init(gray: 0.2, alpha: 1.0))
         case .dark:
             context.setStrokeColor(CGColor.init(gray: 0.8, alpha: 1.0))
         }
-        
+
         let minX = Int(floor(rect.minX.withoutUnit / gridScale) * gridScale)
         let minY = Int(floor(rect.minY.withoutUnit / gridScale) * gridScale)
         let maxX = Int(ceil(rect.maxX.withoutUnit / gridScale) * gridScale)
@@ -344,13 +397,13 @@ class MapView: NSView, ToolOwner, ViewContext {
             context.addLine(to: end)
             context.strokePath()
         }
-        
+
         context.restoreGState()
     }
-    
+
     private func drawScale() {
         context.saveGState()
-        
+
         let foregroundColor: CGColor
         let backgroundColor: CGColor
         switch style {
@@ -361,35 +414,34 @@ class MapView: NSView, ToolOwner, ViewContext {
             foregroundColor = CGColor.white
             backgroundColor = CGColor.black
         }
-        
+
         let font = CTFontCreateWithName("Helvetica" as CFString, 11.0, nil)
-        let attributes: [NSAttributedString.Key : Any] = [.font: font, 
-                                                          .foregroundColor: foregroundColor]
-        let length = NSAttributedString(string: String(Int(gridScale)) + "m",
-                                        attributes: attributes)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font, .foregroundColor: foregroundColor,
+        ]
+        let length = NSAttributedString(
+            string: String(Int(gridScale)) + "m", attributes: attributes)
         let line = CTLineCreateWithAttributedString(length)
         let lengthWidth = CTLineGetImageBounds(line, context).width
         let measurementWidth = gridScale * mapScale
         let totalWidth = lengthWidth + measurementWidth + 12.0
         let totalHeight = 16.0
-        
+
         context.setFillColor(backgroundColor)
         context.move(to: CGPoint(x: bounds.maxX - totalWidth, y: 0.0))
         context.addLine(to: CGPoint(x: bounds.maxX - totalWidth, y: totalHeight - 4.0))
-        context.addArc(center: CGPoint(x: bounds.maxX - totalWidth + 4.0, y: totalHeight - 4.0),
-                       radius: 4.0,
-                       startAngle: CGFloat.pi,
-                       endAngle: 0.5 * CGFloat.pi,
-                       clockwise: true)
+        context.addArc(
+            center: CGPoint(x: bounds.maxX - totalWidth + 4.0, y: totalHeight - 4.0), radius: 4.0,
+            startAngle: CGFloat.pi, endAngle: 0.5 * CGFloat.pi, clockwise: true)
         context.addLine(to: CGPoint(x: bounds.maxX, y: totalHeight))
         context.addLine(to: CGPoint(x: bounds.maxX, y: 0.0))
         context.closePath()
         context.fillPath()
-        
-        context.textPosition = CGPoint(x: bounds.maxX - lengthWidth - measurementWidth - 8,
-                                       y: bounds.minY + 4)
+
+        context.textPosition = CGPoint(
+            x: bounds.maxX - lengthWidth - measurementWidth - 8, y: bounds.minY + 4)
         CTLineDraw(line, context)
-        
+
         context.setStrokeColor(foregroundColor)
         context.setLineWidth(1.0)
         context.move(to: CGPoint(x: bounds.maxX - 4, y: bounds.minY + 12))
@@ -397,8 +449,8 @@ class MapView: NSView, ToolOwner, ViewContext {
         context.addLine(to: CGPoint(x: bounds.maxX - measurementWidth - 4, y: bounds.minY + 4))
         context.addLine(to: CGPoint(x: bounds.maxX - measurementWidth - 4, y: bounds.minY + 12))
         context.strokePath()
-        
+
         context.restoreGState()
     }
-    
+
 }

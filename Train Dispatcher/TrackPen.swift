@@ -5,13 +5,17 @@
 //  Created by Arne Philipeit on 1/14/24.
 //
 
-import Foundation
+import Base
 import CoreGraphics
+import Foundation
+import Tracks
 
 class TrackPen: Tool {
     private weak var owner: ToolOwner?
-    private var map: Map { owner!.map }
-    
+    private var map: Map? { owner?.map }
+    private var trackMap: TrackMap? { owner?.map?.trackMap }
+    private var changeManager: ChangeManager? { owner?.changeManager }
+
     private struct PenPoint {
         enum Target {
             case free(Point)
@@ -20,86 +24,87 @@ class TrackPen: Tool {
         struct Hint {
             let base: TrackPoint
             let offset: Distance
-            
+
             var distance: Distance { abs(offset) }
         }
-        
+
         let target: Target
         let hint: Hint?
-        
+
         var point: Point {
             switch target {
             case .free(let point): point
             case .bound(let point): point.point
             }
         }
-        
+
         init(_ target: Target) {
             self.target = target
             self.hint = nil
         }
-        
+
         init(target: Target, hint: Hint) {
             self.target = target
             self.hint = hint
         }
     }
-    
+
     private struct TrackProposal {
         let path: SomeFinitePath
         let startConnection: TrackMap.ConnectionOption
         let endConnection: TrackMap.ConnectionOption
         let valid: Bool
-        
-        init(path: SomeFinitePath, 
-             startConnection: TrackMap.ConnectionOption,
-             endConnection: TrackMap.ConnectionOption) {
+
+        init(
+            path: SomeFinitePath, startConnection: TrackMap.ConnectionOption,
+            endConnection: TrackMap.ConnectionOption
+        ) {
             self.path = path
             self.startConnection = startConnection
             self.endConnection = endConnection
             self.valid = isValid(trackPath: path)
         }
     }
-    
+
     private struct PenDrag {
         let start: PenPoint
         let end: PenPoint
         let proposal: TrackProposal?
     }
-    
-    private enum State{
+
+    private enum State {
         case none
         case hovering(PenPoint)
         case dragging(PenDrag)
     }
-    
+
     private var state: State = .none {
         didSet {
             owner?.stateChanged(tool: self)
         }
     }
-    
+
     required init(owner: ToolOwner) {
         self.owner = owner
     }
-    
+
     func mouseEntered(point: Point) {
         state = .hovering(startPointFor(point: point))
     }
-    
+
     func mouseMoved(point: Point) {
         state = .hovering(startPointFor(point: point))
     }
-    
+
     func mouseExited() {
         state = .none
     }
-    
+
     func mouseDown(point: Point) {
         let penPoint = startPointFor(point: point)
         state = .dragging(PenDrag(start: penPoint, end: penPoint, proposal: nil))
     }
-    
+
     func mouseDragged(point: Point) {
         switch state {
         case .none, .hovering:
@@ -109,28 +114,29 @@ class TrackPen: Tool {
             let penStartPoint = oldPenDrag.start
             let penEndPoint = endPointFor(point: point, startPoint: penStartPoint)
             let proposal = TrackPen.proposal(from: penStartPoint, to: penEndPoint)
-            state = .dragging(PenDrag(start: penStartPoint,
-                                      end: penEndPoint,
-                                      proposal: proposal))
+            state = .dragging(PenDrag(start: penStartPoint, end: penEndPoint, proposal: proposal))
         }
     }
-    
+
     func mouseUp(point: Point) {
         switch state {
         case .none, .hovering: break
         case .dragging(let oldPenDrag):
+            guard let trackMap = trackMap else { break }
             let penStartPoint = oldPenDrag.start
             let penEndPoint = endPointFor(point: point, startPoint: penStartPoint)
             if let proposal = TrackPen.proposal(from: penStartPoint, to: penEndPoint),
-                proposal.valid {
-                let _ = map.trackMap.addTrack(withPath: proposal.path,
-                                              startConnection: proposal.startConnection,
-                                              endConnection: proposal.endConnection)
+                proposal.valid
+            {
+                let (_, undoHandler) = trackMap.addTrack(
+                    withPath: proposal.path, startConnection: proposal.startConnection,
+                    endConnection: proposal.endConnection)
+                changeManager?.add(change: undoHandler, withName: "Draw Track")
             }
         }
         state = .none
     }
-    
+
     func draw(_ cgContext: CGContext, _ viewContext: ViewContext) {
         switch state {
         case .none: break
@@ -162,10 +168,10 @@ class TrackPen: Tool {
             cgContext.restoreGState()
         }
     }
-    
-    private static func draw(penPoint: PenPoint, 
-                             _ cgContext: CGContext,
-                             _ viewContext: ViewContext) {
+
+    private static func draw(
+        penPoint: PenPoint, _ cgContext: CGContext, _ viewContext: ViewContext
+    ) {
         let width = max(1.0.m, viewContext.toMapDistance(viewDistance: 8.0))
         if let hint = penPoint.hint {
             let hintColor: CGColor
@@ -180,27 +186,26 @@ class TrackPen: Tool {
             cgContext.addLine(to: viewContext.toViewPoint(penPoint.point))
             cgContext.strokePath()
             cgContext.setFillColor(hintColor)
-            cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: hint.base.point,
-                                                                         length: width)))
+            cgContext.fillEllipse(
+                in: viewContext.toViewRect(Rect.square(around: hint.base.point, length: width)))
         }
         cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-        cgContext.fillEllipse(in: viewContext.toViewRect(Rect.square(around: penPoint.point,
-                                                                     length: width)))
+        cgContext.fillEllipse(
+            in: viewContext.toViewRect(Rect.square(around: penPoint.point, length: width)))
     }
 
     private func boundPenPointFor(point: Point) -> PenPoint? {
+        guard let trackMap = trackMap else { return nil }
         let maxDistance = min(10.0.m, owner!.toMapDistance(viewDistance: 20.0))
         let penPointOffsetFunc = { (p: TrackPoint, d: Distance) -> PenPoint in
             PenPoint(target: .free(p.offsetLeft(by: d)), hint: PenPoint.Hint(base: p, offset: d))
         }
         let penPointsFunc = { (p: TrackPoint) -> [PenPoint] in
-            [PenPoint(.bound(p)),
-             penPointOffsetFunc(p,  +5.0.m),
-             penPointOffsetFunc(p, +10.0.m),
-             penPointOffsetFunc(p, +15.0.m),
-             penPointOffsetFunc(p,  -5.0.m),
-             penPointOffsetFunc(p, -10.0.m),
-             penPointOffsetFunc(p, -15.0.m)]
+            [
+                PenPoint(.bound(p)), penPointOffsetFunc(p, +5.0.m), penPointOffsetFunc(p, +10.0.m),
+                penPointOffsetFunc(p, +15.0.m), penPointOffsetFunc(p, -5.0.m),
+                penPointOffsetFunc(p, -10.0.m), penPointOffsetFunc(p, -15.0.m),
+            ]
         }
         let compareFunc = { (a: PenPoint, b: PenPoint) -> Bool in
             let da = distance(point, a.point)
@@ -213,27 +218,31 @@ class TrackPen: Tool {
                 return a.hint == nil && b.hint != nil
             }
         }
-        if let closestPenPointOfInterest = map.trackMap.pointsOfInterest
+        if let closestPenPointOfInterest = trackMap.pointsOfInterest
             .flatMap(penPointsFunc)
             .filter({ distance(point, $0.point) <= maxDistance })
             .sorted(by: compareFunc)
-            .first {
+            .first
+        {
             switch closestPenPointOfInterest.target {
             case .free:
                 if let closestPointInfo =
-                    map.trackMap.closestPointOnTrack(from: closestPenPointOfInterest.point),
-                   closestPointInfo.distance == 0.0.m {
-                    return PenPoint(target: .bound(closestPointInfo.asTrackPoint),
-                                    hint: closestPenPointOfInterest.hint!)
+                    trackMap.closestPointOnTrack(from: closestPenPointOfInterest.point),
+                    closestPointInfo.distance == 0.0.m
+                {
+                    return PenPoint(
+                        target: .bound(closestPointInfo.asTrackPoint),
+                        hint: closestPenPointOfInterest.hint!)
                 }
                 return closestPenPointOfInterest
             case .bound:
                 return closestPenPointOfInterest
             }
         }
-        if let closestPointInfo = map.trackMap.closestPointOnTrack(from: point) {
-            if (closestPointInfo.isTrackStart || closestPointInfo.isTrackEnd) &&
-                closestPointInfo.distance <= maxDistance {
+        if let closestPointInfo = trackMap.closestPointOnTrack(from: point) {
+            if (closestPointInfo.isTrackStart || closestPointInfo.isTrackEnd)
+                && closestPointInfo.distance <= maxDistance
+            {
                 return PenPoint(.bound(closestPointInfo.asTrackPoint))
             } else if closestPointInfo.distance <= trackBedWidth {
                 return PenPoint(.bound(closestPointInfo.asTrackPoint))
@@ -241,7 +250,7 @@ class TrackPen: Tool {
         }
         return nil
     }
-    
+
     private func startPointFor(point: Point) -> PenPoint {
         if let boundPenPoint = boundPenPointFor(point: point) {
             return boundPenPoint
@@ -256,8 +265,9 @@ class TrackPen: Tool {
         switch startPoint.target {
         case .bound(let trackPoint):
             guard trackPoint.isTrackStart || trackPoint.isTrackEnd else { break }
-            let p = Line(base: trackPoint.point,
-                         orientation: trackPoint.directionA.asAngle).closestPoint(to: point)
+            let p = Line(
+                base: trackPoint.point, orientation: trackPoint.directionA.asAngle
+            ).closestPoint(to: point)
             if distance(point, p) <= 5.0.m {
                 return PenPoint(.free(p))
             }
@@ -267,40 +277,44 @@ class TrackPen: Tool {
         }
         return PenPoint(.free(point))
     }
-    
+
     private static func proposal(from start: PenPoint, to end: PenPoint) -> TrackProposal? {
         switch (start.target, end.target) {
         case (.free(let start), .free(let end)):
-            proposal(fromFreePoint:  start, toFreePoint:  end)
+            proposal(fromFreePoint: start, toFreePoint: end)
         case (.free(let start), .bound(let end)):
-            proposal(fromTrackPoint: end,   toFreePoint:  start)
+            proposal(fromTrackPoint: end, toFreePoint: start)
         case (.bound(let start), .free(let end)):
-            proposal(fromTrackPoint: start, toFreePoint:  end)
+            proposal(fromTrackPoint: start, toFreePoint: end)
         case (.bound(let start), .bound(let end)):
             proposal(fromTrackPoint: start, toTrackPoint: end)
         }
     }
 
-    private static func proposal(fromFreePoint start: Point,
-                                 toFreePoint end: Point) -> TrackProposal? {
+    private static func proposal(
+        fromFreePoint start: Point, toFreePoint end: Point
+    ) -> TrackProposal? {
         guard let path = LinearPath(start: start, end: end) else { return nil }
         return TrackProposal(path: .linear(path), startConnection: .none, endConnection: .none)
     }
-    
-    private static func proposal(fromTrackPoint start: TrackPoint,
-                                 toFreePoint end: Point) -> TrackProposal? {
+
+    private static func proposal(
+        fromTrackPoint start: TrackPoint, toFreePoint end: Point
+    ) -> TrackProposal? {
         guard let path = proposedPath(fromTrackPoint: start, toFreePoint: end) else {
             return nil
         }
-        return TrackProposal(path: path, 
-                             startConnection: 
-                                connectionOption(forTrackPoint: start,
-                                                 newTrackPathOrientation: path.startOrientation)!,
-                             endConnection: .none)
+        return TrackProposal(
+            path: path,
+            startConnection:
+                connectionOption(
+                    forTrackPoint: start, newTrackPathOrientation: path.startOrientation)!,
+            endConnection: .none)
     }
-    
-    private static func proposedPath(fromTrackPoint start: TrackPoint,
-                                     toFreePoint end: Point) -> SomeFinitePath? {
+
+    private static func proposedPath(
+        fromTrackPoint start: TrackPoint, toFreePoint end: Point
+    ) -> SomeFinitePath? {
         let linearPath = linearPath(fromTrackPoint: start, toFreePoint: end)
         let circularPath = circularPath(fromTrackPoint: start, toFreePoint: end)
         if let path = linearPath, isValid(trackPath: .linear(path)) {
@@ -315,9 +329,10 @@ class TrackPen: Tool {
             return nil
         }
     }
-    
-    private static func linearPath(fromTrackPoint start: TrackPoint,
-                                   toFreePoint end: Point) -> LinearPath? {
+
+    private static func linearPath(
+        fromTrackPoint start: TrackPoint, toFreePoint end: Point
+    ) -> LinearPath? {
         guard let path = LinearPath(start: start.point, end: end) else { return nil }
         if canConnect(start.pointAndDirectionA, path.startPointAndOrientation) {
             return path
@@ -328,8 +343,9 @@ class TrackPen: Tool {
         }
     }
 
-    private static func circularPath(fromTrackPoint start: TrackPoint,
-                                     toFreePoint end: Point) -> CircularPath? {
+    private static func circularPath(
+        fromTrackPoint start: TrackPoint, toFreePoint end: Point
+    ) -> CircularPath? {
         let tangentAngle = CircleAngle(angle(from: start.point, to: end))
         let orientation: CircleAngle
         if absDiff(tangentAngle, start.directionA) < absDiff(tangentAngle, start.directionB) {
@@ -341,15 +357,16 @@ class TrackPen: Tool {
         let dist = distance(start.point, end)
         let radius = dist / 2.0 / sin(alpha)
         let center = start.point + (orientation + 90.0.deg) ** radius
-        return CircularPath(center: center,
-                            radius: abs(radius),
-                            startAngle: CircleAngle(angle(from: center, to: start.point)),
-                            endAngle: CircleAngle(angle(from: center, to: end)),
-                            direction: alpha >= 0.0.deg ? .positive : .negative)
+        return CircularPath(
+            center: center, radius: abs(radius),
+            startAngle: CircleAngle(angle(from: center, to: start.point)),
+            endAngle: CircleAngle(angle(from: center, to: end)),
+            direction: alpha >= 0.0.deg ? .positive : .negative)
     }
-    
-    private static func proposal(fromTrackPoint start: TrackPoint,
-                                 toTrackPoint end: TrackPoint) -> TrackProposal? {
+
+    private static func proposal(
+        fromTrackPoint start: TrackPoint, toTrackPoint end: TrackPoint
+    ) -> TrackProposal? {
         switch (start, end) {
         case (.trackConnection(let connectionA), .trackConnection(let connectionB)):
             guard connectionA !== connectionB else { return nil }
@@ -363,18 +380,21 @@ class TrackPen: Tool {
         guard let path = proposedPath(fromTrackPoint: start, toTrackPoint: end) else {
             return nil
         }
-        return TrackProposal(path: path, 
-                             startConnection: 
-                                connectionOption(forTrackPoint: start,
-                                                 newTrackPathOrientation: path.startOrientation)!,
-                             endConnection:
-                                connectionOption(forTrackPoint: end,
-                                                 newTrackPathOrientation:
-                                                    path.endOrientation.opposite)!)
+        return TrackProposal(
+            path: path,
+            startConnection:
+                connectionOption(
+                    forTrackPoint: start, newTrackPathOrientation: path.startOrientation)!,
+            endConnection:
+                connectionOption(
+                    forTrackPoint: end,
+                    newTrackPathOrientation:
+                        path.endOrientation.opposite)!)
     }
-    
-    private static func proposedPath(fromTrackPoint start: TrackPoint,
-                                     toTrackPoint end: TrackPoint) -> SomeFinitePath? {
+
+    private static func proposedPath(
+        fromTrackPoint start: TrackPoint, toTrackPoint end: TrackPoint
+    ) -> SomeFinitePath? {
         let linearPath = proposedStraightPath(fromTrackPoint: start, toTrackPoint: end)
         let oneCurvePath = proposedOneCurvePath(fromTrackPoint: start, toTrackPoint: end)
         let twoCurvePath = proposedTwoCurvePath(fromTrackPoint: start, toTrackPoint: end)
@@ -394,9 +414,10 @@ class TrackPen: Tool {
             return nil
         }
     }
-    
-    private static func proposedStraightPath(fromTrackPoint start: TrackPoint,
-                                             toTrackPoint end: TrackPoint) -> LinearPath? {
+
+    private static func proposedStraightPath(
+        fromTrackPoint start: TrackPoint, toTrackPoint end: TrackPoint
+    ) -> LinearPath? {
         guard let path = LinearPath(start: start.point, end: end.point) else {
             return nil
         }
@@ -408,7 +429,7 @@ class TrackPen: Tool {
             return nil
         }
         if end.directionA == path.orientation {
-            guard !end.isStraightInDirectionB else { return  nil }
+            guard !end.isStraightInDirectionB else { return nil }
         } else if end.directionB == path.orientation {
             guard !end.isStraighInDirectionA else { return nil }
         } else {
@@ -416,9 +437,10 @@ class TrackPen: Tool {
         }
         return path
     }
-    
-    private static func proposedOneCurvePath(fromTrackPoint start: TrackPoint,
-                                             toTrackPoint end: TrackPoint) -> SomeFinitePath? {
+
+    private static func proposedOneCurvePath(
+        fromTrackPoint start: TrackPoint, toTrackPoint end: TrackPoint
+    ) -> SomeFinitePath? {
         let l1 = Line(base: start.point, orientation: start.directionA.asAngle)
         let l2 = Line(base: end.point, orientation: end.directionA.asAngle)
         guard let p = Line.intersection(l1, l2) else { return nil }
@@ -431,53 +453,52 @@ class TrackPen: Tool {
         let center = p + h ** rangeAtP.middle.asAngle
         if d1 < d2 {
             let q = p + d ** rangeAtP.endAngle
-            let rangeAtCenter = CircleRange.range(from: center,
-                                                  between: start.point,
-                                                  and: q)
-            guard let circularPath = CircularPath(center: center,
-                                                  radius: radius,
-                                                  circleRange: rangeAtCenter),
-                  let linearPath = LinearPath(start: q, end: end.point),
-                  let compoundPath = CompoundPath(components: [.circular(circularPath),
-                                                               .linear(linearPath)]) else {
+            let rangeAtCenter = CircleRange.range(from: center, between: start.point, and: q)
+            guard
+                let circularPath = CircularPath(
+                    center: center, radius: radius, circleRange: rangeAtCenter),
+                let linearPath = LinearPath(start: q, end: end.point),
+                let compoundPath = CompoundPath(components: [
+                    .circular(circularPath), .linear(linearPath),
+                ])
+            else {
                 return nil
             }
             return .compound(compoundPath)
         } else if d2 < d1 {
             let q = p + d ** rangeAtP.startAngle
-            let rangeAtCenter = CircleRange.range(from: center,
-                                                  between: q,
-                                                  and: end.point)
+            let rangeAtCenter = CircleRange.range(from: center, between: q, and: end.point)
             guard let linearPath = LinearPath(start: start.point, end: q),
-                  let circularPath = CircularPath(center: center,
-                                                  radius: radius,
-                                                  circleRange: rangeAtCenter),
-                  let compoundPath = CompoundPath(components: [.linear(linearPath),
-                                                               .circular(circularPath)]) else {
+                let circularPath = CircularPath(
+                    center: center, radius: radius, circleRange: rangeAtCenter),
+                let compoundPath = CompoundPath(components: [
+                    .linear(linearPath), .circular(circularPath),
+                ])
+            else {
                 return nil
             }
             return .compound(compoundPath)
         } else {
-            let rangeAtCenter = CircleRange.range(from: center,
-                                                  between: start.point,
-                                                  and: end.point)
-            guard let path = CircularPath(center: center,
-                                          radius: radius,
-                                          circleRange: rangeAtCenter) else { return nil }
+            let rangeAtCenter = CircleRange.range(
+                from: center, between: start.point, and: end.point)
+            guard
+                let path = CircularPath(center: center, radius: radius, circleRange: rangeAtCenter)
+            else { return nil }
             return .circular(path)
         }
     }
-    
-    private static func proposedTwoCurvePath(fromTrackPoint start: TrackPoint,
-                                             toTrackPoint end: TrackPoint) -> SomeFinitePath? {
+
+    private static func proposedTwoCurvePath(
+        fromTrackPoint start: TrackPoint, toTrackPoint end: TrackPoint
+    ) -> SomeFinitePath? {
         let alphaStartToEnd = CircleAngle(angle(from: start.point, to: end.point))
         let alphaEndToStart = alphaStartToEnd.opposite
-        let alpha1 = absDiff(CircleAngle(start.directionA + 90.0.deg),
-                              alphaStartToEnd) <= 90.0.deg ?
-            start.directionA + 90.0.deg : start.directionA - 90.0.deg
-        let alpha2 = absDiff(CircleAngle(end.directionA + 90.0.deg),
-                              alphaEndToStart) <= 90.0.deg ?
-            end.directionA + 90.0.deg   : end.directionA - 90.0.deg
+        let alpha1 =
+            absDiff(CircleAngle(start.directionA + 90.0.deg), alphaStartToEnd) <= 90.0.deg
+            ? start.directionA + 90.0.deg : start.directionA - 90.0.deg
+        let alpha2 =
+            absDiff(CircleAngle(end.directionA + 90.0.deg), alphaEndToStart) <= 90.0.deg
+            ? end.directionA + 90.0.deg : end.directionA - 90.0.deg
         let v = 1.0.m ** alpha2 - 1.0.m ** alpha1
         let d = direction(from: start.point, to: end.point)
         let a = length²(v) - 4.0.m²
@@ -507,7 +528,8 @@ class TrackPen: Tool {
         let range1 = CircleRange.range(from: c1, between: start.point, and: c2)
         let range2 = CircleRange.range(from: c2, between: c1, and: end.point)
         guard let circle1 = CircularPath(center: c1, radius: r, circleRange: range1),
-              let circle2 = CircularPath(center: c2, radius: r, circleRange: range2) else {
+            let circle2 = CircularPath(center: c2, radius: r, circleRange: range2)
+        else {
             return nil
         }
         if let path = CompoundPath(components: [.circular(circle1), .circular(circle2)]) {
@@ -516,10 +538,10 @@ class TrackPen: Tool {
             return nil
         }
     }
-    
+
     private static func connectionOption(
-            forTrackPoint point: TrackPoint,
-            newTrackPathOrientation orientation: CircleAngle) -> TrackMap.ConnectionOption? {
+        forTrackPoint point: TrackPoint, newTrackPathOrientation orientation: CircleAngle
+    ) -> TrackMap.ConnectionOption? {
         switch point {
         case .trackConnection(let connection):
             return .toExistingConnection(connection)
@@ -547,5 +569,5 @@ class TrackPen: Tool {
             }
         }
     }
-    
+
 }
