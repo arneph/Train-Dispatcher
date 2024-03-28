@@ -55,6 +55,8 @@
 		14A2AB912B402D3B0044861E /* ContainerWagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB902B402D3B0044861E /* ContainerWagon.swift */; };
 		14A2AB932B4035000044861E /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB922B4035000044861E /* Vehicle.swift */; };
 		14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */; };
+		14DD605B2BB51073007AA7A5 /* TrackMap+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DD605A2BB51073007AA7A5 /* TrackMap+Addition.swift */; };
+		14DD605D2BB51159007AA7A5 /* TrackMap+Removal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DD605C2BB51159007AA7A5 /* TrackMap+Removal.swift */; };
 		14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */; };
 		14E082622B156E0B00AA29C2 /* TrainDispatcherDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */; };
 		14E082652B156E0B00AA29C2 /* TrainDispatcherDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082632B156E0B00AA29C2 /* TrainDispatcherDocument.xib */; };
@@ -229,6 +231,8 @@
 		14A2AB942B40364F0044861E /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherWindowController.swift; sourceTree = "<group>"; };
 		14C774A02B1D18890096BC97 /* Train Dispatcher Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Train Dispatcher Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		14DD605A2BB51073007AA7A5 /* TrackMap+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Addition.swift"; sourceTree = "<group>"; };
+		14DD605C2BB51159007AA7A5 /* TrackMap+Removal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Removal.swift"; sourceTree = "<group>"; };
 		14E0825C2B156E0B00AA29C2 /* Train Dispatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Train Dispatcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherDocument.swift; sourceTree = "<group>"; };
@@ -343,6 +347,8 @@
 				142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */,
 				14E082812B1829BB00AA29C2 /* TrackMap.swift */,
 				142D68062B9D6B7E00130757 /* TrackMap+Codable.swift */,
+				14DD605A2BB51073007AA7A5 /* TrackMap+Addition.swift */,
+				14DD605C2BB51159007AA7A5 /* TrackMap+Removal.swift */,
 				144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */,
 				142D680C2B9D86D400130757 /* TrackMapObserver.swift */,
 				142D68042B9D6B0700130757 /* Drawing.swift */,
@@ -724,7 +730,9 @@
 				142D67F52B9D66CC00130757 /* TrackMap.swift in Sources */,
 				142D68072B9D6B7E00130757 /* TrackMap+Codable.swift in Sources */,
 				142D68012B9D697400130757 /* Track.swift in Sources */,
+				14DD605D2BB51159007AA7A5 /* TrackMap+Removal.swift in Sources */,
 				142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */,
+				14DD605B2BB51073007AA7A5 /* TrackMap+Addition.swift in Sources */,
 				142D680D2B9D86D500130757 /* TrackMapObserver.swift in Sources */,
 				142D68052B9D6B0700130757 /* Drawing.swift in Sources */,
 				142D68092B9D864D00130757 /* TrackObserver.swift in Sources */,

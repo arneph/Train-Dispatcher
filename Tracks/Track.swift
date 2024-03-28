@@ -53,9 +53,11 @@ public final class Track: IDObject {
     public var atomicPathTypeAtStart: AtomicPathType { path.forwardAtomicPathType(at: 0.0.m)! }
     public var atomicPathTypeAtEnd: AtomicPathType { path.backwardAtomicPathType(at: path.length)! }
 
-    internal func set(path: SomeFinitePath, positionOffset xOffset: Distance) {
+    internal func set(
+        path: SomeFinitePath, withPositionUpdate positionUpdate: @escaping PositionUpdateFunc
+    ) {
         self.path = path
-        observers.forEach { $0.pathChanged(forTrack: self, withPositionUpdate: { $0 + xOffset }) }
+        observers.forEach { $0.pathChanged(forTrack: self, withPositionUpdate: positionUpdate) }
     }
 
     public internal(set) weak var startConnection: TrackConnection? = nil {
@@ -66,6 +68,20 @@ public final class Track: IDObject {
     public internal(set) weak var endConnection: TrackConnection? = nil {
         didSet {
             observers.forEach { $0.endConnectionChanged(forTrack: self, oldConnection: oldValue) }
+        }
+    }
+
+    public func connection(at extremity: PathExtremity) -> TrackConnection? {
+        switch extremity {
+        case .start: startConnection
+        case .end: endConnection
+        }
+    }
+
+    internal func setConnection(_ connection: TrackConnection, at extremity: PathExtremity) {
+        switch extremity {
+        case .start: startConnection = connection
+        case .end: endConnection = connection
         }
     }
 

@@ -430,42 +430,42 @@ final class Tracks_Tests: XCTestCase {
             track.path,
             .compound(
                 CompoundPath(components: [
+                    .linear(
+                        LinearPath(
+                            start: Point(x: +5.0.m, y: 0.0.m), end: Point(x: -5.0.m, y: 0.0.m))!),
                     .circular(
                         CircularPath(
                             center: Point(x: -5.0.m, y: 99.0.m), radius: 99.0.m,
-                            startAngle: CircleAngle(-160.0.deg), endAngle: CircleAngle(-90.0.deg),
-                            direction: .positive)!),
-                    .linear(
-                        LinearPath(
-                            start: Point(x: -5.0.m, y: 0.0.m), end: Point(x: +5.0.m, y: 0.0.m))!),
+                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
+                            direction: .negative)!),
                 ])!))
         XCTAssertEqual(
             track.leftRail,
             .compound(
                 CompoundPath(components: [
-                    .circular(
-                        CircularPath(
-                            center: Point(x: -5.0.m, y: 99.0.m), radius: 98.2575.m,
-                            startAngle: CircleAngle(-160.0.deg), endAngle: CircleAngle(-90.0.deg),
-                            direction: .positive)!),
                     .linear(
                         LinearPath(
-                            start: Point(x: -5.0.m, y: +0.7425.m),
-                            end: Point(x: +5.0.m, y: +0.7425.m))!),
+                            start: Point(x: +5.0.m, y: -0.7425.m),
+                            end: Point(x: -5.0.m, y: -0.7425.m))!),
+                    .circular(
+                        CircularPath(
+                            center: Point(x: -5.0.m, y: 99.0.m), radius: 99.7425.m,
+                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
+                            direction: .negative)!),
                 ])!))
         XCTAssertEqual(
             track.rightRail,
             .compound(
                 CompoundPath(components: [
-                    .circular(
-                        CircularPath(
-                            center: Point(x: -5.0.m, y: 99.0.m), radius: 99.7425.m,
-                            startAngle: CircleAngle(-160.0.deg), endAngle: CircleAngle(-90.0.deg),
-                            direction: .positive)!),
                     .linear(
                         LinearPath(
-                            start: Point(x: -5.0.m, y: -0.7425.m),
-                            end: Point(x: +5.0.m, y: -0.7425.m))!),
+                            start: Point(x: +5.0.m, y: +0.7425.m),
+                            end: Point(x: -5.0.m, y: +0.7425.m))!),
+                    .circular(
+                        CircularPath(
+                            center: Point(x: -5.0.m, y: 99.0.m), radius: 98.2575.m,
+                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
+                            direction: .negative)!),
                 ])!))
         XCTAssertNil(track.startConnection)
         XCTAssertNil(track.endConnection)
@@ -477,7 +477,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { $0 + 70.0.deg * 99.0.m })
+                .pathChanged(track, { 10.0.m - $0 })
             ])
     }
 
@@ -505,14 +505,14 @@ final class Tracks_Tests: XCTestCase {
             track.path,
             .compound(
                 CompoundPath(components: [
+                    .linear(
+                        LinearPath(
+                            start: Point(x: +5.0.m, y: 0.0.m), end: Point(x: -5.0.m, y: 0.0.m))!),
                     .circular(
                         CircularPath(
                             center: Point(x: -5.0.m, y: 99.0.m), radius: 99.0.m,
-                            startAngle: CircleAngle(-160.0.deg), endAngle: CircleAngle(-90.0.deg),
-                            direction: .positive)!),
-                    .linear(
-                        LinearPath(
-                            start: Point(x: -5.0.m, y: 0.0.m), end: Point(x: +5.0.m, y: 0.0.m))!),
+                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
+                            direction: .negative)!),
                 ])!))
         XCTAssertEqual(track.leftRail.finitePathType, .compound)
         XCTAssertEqual(track.rightRail.finitePathType, .compound)
@@ -526,7 +526,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { $0 + 70.0.deg * 99.0.m })
+                .pathChanged(track, { 10.0.m - $0 })
             ])
     }
 
@@ -1050,14 +1050,14 @@ final class Tracks_Tests: XCTestCase {
             track1.path,
             .compound(
                 CompoundPath(components: [
+                    .linear(
+                        LinearPath(
+                            start: Point(x: 10.0.m, y: 30.0.m), end: Point(x: 50.0.m, y: 30.0.m))!),
                     .circular(
                         CircularPath(
                             center: Point(x: 50.0.m, y: 150.0.m), radius: 120.0.m,
-                            startAngle: CircleAngle(0.0.deg), endAngle: CircleAngle(-90.0.deg),
-                            direction: .negative)!),
-                    .linear(
-                        LinearPath(
-                            start: Point(x: 50.0.m, y: 30.0.m), end: Point(x: 10.0.m, y: 30.0.m))!),
+                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(0.0.deg),
+                            direction: .positive)!),
                 ])!))
         XCTAssert(track1.startConnection === connection)
         XCTAssertNil(track1.endConnection)
@@ -1092,7 +1092,7 @@ final class Tracks_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .pathChanged(track1, { $0 + 90.0.deg * 120.0.m }),
+                .pathChanged(track1, { 40.0.m - $0 }),
                 .startConnectionChanged(track1, nil),
             ])
         XCTAssertEqual(

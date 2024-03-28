@@ -34,6 +34,13 @@ public struct PointAndOrientation: Equatable, Hashable, Codable {
 
 public enum PathExtremity: Equatable, Hashable, Codable {
     case start, end
+
+    public var opposite: PathExtremity {
+        switch self {
+        case .start: .end
+        case .end: .start
+        }
+    }
 }
 
 public enum AtomicPathType: Equatable, Hashable, Codable {
