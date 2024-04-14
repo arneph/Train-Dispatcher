@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		140136FB2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */; };
+		140136FD2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140136FC2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift */; };
 		1402F0112BB3A17800F3DA27 /* TrackPen_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402F0102BB3A17800F3DA27 /* TrackPen_Tests.swift */; };
 		1402F0132BB3A21800F3DA27 /* TestToolOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402F0122BB3A21800F3DA27 /* TestToolOwner.swift */; };
 		1402F0152BB3A33B00F3DA27 /* TestViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402F0142BB3A33B00F3DA27 /* TestViewContext.swift */; };
@@ -36,7 +38,7 @@
 		142D67F02B9D669400130757 /* TestTrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */; };
 		142D67F12B9D669400130757 /* TestTrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81A2B6584C60042332D /* TestTrackConnectionObserver.swift */; };
 		142D67F22B9D669400130757 /* TestTrackObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8162B64B2DD0042332D /* TestTrackObserver.swift */; };
-		142D67F32B9D669400130757 /* Tracks_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8052B6492D00042332D /* Tracks_Tests.swift */; };
+		142D67F32B9D669400130757 /* TrackMap+Additon_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8052B6492D00042332D /* TrackMap+Additon_Tests.swift */; };
 		142D67F42B9D66CB00130757 /* TrackMap+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */; };
 		142D67F52B9D66CC00130757 /* TrackMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082812B1829BB00AA29C2 /* TrackMap.swift */; };
 		142D67F62B9D671B00130757 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
@@ -197,6 +199,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Codable_Tests.swift"; sourceTree = "<group>"; };
+		140136FC2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Removal_Tests.swift"; sourceTree = "<group>"; };
 		1402F0102BB3A17800F3DA27 /* TrackPen_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen_Tests.swift; sourceTree = "<group>"; };
 		1402F0122BB3A21800F3DA27 /* TestToolOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestToolOwner.swift; sourceTree = "<group>"; };
 		1402F0142BB3A33B00F3DA27 /* TestViewContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewContext.swift; sourceTree = "<group>"; };
@@ -216,7 +220,7 @@
 		144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Queries.swift"; sourceTree = "<group>"; };
 		1465C7FA2B54BF730042332D /* TrackPen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen.swift; sourceTree = "<group>"; };
 		1465C7FC2B5B54580042332D /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
-		1465C8052B6492D00042332D /* Tracks_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracks_Tests.swift; sourceTree = "<group>"; };
+		1465C8052B6492D00042332D /* TrackMap+Additon_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Additon_Tests.swift"; sourceTree = "<group>"; };
 		1465C8162B64B2DD0042332D /* TestTrackObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrackObserver.swift; sourceTree = "<group>"; };
 		1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrackMapObserver.swift; sourceTree = "<group>"; };
 		1465C81A2B6584C60042332D /* TestTrackConnectionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrackConnectionObserver.swift; sourceTree = "<group>"; };
@@ -362,7 +366,9 @@
 				1465C8162B64B2DD0042332D /* TestTrackObserver.swift */,
 				1465C81A2B6584C60042332D /* TestTrackConnectionObserver.swift */,
 				1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */,
-				1465C8052B6492D00042332D /* Tracks_Tests.swift */,
+				140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */,
+				1465C8052B6492D00042332D /* TrackMap+Additon_Tests.swift */,
+				140136FC2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift */,
 			);
 			path = "Tracks Tests";
 			sourceTree = "<group>";
@@ -744,9 +750,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				142D67F02B9D669400130757 /* TestTrackMapObserver.swift in Sources */,
+				140136FD2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift in Sources */,
 				142D67F12B9D669400130757 /* TestTrackConnectionObserver.swift in Sources */,
+				140136FB2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift in Sources */,
 				142D67F22B9D669400130757 /* TestTrackObserver.swift in Sources */,
-				142D67F32B9D669400130757 /* Tracks_Tests.swift in Sources */,
+				142D67F32B9D669400130757 /* TrackMap+Additon_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -151,6 +151,14 @@ extension FinitePath {
         }
         return combined
     }
+
+    public func split(at x1: Position, and x2: Position) -> (
+        SomeFinitePath, SomeFinitePath, SomeFinitePath
+    )? {
+        guard let (tmp, partC) = self.split(at: x2) else { return nil }
+        guard let (partA, partB) = tmp.split(at: x1) else { return nil }
+        return (partA, partB, partC)
+    }
 }
 
 public func canConnect(_ a: PointAndOrientation, _ b: PointAndOrientation) -> Bool {

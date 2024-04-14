@@ -82,9 +82,10 @@ extension TrackMap {
             pathBExtremity: trackBExtremity, middlePath: middlePath)
         let newTrack = Track(id: trackIDGenerator.new(), path: combinedPath)
         let undoHandler = TrackRemovalHandler(change: {
-            self.removeSection(
+            let (_, _, undoHandler) = self.removeSection(
                 ofTrack: newTrack, from: trackA.path.length,
                 to: trackA.path.length + middlePath.length)
+            return undoHandler
         })
         let startConnection: TrackConnection? = trackA.connection(at: trackAExtremity.opposite)
         let endConnection: TrackConnection? = trackB.connection(at: trackBExtremity.opposite)
@@ -150,7 +151,9 @@ extension TrackMap {
             pathA: existingTrack.path, pathAExtremity: existingTrackExtremity, pathB: newPath,
             pathBExtremity: newPathExtremity)
         let undoHandler = TrackRemovalHandler(change: {
-            self.removeSection(ofTrack: existingTrack, from: oldLength, to: newPath.length)
+            let (_, _, undoHandler) = self.removeSection(
+                ofTrack: existingTrack, from: oldLength, to: newPath.length)
+            return undoHandler
         })
         existingTrack.set(path: combinedPath, withPositionUpdate: pathAUpdate)
         observers.forEach { $0.trackChanged(existingTrack, onMap: self) }

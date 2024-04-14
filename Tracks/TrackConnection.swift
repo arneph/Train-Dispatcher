@@ -119,6 +119,10 @@ public final class TrackConnection: IDObject {
         observers.forEach { $0.removed(track: track, fromConnection: self) }
     }
 
+    internal func informObserversOfRemoval() {
+        observers.forEach { $0.removed(connection: self) }
+    }
+
     internal init(id: ID<TrackConnection>, point: Point, directionA: CircleAngle) {
         self.id = id
         self.point = point

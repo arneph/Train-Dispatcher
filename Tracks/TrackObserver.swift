@@ -8,8 +8,8 @@
 import Base
 import Foundation
 
-public typealias PositionUpdateFunc = (Position) -> (Position)
-public typealias TrackAndPostionUpdateFunc = (Position) -> (Track, Position)
+public typealias PositionUpdateFunc = (Position) -> Position
+public typealias TrackAndPostionUpdateFunc = (Position) -> ((Track, Position)?)
 
 public protocol TrackObserver: AnyObject {
     func pathChanged(forTrack track: Track, withPositionUpdate f: @escaping PositionUpdateFunc)

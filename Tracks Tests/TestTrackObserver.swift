@@ -17,8 +17,13 @@ func == (lhs: PositionUpdateFunc, rhs: PositionUpdateFunc) -> Bool {
 func == (lhs: TrackAndPostionUpdateFunc, rhs: TrackAndPostionUpdateFunc) -> Bool {
     for i in stride(from: -200.0, through: +200.0, by: 1.23) {
         let x = Position(i)
-        let (lt, lx) = lhs(x)
-        let (rt, rx) = rhs(x)
+        let l = lhs(x)
+        let r = rhs(x)
+        guard let l = l, let r = r else {
+            return (l == nil) == (r == nil)
+        }
+        let (lt, lx) = l
+        let (rt, rx) = r
         guard lt === rt, lx == rx else { return false }
     }
     return true
