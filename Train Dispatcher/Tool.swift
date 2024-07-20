@@ -15,7 +15,13 @@ protocol ToolOwner: AnyObject, ViewContext {
     func stateChanged(tool: Tool)
 }
 
+enum ToolType {
+    case groundBrush, treePlacer, trackPen
+}
+
 protocol Tool: AnyObject, Drawable {
+    var type: ToolType { get }
+
     init(owner: ToolOwner)
 
     func mouseEntered(point: Point)

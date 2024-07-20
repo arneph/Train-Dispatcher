@@ -132,6 +132,14 @@ public struct Quantity<T: Unit>: Equatable, Hashable, Comparable, Codable, Custo
         Quantity<T>(lhs.value / rhs)
     }
 
+    public static func % (lhs: Quantity<T>, rhs: Quantity<T>) -> Float64 {
+        lhs.value.truncatingRemainder(dividingBy: rhs.value)
+    }
+
+    public static func % (lhs: Quantity<T>, rhs: Float64) -> Quantity<T> {
+        Quantity<T>(lhs.value.truncatingRemainder(dividingBy: rhs))
+    }
+
     public static func == (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool {
         abs(lhs.value - rhs.value) <= 1e-9
     }

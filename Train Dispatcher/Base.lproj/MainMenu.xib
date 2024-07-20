@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -233,6 +233,33 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Tools" id="Uc6-ks-ovV">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Tools" id="eu0-Fx-GZw">
+                        <items>
+                            <menuItem title="Cursor" state="on" keyEquivalent="1" id="N93-5S-8fo">
+                                <connections>
+                                    <action selector="selectCursor:" target="-1" id="o2t-vc-Wnv"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Ground Brush" keyEquivalent="2" id="2nZ-7o-LYm">
+                                <connections>
+                                    <action selector="selectGroundBrush:" target="-1" id="cAh-8p-1Wr"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Tree Placer" keyEquivalent="3" id="5dz-pg-TuY">
+                                <connections>
+                                    <action selector="selectTreePlacer:" target="-1" id="Woz-Im-A9l"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Track Pen" keyEquivalent="4" id="Qr8-bB-id3">
+                                <connections>
+                                    <action selector="selectTrackPen:" target="-1" id="8AH-h8-Lqu"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="aUF-d1-5bR">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
@@ -271,7 +298,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="141" y="-36"/>
+            <point key="canvasLocation" x="-44" y="-23"/>
         </menu>
     </objects>
 </document>

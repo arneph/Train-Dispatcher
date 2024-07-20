@@ -55,7 +55,7 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
     }
 
     // MARK: -  Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
         cgContext.saveGState()
 
         let p1 =
@@ -80,7 +80,7 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
         cgContext.setFillColor(CGColor(red: 0.47, green: 0.42, blue: 0.36, alpha: 1.0))
         cgContext.fillPath()
 
-        container?.draw(cgContext, viewContext)
+        container?.draw(cgContext, viewContext, dirtyRect)
 
         cgContext.restoreGState()
     }

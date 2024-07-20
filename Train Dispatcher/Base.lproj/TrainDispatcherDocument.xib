@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TrainDispatcherWindowController" customModule="Train_Dispatcher" customModuleProvider="target">
             <connections>
+                <outlet property="baseColorWell" destination="MVb-oF-YiS" id="U9s-z5-af1"/>
+                <outlet property="cursorButton" destination="wgo-VK-mnu" id="MIL-4G-Dag"/>
+                <outlet property="groundBrushButton" destination="Gnx-X2-gPa" id="3xt-HJ-azi"/>
+                <outlet property="groundBrushColorWell" destination="1na-Dw-8PR" id="HlU-hz-x3Z"/>
+                <outlet property="groundBrushOptionsPanel" destination="FmD-bg-9Wf" id="Plc-rA-Fsa"/>
+                <outlet property="groundBrushSizeField" destination="Iwa-qh-hXh" id="EAj-3R-tbt"/>
+                <outlet property="groundBrushSizeStepper" destination="fDE-7u-0gZ" id="Xqh-jm-Xw4"/>
+                <outlet property="mapOptionsPanel" destination="IVl-KB-m9N" id="gGd-lw-c1r"/>
                 <outlet property="mapView" destination="fSs-ah-cau" id="wrt-DN-z78"/>
+                <outlet property="optionsPane" destination="KND-To-3bl" id="1f8-OT-rjq"/>
+                <outlet property="optionsPanelSelector" destination="Wge-8q-vkU" id="maq-70-pK0"/>
+                <outlet property="trackPenButton" destination="Vfi-Em-l0j" id="P4e-dr-AZ0"/>
+                <outlet property="treePlacerButton" destination="VkM-g0-udf" id="rA4-Uu-uZe"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
             </connections>
         </customObject>
@@ -15,24 +27,183 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="xOd-HO-29H" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="133" y="235" width="507" height="413"/>
+            <rect key="contentRect" x="583" y="276" width="720" height="360"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
-            <value key="minSize" type="size" width="94" height="86"/>
+            <value key="minSize" type="size" width="720" height="360"/>
             <view key="contentView" id="gIp-Ho-8D9">
-                <rect key="frame" x="0.0" y="0.0" width="507" height="413"/>
+                <rect key="frame" x="0.0" y="0.0" width="720" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView id="fSs-ah-cau" customClass="MapView" customModule="Train_Dispatcher" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="507" height="413"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ShH-7g-reO">
+                        <rect key="frame" x="0.0" y="0.0" width="44" height="360"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VkM-g0-udf">
+                                <rect key="frame" x="0.0" y="230" width="44" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="tree.fill" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lq0-rI-T0l">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectTreePlacer:" target="fSs-ah-cau" id="403-3B-Yhc"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gnx-X2-gPa">
+                                <rect key="frame" x="0.0" y="273" width="44" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="paintbrush.fill" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sFz-V0-cBe">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectGroundBrush:" target="fSs-ah-cau" id="Uk3-dy-ZQ5"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wgo-VK-mnu">
+                                <rect key="frame" x="0.0" y="316" width="44" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="cursorarrow" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fKm-6q-8I2">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectCursor:" target="fSs-ah-cau" id="2nC-Mi-f1n"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vfi-Em-l0j">
+                                <rect key="frame" x="0.0" y="189" width="44" height="42"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="pencil.line" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="w7f-uL-O34">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectTrackPen:" target="fSs-ah-cau" id="xRI-fU-z6D"/>
+                                </connections>
+                            </button>
+                        </subviews>
                     </customView>
+                    <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dpV-he-ARO">
+                        <rect key="frame" x="44" y="0.0" width="676" height="360"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <customView clipsToBounds="YES" fixedFrame="YES" id="fSs-ah-cau" customClass="MapView" customModule="Train_Dispatcher" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="479" height="360"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </customView>
+                            <customView fixedFrame="YES" id="KND-To-3bl">
+                                <rect key="frame" x="480" y="0.0" width="196" height="360"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <subviews>
+                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wge-8q-vkU" customClass="PanelSelector" customModule="Train_Dispatcher" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="330" width="196" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="-2" id="4uW-Fa-T4O"/>
+                                        </connections>
+                                    </customView>
+                                </subviews>
+                            </customView>
+                        </subviews>
+                        <holdingPriorities>
+                            <real value="1"/>
+                            <real value="400"/>
+                        </holdingPriorities>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="C4w-dC-FIy"/>
+                        </connections>
+                    </splitView>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-x8E"/>
             </connections>
-            <point key="canvasLocation" x="-6.5" y="369.5"/>
+            <point key="canvasLocation" x="282" y="271"/>
         </window>
+        <userDefaultsController representsSharedInstance="YES" id="aVw-2g-FnS"/>
+        <view id="IVl-KB-m9N">
+            <rect key="frame" x="0.0" y="0.0" width="196" height="360"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CUc-GL-oaK">
+                    <rect key="frame" x="18" y="320" width="78" height="16"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Base Color:" id="wHo-l5-jvY">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MVb-oF-YiS">
+                    <rect key="frame" x="99" y="314" width="80" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <color key="color" red="0.18048092722892761" green="0.77183693647384644" blue="0.14796429872512817" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="baseColorChanged:" target="-2" id="qUA-l4-1ai"/>
+                    </connections>
+                </colorWell>
+            </subviews>
+            <point key="canvasLocation" x="787" y="271"/>
+        </view>
+        <view id="FmD-bg-9Wf">
+            <rect key="frame" x="0.0" y="0.0" width="196" height="360"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r4a-tU-3f3">
+                    <rect key="frame" x="18" y="320" width="78" height="16"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Brush Color:" id="mLX-Ab-1aQ">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1na-Dw-8PR">
+                    <rect key="frame" x="99" y="314" width="80" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <color key="color" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="groundBrushColorChanged:" target="-2" id="epL-eU-9GH"/>
+                    </connections>
+                </colorWell>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vE1-gt-gmk">
+                    <rect key="frame" x="18" y="290" width="78" height="16"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Brush Size:" id="0cj-Pe-ahb">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fDE-7u-0gZ">
+                    <rect key="frame" x="160" y="283" width="19" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" minValue="0.10000000000000001" maxValue="100" doubleValue="3" id="BB9-Md-4Y3"/>
+                    <connections>
+                        <action selector="groundBrushSizeStepperChanged:" target="-2" id="FGj-j8-zm6"/>
+                    </connections>
+                </stepper>
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Iwa-qh-hXh">
+                    <rect key="frame" x="102" y="287" width="53" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="3.0m" drawsBackground="YES" id="9Hw-oP-rXw">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <action selector="groundBrushSizeTextChanged:" target="-2" id="syd-dv-m1N"/>
+                    </connections>
+                </textField>
+            </subviews>
+            <point key="canvasLocation" x="1019" y="271"/>
+        </view>
     </objects>
+    <resources>
+        <image name="cursorarrow" catalog="system" width="11" height="16"/>
+        <image name="paintbrush.fill" catalog="system" width="16" height="18"/>
+        <image name="pencil.line" catalog="system" width="15" height="15"/>
+        <image name="tree.fill" catalog="system" width="21" height="19"/>
+    </resources>
 </document>

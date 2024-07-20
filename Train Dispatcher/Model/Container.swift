@@ -124,7 +124,7 @@ final class Container: Object {
     }
 
     // MARK: -  Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _: Rect) {
         cgContext.saveGState()
 
         let p1 = center + 0.5 * Container.length ** forward + 0.5 * Container.width ** left

@@ -13,7 +13,7 @@ public struct Point: Equatable, Hashable, Codable, CustomStringConvertible,
     public let x: Position
     public let y: Position
 
-    public var asRect: Rect { Rect(orign: self, size: Size.zero) }
+    public var asRect: Rect { Rect(origin: self, size: Size.zero) }
 
     public init(x: Position, y: Position) {
         self.x = x
@@ -122,8 +122,17 @@ public struct Rect: Equatable, Hashable, Codable, CustomStringConvertible,
         a.xRange.overlaps(b.xRange) && a.yRange.overlaps(b.yRange)
     }
 
-    public init(orign: Point, size: Size) {
-        self.origin = orign
+    public static func intersection(_ a: Rect, _ b: Rect) -> Rect? {
+        guard intersect(a, b) else { return nil }
+        return Rect(
+            x: max(a.x, b.x),
+            y: max(a.y, b.y),
+            width: min(a.maxX, b.maxX) - max(a.x, b.x),
+            height: min(a.maxY, b.maxY) - max(a.y, b.y))
+    }
+
+    public init(origin: Point, size: Size) {
+        self.origin = origin
         self.size = size
     }
 

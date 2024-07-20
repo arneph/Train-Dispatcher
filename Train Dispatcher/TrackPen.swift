@@ -11,6 +11,8 @@ import Foundation
 import Tracks
 
 class TrackPen: Tool {
+    var type: ToolType { .trackPen }
+
     private weak var owner: ToolOwner?
     private var map: Map? { owner?.map }
     private var trackMap: TrackMap? { owner?.map?.trackMap }
@@ -137,7 +139,7 @@ class TrackPen: Tool {
         state = .none
     }
 
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _: Rect) {
         switch state {
         case .none: break
         case .hovering(let penPoint):

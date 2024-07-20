@@ -38,7 +38,8 @@ class TestViewContext: ViewContext {
 
     func toMapRect(viewRect: CGRect) -> Rect {
         Rect(
-            orign: toMapPoint(viewPoint: viewRect.origin), size: toMapSize(viewSize: viewRect.size))
+            origin: toMapPoint(viewPoint: viewRect.origin),
+            size: toMapSize(viewSize: viewRect.size))
     }
 
     func toViewAngle(_ angle: Angle) -> CGFloat { angle.withoutUnit }

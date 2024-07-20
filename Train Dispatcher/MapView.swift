@@ -10,22 +10,33 @@ import Cocoa
 import CoreGraphics
 import CoreText
 import Foundation
+import Ground
 import Tracks
 
 protocol MapViewDelegate: AnyObject {
     var map: Map? { get }
     var changeManager: ChangeManager? { get }
+
+    func toolChanged()
 }
 
-class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewContext {
+class MapView: NSView,
+    NSMenuItemValidation,
+    GroundMapObserver,
+    TrackMapObserver,
+    ToolOwner,
+    ViewContext
+{
     var delegate: MapViewDelegate? {
         willSet {
             if delegate !== newValue {
+                delegate?.map?.groundMap.remove(observer: self)
                 delegate?.map?.trackMap.remove(observer: self)
             }
         }
         didSet {
             if oldValue !== delegate {
+                delegate?.map?.groundMap.add(observer: self)
                 delegate?.map?.trackMap.add(observer: self)
                 needsDisplay = true
             }
@@ -35,12 +46,19 @@ class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewCo
     var changeManager: ChangeManager? { delegate?.changeManager }
 
     func mapChanged(oldMap: Map) {
+        oldMap.groundMap.remove(observer: self)
         oldMap.trackMap.remove(observer: self)
+        map?.groundMap.add(observer: self)
         map?.trackMap.add(observer: self)
         needsDisplay = true
     }
 
-    // MARK: - MapObserver
+    // MARK: - GroundMapObserver
+    func groundChanged(forMap map: GroundMap) {
+        needsDisplay = true
+    }
+
+    // MARK: - TrackMapObserver
     func added(track: Track, toMap map: TrackMap) {
         needsDisplay = true
     }
@@ -92,12 +110,31 @@ class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewCo
     }
 
     // MARK: - Tool
-    private var tool: Tool? {
-        didSet { needsDisplay = true }
+    public var tool: Tool? {
+        didSet {
+            needsDisplay = true
+            delegate?.toolChanged()
+        }
     }
 
     func stateChanged(tool: Tool) {
         needsDisplay = true
+    }
+
+    @IBAction func selectCursor(_ sender: Any) {
+        tool = nil
+    }
+
+    @IBAction func selectGroundBrush(_ sender: Any) {
+        tool = GroundBrush(owner: self)
+    }
+
+    @IBAction func selectTreePlacer(_ sender: Any) {
+        tool = nil
+    }
+
+    @IBAction func selectTrackPen(_ sender: Any) {
+        tool = TrackPen(owner: self)
     }
 
     // MARK: - init
@@ -136,7 +173,8 @@ class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewCo
 
     func toMapRect(viewRect: CGRect) -> Rect {
         Rect(
-            orign: toMapPoint(viewPoint: viewRect.origin), size: toMapSize(viewSize: viewRect.size))
+            origin: toMapPoint(viewPoint: viewRect.origin),
+            size: toMapSize(viewSize: viewRect.size))
     }
 
     func toViewAngle(_ angle: Angle) -> CGFloat { angle.withoutUnit }
@@ -166,6 +204,18 @@ class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewCo
 
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         switch menuItem.action {
+        case #selector(selectCursor(_:)):
+            menuItem.state = tool == nil ? .on : .off
+            return true
+        case #selector(selectGroundBrush(_:)):
+            menuItem.state = tool?.type == .groundBrush ? .on : .off
+            return true
+        case #selector(selectTreePlacer(_:)):
+            menuItem.state = tool?.type == .treePlacer ? .on : .off
+            return true
+        case #selector(selectTrackPen(_:)):
+            menuItem.state = tool?.type == .trackPen ? .on : .off
+            return true
         case #selector(toggleGrid(_:)):
             menuItem.state = showGrid ? .on : .off
             return true
@@ -335,16 +385,20 @@ class MapView: NSView, NSMenuItemValidation, TrackMapObserver, ToolOwner, ViewCo
     override func draw(_ viewRect: CGRect) {
         let mapRect = toMapRect(viewRect: viewRect)
 
+        if let map = map {
+            map.groundMap.draw(context, self, mapRect)
+        }
+
         if showGrid {
             drawGrid(mapRect)
         }
 
         if let map = map {
             Tracks.draw(tracks: map.trackMap.tracks, context, self)
-            map.vehicles.forEach { $0.draw(context, self) }
-            map.containers.forEach { $0.draw(context, self) }
+            map.vehicles.forEach { $0.draw(context, self, mapRect) }
+            map.containers.forEach { $0.draw(context, self, mapRect) }
         }
-        tool?.draw(context, self)
+        tool?.draw(context, self, mapRect)
 
         if showScale {
             drawScale()

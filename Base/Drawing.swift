@@ -31,7 +31,7 @@ public protocol ViewContext {
 }
 
 public protocol Drawable {
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext)
+    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
 }
 
 public func trace(path: LinearPath, _ cgContext: CGContext, _ viewContext: ViewContext) {

@@ -11,7 +11,13 @@ import Foundation
 @testable import Tracks
 
 func == (lhs: PositionUpdateFunc, rhs: PositionUpdateFunc) -> Bool {
-    lhs(0.0.m) == rhs(0.0.m) && lhs(+1.23.m) == rhs(+1.23.m) && lhs(-1.23.m) == rhs(-1.23.m)
+    for i in stride(from: -200.0, through: +200.0, by: 1.23) {
+        let x = Position(i)
+        if lhs(x) != rhs(x) {
+            return false
+        }
+    }
+    return true
 }
 
 func == (lhs: TrackAndPostionUpdateFunc, rhs: TrackAndPostionUpdateFunc) -> Bool {
@@ -20,11 +26,20 @@ func == (lhs: TrackAndPostionUpdateFunc, rhs: TrackAndPostionUpdateFunc) -> Bool
         let l = lhs(x)
         let r = rhs(x)
         guard let l = l, let r = r else {
-            return (l == nil) == (r == nil)
+            if (l == nil) != (r == nil) {
+                return false
+            } else {
+                continue
+            }
         }
         let (lt, lx) = l
         let (rt, rx) = r
-        guard lt === rt, lx == rx else { return false }
+        guard lt === rt, lx == rx else {
+            return false
+        }
+        guard lt.path.point(at: lx) == rt.path.point(at: rx) else {
+            return false
+        }
     }
     return true
 }

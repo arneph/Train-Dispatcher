@@ -116,7 +116,7 @@ final class TrackMap_Codable_Tests: XCTestCase {
         XCTAssert(resultConnection.directionBTracks.contains { $0 === resultTrack1 })
         XCTAssert(resultConnection.directionBTracks.contains { $0 === resultTrack2 })
     }
-    
+
     func testEncodesAndDecodesTrackMapWithConnections() throws {
         let originalMap = TrackMap()
         let (originalTrack1, _) = originalMap.addTrack(
@@ -143,7 +143,7 @@ final class TrackMap_Codable_Tests: XCTestCase {
                         direction: .negative)!),
             startConnection: .toExistingConnection(originalConnection1),
             endConnection: .none)
-        
+
         let (originalTrack4, _) = originalMap.addTrack(
             withPath:
                 .linear(
@@ -208,7 +208,8 @@ final class TrackMap_Codable_Tests: XCTestCase {
         XCTAssertEqual(
             resultTrack4.path,
             .linear(
-                LinearPath(start: Point(x: 210.0.m, y: 100.0.m), end: Point(x: 210.0.m, y: 0.0.m))!))
+                LinearPath(start: Point(x: 210.0.m, y: 100.0.m), end: Point(x: 210.0.m, y: 0.0.m))!)
+        )
         XCTAssertNil(resultTrack4.startConnection)
         XCTAssert(resultTrack4.endConnection === resultConnection2)
         XCTAssertEqual(
