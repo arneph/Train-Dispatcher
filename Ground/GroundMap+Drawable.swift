@@ -20,12 +20,14 @@ extension GroundMap: Drawable {
 
         cgContext.setFillColor(baseColor.cgColor)
         cgContext.fill(viewContext.toViewRect(dirtyRect))
-        
+
         forChunks(at: dirtyRect) { (id, chunk) in
-            cgContext.draw(
-                chunk.image,
-                in: viewContext.toViewRect(toRect(id)),
-                byTiling: false)
+            if !chunk.isEmptyImage {
+                cgContext.draw(
+                    chunk.image,
+                    in: viewContext.toViewRect(toRect(id)),
+                    byTiling: false)                
+            }
         }
 
         cgContext.restoreGState()

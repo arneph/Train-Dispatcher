@@ -65,8 +65,8 @@ struct ChunkID: Codable, Equatable, Hashable {
     let y: Int
 }
 
-private let chunkWidthBits = 8
-private let chunkHeightBits = 8
+private let chunkWidthBits = 12
+private let chunkHeightBits = 12
 let chunkSize = PixelSize(width: 1 << chunkWidthBits, height: 1 << chunkHeightBits)
 let chunkPixelCount = chunkSize.width * chunkSize.height
 

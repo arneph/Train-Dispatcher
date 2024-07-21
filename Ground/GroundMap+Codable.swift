@@ -5,8 +5,8 @@
 //  Created by Arne Philipeit on 6/2/24.
 //
 
-import Foundation
 import Base
+import Foundation
 
 extension GroundMap: Codable {
     private enum CodingKeys: String, CodingKey {

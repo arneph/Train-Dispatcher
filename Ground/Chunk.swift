@@ -61,24 +61,27 @@ class Chunk: Codable {
                 intent: CGColorRenderingIntent.defaultIntent)!
         }
     }
+    
+    private static let defaultPixels = Pixels(
+        pixels: [Color].init(
+            repeating: Color.transparent,
+            count: chunkPixelCount)
+    )
+    private static let defaultImage = defaultPixels.toImage()
 
-    private(set) var image: CGImage
+    private var img: CGImage? = nil
+    var image: CGImage { img ?? Chunk.defaultImage }
+    var isEmptyImage: Bool { img == nil }
 
     func pixels() -> Pixels {
-        Pixels.from(image: image)
+        img != nil ? Pixels.from(image: image) : Chunk.defaultPixels
     }
 
     func set(pixels: Pixels) {
-        image = pixels.toImage()
+        img = pixels.toImage()
     }
 
-    init() {
-        image = Pixels(
-            pixels: [Color].init(
-                repeating: Color.transparent,
-                count: chunkPixelCount)
-        ).toImage()
-    }
+    init() {}
 
     private enum CodingKeys: String, CodingKey {
         case imageData
@@ -86,23 +89,31 @@ class Chunk: Codable {
 
     required init(from decoder: any Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let imageData = try values.decode(Data.self, forKey: .imageData)
-        self.image = CGImage(
-            pngDataProviderSource: CGDataProvider(data: imageData as CFData)!,
-            decode: nil,
-            shouldInterpolate: false,
-            intent: CGColorRenderingIntent.defaultIntent)!
+        let imageData = try values.decode(Data?.self, forKey: .imageData)
+        self.img = if let imageData = imageData {
+            CGImage(
+                pngDataProviderSource: CGDataProvider(data: imageData as CFData)!,
+                decode: nil,
+                shouldInterpolate: false,
+                intent: CGColorRenderingIntent.defaultIntent)!
+        } else {
+            nil
+        }
     }
 
     func encode(to encoder: any Encoder) throws {
-        let imageData = CFDataCreateMutable(nil, 0)!
-        let destination = CGImageDestinationCreateWithData(
-            imageData, "public.png" as CFString, 1, nil)!
-        CGImageDestinationAddImage(destination, image, nil)
-        CGImageDestinationFinalize(destination)
-
+        let imageData: CFMutableData?
+        if let image = self.img {
+            imageData = CFDataCreateMutable(nil, 0)!
+            let destination = CGImageDestinationCreateWithData(
+                imageData!, "public.png" as CFString, 1, nil)!
+            CGImageDestinationAddImage(destination, image, nil)
+            CGImageDestinationFinalize(destination)
+        } else {
+            imageData = nil
+        }
         var values = encoder.container(keyedBy: CodingKeys.self)
-        try values.encode(imageData as Data, forKey: .imageData)
+        try values.encode(imageData as Data?, forKey: .imageData)
     }
 
 }
