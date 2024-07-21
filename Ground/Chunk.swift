@@ -61,7 +61,7 @@ class Chunk: Codable {
                 intent: CGColorRenderingIntent.defaultIntent)!
         }
     }
-    
+
     private static let defaultPixels = Pixels(
         pixels: [Color].init(
             repeating: Color.transparent,
@@ -90,15 +90,16 @@ class Chunk: Codable {
     required init(from decoder: any Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let imageData = try values.decode(Data?.self, forKey: .imageData)
-        self.img = if let imageData = imageData {
-            CGImage(
-                pngDataProviderSource: CGDataProvider(data: imageData as CFData)!,
-                decode: nil,
-                shouldInterpolate: false,
-                intent: CGColorRenderingIntent.defaultIntent)!
-        } else {
-            nil
-        }
+        self.img =
+            if let imageData = imageData {
+                CGImage(
+                    pngDataProviderSource: CGDataProvider(data: imageData as CFData)!,
+                    decode: nil,
+                    shouldInterpolate: false,
+                    intent: CGColorRenderingIntent.defaultIntent)!
+            } else {
+                nil
+            }
     }
 
     func encode(to encoder: any Encoder) throws {

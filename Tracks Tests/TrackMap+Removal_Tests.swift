@@ -318,7 +318,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                     oldTrack4, [newTrack],
                     { x in
                         if 0.0.m <= x && x <= 45.0.m {
-                            (newTrack, 45.0.m  - x)
+                            (newTrack, 45.0.m - x)
                         } else {
                             nil
                         }

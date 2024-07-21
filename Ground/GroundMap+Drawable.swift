@@ -26,7 +26,7 @@ extension GroundMap: Drawable {
                 cgContext.draw(
                     chunk.image,
                     in: viewContext.toViewRect(toRect(id)),
-                    byTiling: false)                
+                    byTiling: false)
             }
         }
 
