@@ -148,7 +148,7 @@ extension TrackMap {
         combinedTrack.startConnection = startConnection
         combinedTrack.endConnection = endConnection
         let oldTrackALength = oldTrackA.path.length
-        let oldTrackBLength = oldTrackA.path.length
+        let oldTrackBLength = oldTrackB.path.length
         let oldTrackAUpdateFunc: TrackAndPostionUpdateFunc
         let oldTrackBUpdateFunc: TrackAndPostionUpdateFunc
         if oldTrackA.endConnection === oldConnection {
@@ -168,7 +168,7 @@ extension TrackMap {
                 }
             }
         }
-        if oldTrackB.endConnection === oldConnection {
+        if oldTrackB.startConnection === oldConnection {
             oldTrackBUpdateFunc = { x in
                 if 0.0.m <= x && x <= oldTrackBLength {
                     (combinedTrack, oldTrackALength + x)
