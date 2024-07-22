@@ -140,12 +140,10 @@ class MapView: NSView,
     // MARK: - init
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        tool = TrackPen(owner: self)
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        tool = TrackPen(owner: self)
     }
 
     // MARK: - NSView notifications

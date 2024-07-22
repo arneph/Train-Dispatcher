@@ -13,7 +13,7 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
     static let length = 2.0 * bufferLength + platformLength
     static let bufferLength = 0.25.m
     static let platformLength = Container.length + 0.40.m
-    static let width = Container.width + 0.16.m
+    static let width = Container.width + 0.54.m
 
     var container: Container? {
         didSet {

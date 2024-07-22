@@ -53,6 +53,7 @@
 		142D68092B9D864D00130757 /* TrackObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68082B9D864D00130757 /* TrackObserver.swift */; };
 		142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */; };
 		142D680D2B9D86D500130757 /* TrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680C2B9D86D400130757 /* TrackMapObserver.swift */; };
+		145411372C4D5CBD006CF940 /* BR186.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411362C4D5CBD006CF940 /* BR186.swift */; };
 		1461ED782BF188D800119738 /* PanelSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1461ED772BF188D800119738 /* PanelSelector.swift */; };
 		1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C7FA2B54BF730042332D /* TrackPen.swift */; };
 		1465C81D2B673DFF0042332D /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81C2B673DFF0042332D /* Tool.swift */; };
@@ -276,6 +277,7 @@
 		142D680C2B9D86D400130757 /* TrackMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMapObserver.swift; sourceTree = "<group>"; };
 		144055332B7968BC00A2C5D9 /* Path_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path_Tests.swift; sourceTree = "<group>"; };
 		144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Queries.swift"; sourceTree = "<group>"; };
+		145411362C4D5CBD006CF940 /* BR186.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BR186.swift; sourceTree = "<group>"; };
 		1461ED772BF188D800119738 /* PanelSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSelector.swift; sourceTree = "<group>"; };
 		1465C7FA2B54BF730042332D /* TrackPen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen.swift; sourceTree = "<group>"; };
 		1465C7FC2B5B54580042332D /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
@@ -554,6 +556,7 @@
 				14E0827B2B158F7600AA29C2 /* Container.swift */,
 				14A2AB902B402D3B0044861E /* ContainerWagon.swift */,
 				14E0827F2B18299600AA29C2 /* Map.swift */,
+				145411362C4D5CBD006CF940 /* BR186.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -995,6 +998,7 @@
 				14E0827C2B158F7600AA29C2 /* Container.swift in Sources */,
 				14A2AB912B402D3B0044861E /* ContainerWagon.swift in Sources */,
 				14E082802B18299600AA29C2 /* Map.swift in Sources */,
+				145411372C4D5CBD006CF940 /* BR186.swift in Sources */,
 				146B2CCF2BDDE2A9008D67D5 /* TreePlacer.swift in Sources */,
 				14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */,
 			);

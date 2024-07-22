@@ -17,7 +17,7 @@ private func defaultMap() -> Map {
             CompoundPath(components: [
                 .linear(
                     LinearPath(
-                        start: Point(x: -50.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!),
+                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!),
                 .circular(
                     CircularPath(
                         center: Point(x: 0.0.m, y: 120.0.m), radius: 120.0.m,
@@ -29,20 +29,26 @@ private func defaultMap() -> Map {
             vehiclePosition:
                 VehiclePosition(
                     path: LinearPath(
-                        start: Point(x: -50.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
+                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
                     pathPosition: 10.0.m)),
         ContainerWagon(
             vehiclePosition:
                 VehiclePosition(
                     path: LinearPath(
-                        start: Point(x: -50.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
+                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
                     pathPosition: 10.0.m + ContainerWagon.length)),
         ContainerWagon(
             vehiclePosition:
                 VehiclePosition(
                     path: LinearPath(
-                        start: Point(x: -50.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
+                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
                     pathPosition: 10.0.m + ContainerWagon.length * 2.0)),
+        BR186(
+            vehiclePosition:
+                VehiclePosition(
+                    path: LinearPath(
+                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
+                    pathPosition: 10.0.m + ContainerWagon.length * 2.5 + BR186.length * 0.5)),
         ContainerWagon(
             vehiclePosition:
                 VehiclePosition(
