@@ -142,20 +142,22 @@ final class Container: Object {
         cgContext.setStrokeColor(CGColor.init(gray: 0.2, alpha: 1.0))
         cgContext.drawPath(using: .fillStroke)
 
-        let lineCount = 15
-        cgContext.setLineWidth(
-            viewContext.toViewDistance(Container.length / Float64(lineCount) * 0.25))
-        cgContext.setStrokeColor(CGColor.init(gray: 0.6, alpha: 1.0))
-        cgContext.setFillColor(CGColor.init(gray: 0.6, alpha: 1.0))
+        if viewContext.mapScale >= 5.0 {
+            let lineCount = 15
+            cgContext.setLineWidth(
+                viewContext.toViewDistance(Container.length / Float64(lineCount) * 0.25))
+            cgContext.setStrokeColor(CGColor.init(gray: 0.6, alpha: 1.0))
+            cgContext.setFillColor(CGColor.init(gray: 0.6, alpha: 1.0))
 
-        for i in 0...lineCount {
-            let lengthDist = Container.length * (-0.5 + Float64(1 + i) / Float64(lineCount + 2))
-            let q1 = center + lengthDist ** forward + 0.4 * Container.width ** left
-            let q2 = center + lengthDist ** forward + 0.4 * Container.width ** right
+            for i in 0...lineCount {
+                let lengthDist = Container.length * (-0.5 + Float64(1 + i) / Float64(lineCount + 2))
+                let q1 = center + lengthDist ** forward + 0.4 * Container.width ** left
+                let q2 = center + lengthDist ** forward + 0.4 * Container.width ** right
 
-            cgContext.move(to: viewContext.toViewPoint(q1))
-            cgContext.addLine(to: viewContext.toViewPoint(q2))
-            cgContext.strokePath()
+                cgContext.move(to: viewContext.toViewPoint(q1))
+                cgContext.addLine(to: viewContext.toViewPoint(q2))
+                cgContext.strokePath()
+            }
         }
 
         cgContext.restoreGState()

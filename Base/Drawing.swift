@@ -34,12 +34,30 @@ public protocol Drawable {
     func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
 }
 
-public func trace(path: LinearPath, _ cgContext: CGContext, _ viewContext: ViewContext) {
+private func stroke(
+    visiblePath path: LinearPath, _ cgContext: CGContext, _ viewContext: ViewContext,
+    _ width: Distance
+) {
     cgContext.move(to: viewContext.toViewPoint(path.start))
     cgContext.addLine(to: viewContext.toViewPoint(path.end))
+    cgContext.drawPath(using: .stroke)
 }
 
-public func trace(path: CircularPath, _ cgContext: CGContext, _ viewContext: ViewContext) {
+public func stroke(
+    path: LinearPath, _ cgContext: CGContext, _ viewContext: ViewContext, _ width: Distance,
+    _ dirtyRect: Rect
+) {
+    for segment in path.segments(inRect: dirtyRect.insetBy(dx: -width, dy: -width)) {
+        cgContext.move(to: viewContext.toViewPoint(path.point(at: segment.lowerBound)!))
+        cgContext.addLine(to: viewContext.toViewPoint(path.point(at: segment.upperBound)!))
+        cgContext.drawPath(using: .stroke)
+    }
+}
+
+private func stroke(
+    visiblePath path: CircularPath, _ cgContext: CGContext, _ viewContext: ViewContext,
+    _ width: Distance
+) {
     cgContext.move(to: viewContext.toViewPoint(path.start))
     cgContext.addArc(
         center: viewContext.toViewPoint(path.center),
@@ -47,11 +65,31 @@ public func trace(path: CircularPath, _ cgContext: CGContext, _ viewContext: Vie
         startAngle: viewContext.toViewAngle(path.circleRange.startAngle),
         endAngle: viewContext.toViewAngle(path.circleRange.startAngle + path.circleRange.delta),
         clockwise: path.circleRange.direction == .negative)
+    cgContext.drawPath(using: .stroke)
 }
 
-public func trace(path: CompoundPath, _ cgContext: CGContext, _ viewContext: ViewContext) {
-    cgContext.move(to: viewContext.toViewPoint(path.start))
+public func stroke(
+    path: CircularPath, _ cgContext: CGContext, _ viewContext: ViewContext, _ width: Distance,
+    _ dirtyRect: Rect
+) {
+    for segment in path.segments(inRect: dirtyRect.insetBy(dx: -width, dy: -width)) {
+        cgContext.move(to: viewContext.toViewPoint(path.point(at: segment.lowerBound)!))
+        cgContext.addArc(
+            center: viewContext.toViewPoint(path.center),
+            radius: viewContext.toViewDistance(path.radius),
+            startAngle: viewContext.toViewAngle(path.toCircleAngle(segment.lowerBound).asAngle),
+            endAngle: viewContext.toViewAngle(path.toCircleAngle(segment.upperBound).asAngle),
+            clockwise: path.circleRange.direction == .negative)
+        cgContext.drawPath(using: .stroke)
+    }
+}
+
+private func stroke(
+    visiblePath path: CompoundPath, _ cgContext: CGContext, _ viewContext: ViewContext,
+    _ width: Distance
+) {
     for component in path.components {
+        cgContext.move(to: viewContext.toViewPoint(component.start))
         switch component {
         case .linear(let component):
             cgContext.addLine(to: viewContext.toViewPoint(component.end))
@@ -64,29 +102,69 @@ public func trace(path: CompoundPath, _ cgContext: CGContext, _ viewContext: Vie
                     component.circleRange.startAngle + component.circleRange.delta),
                 clockwise: component.circleRange.direction == .negative)
         }
+        cgContext.drawPath(using: .stroke)
     }
 }
 
-public func trace(path: AtomicFinitePath, _ cgContext: CGContext, _ viewContext: ViewContext) {
-    switch path {
-    case .linear(let path):
-        trace(path: path, cgContext, viewContext)
-    case .circular(let path):
-        trace(path: path, cgContext, viewContext)
+public func stroke(
+    path: CompoundPath, _ cgContext: CGContext, _ viewContext: ViewContext, _ width: Distance,
+    _ dirtyRect: Rect
+) {
+    for segment in path.segments(
+        inRect: dirtyRect.insetBy(
+            dx: -width,
+            dy: -width))
+    {
+        guard let visiblePath = path.subPath(from: segment.lowerBound, to: segment.upperBound)
+        else {
+            continue
+        }
+        stroke(visiblePath: visiblePath, cgContext, viewContext, width)
     }
 }
 
-public func trace(path: SomeFinitePath, _ cgContext: CGContext, _ viewContext: ViewContext) {
+public func stroke(
+    path: AtomicFinitePath, _ cgContext: CGContext, _ viewContext: ViewContext, _ width: Distance,
+    _ dirtyRect: Rect
+) {
     switch path {
     case .linear(let path):
-        trace(path: path, cgContext, viewContext)
+        stroke(path: path, cgContext, viewContext, width, dirtyRect)
     case .circular(let path):
-        trace(path: path, cgContext, viewContext)
+        stroke(path: path, cgContext, viewContext, width, dirtyRect)
+    }
+}
+
+private func stroke(
+    visiblePath path: SomeFinitePath, _ cgContext: CGContext, _ viewContext: ViewContext,
+    _ width: Distance
+) {
+    switch path {
+    case .linear(let path):
+        stroke(visiblePath: path, cgContext, viewContext, width)
+    case .circular(let path):
+        stroke(visiblePath: path, cgContext, viewContext, width)
     case .compound(let path):
-        trace(path: path, cgContext, viewContext)
+        stroke(visiblePath: path, cgContext, viewContext, width)
     }
 }
 
-public func trace(loop: Loop, _ cgContext: CGContext, _ viewContext: ViewContext) {
-    trace(path: loop.underlying, cgContext, viewContext)
+public func stroke(
+    path: SomeFinitePath, _ cgContext: CGContext, _ viewContext: ViewContext, _ width: Distance,
+    _ dirtyRect: Rect
+) {
+    switch path {
+    case .linear(let path):
+        stroke(path: path, cgContext, viewContext, width, dirtyRect)
+    case .circular(let path):
+        stroke(path: path, cgContext, viewContext, width, dirtyRect)
+    case .compound(let path):
+        stroke(path: path, cgContext, viewContext, width, dirtyRect)
+    }
+}
+
+public func stroke(
+    loop: Loop, _ cgContext: CGContext, _ viewContext: ViewContext, width: Distance, dirtyRect: Rect
+) {
+    stroke(path: loop.underlying, cgContext, viewContext, width, dirtyRect)
 }

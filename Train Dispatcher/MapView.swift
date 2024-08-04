@@ -381,6 +381,7 @@ class MapView: NSView,
     }
 
     override func draw(_ viewRect: CGRect) {
+        let t = Date.now
         let mapRect = toMapRect(viewRect: viewRect)
 
         if let map = map {
@@ -392,7 +393,7 @@ class MapView: NSView,
         }
 
         if let map = map {
-            Tracks.draw(tracks: map.trackMap.tracks, context, self)
+            Tracks.draw(tracks: map.trackMap.tracks, context, self, mapRect)
             map.vehicles.forEach { $0.draw(context, self, mapRect) }
             map.containers.forEach { $0.draw(context, self, mapRect) }
         }
@@ -401,6 +402,9 @@ class MapView: NSView,
         if showScale {
             drawScale()
         }
+
+        let d = Date.now.timeIntervalSince(t)
+        drawFPS(Int(1.0 / d))
     }
 
     private var gridScale: Float64 {
@@ -501,6 +505,22 @@ class MapView: NSView,
         context.addLine(to: CGPoint(x: bounds.maxX - measurementWidth - 4, y: bounds.minY + 4))
         context.addLine(to: CGPoint(x: bounds.maxX - measurementWidth - 4, y: bounds.minY + 12))
         context.strokePath()
+
+        context.restoreGState()
+    }
+
+    private func drawFPS(_ fps: Int) {
+        context.saveGState()
+
+        let font = CTFontCreateWithName("Helvetica" as CFString, 11.0, nil)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font, .foregroundColor: CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0),
+        ]
+        let length = NSAttributedString(string: "FPS: \(fps)", attributes: attributes)
+        let line = CTLineCreateWithAttributedString(length)
+
+        context.textPosition = CGPoint(x: bounds.minX + 4, y: bounds.minY + 4)
+        CTLineDraw(line, context)
 
         context.restoreGState()
     }

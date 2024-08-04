@@ -141,10 +141,10 @@ public struct Quantity<T: Unit>: Equatable, Hashable, Comparable, Codable, Custo
     }
 
     public static func == (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool {
-        abs(lhs.value - rhs.value) <= 1e-9
+        abs(lhs.value - rhs.value) <= 5e-8
     }
     public static func != (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool {
-        abs(lhs.value - rhs.value) > 1e-9
+        abs(lhs.value - rhs.value) > 5e-8
     }
     public static func < (lhs: Quantity<T>, rhs: Quantity<T>) -> Bool {
         lhs != rhs && lhs.value < rhs.value
@@ -204,10 +204,23 @@ public typealias Mass = Quantity<Kilograms>
 extension Double {
     public var deg: Angle { Angle(self / 180.0 * Float64.pi) }
     public var s: Duration { Duration(self) }
+    public var h: Duration { Duration(self * 3600.0) }
     public var m: Distance { Distance(self) }
+    public var km: Distance { Distance(self * 1000.0) }
     public var m²: Distance² { Distance²(self) }
     public var m³: Distance³ { Distance³(self) }
     public var m⁴: Distance⁴ { Distance⁴(self) }
+    public var mps: Speed { Speed(self) }
+    public var kph: Speed { Speed(self / 3.6) }
+}
+
+extension Angle {
+    var isHorizontal: Bool {
+        abs((self / 180.0.deg).truncatingRemainder(dividingBy: 1.0)) < 1e-9
+    }
+    var isVertical: Bool {
+        abs(((self - 90.0.deg) / 180.0.deg).truncatingRemainder(dividingBy: 1.0)) < 1e-9
+    }
 }
 
 public func abs<T>(_ q: Quantity<T>) -> Quantity<T> {
@@ -218,7 +231,15 @@ public func min<T>(_ xs: Quantity<T>...) -> Quantity<T> {
     Quantity<T>(xs.map { $0.value }.reduce(xs.first!.value, min))
 }
 
+public func min<T>(_ xs: [Quantity<T>]) -> Quantity<T> {
+    Quantity<T>(xs.map { $0.value }.reduce(xs.first!.value, min))
+}
+
 public func max<T>(_ xs: Quantity<T>...) -> Quantity<T> {
+    Quantity<T>(xs.map { $0.value }.reduce(xs.first!.value, max))
+}
+
+public func max<T>(_ xs: [Quantity<T>]) -> Quantity<T> {
     Quantity<T>(xs.map { $0.value }.reduce(xs.first!.value, max))
 }
 

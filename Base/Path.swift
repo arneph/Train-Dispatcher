@@ -129,6 +129,8 @@ public protocol FinitePath: Path {
     func firstPointOnPath(atDistance d: Distance, after x: Position) -> Position?
     func lastPointOnPath(atDistance d: Distance, before x: Position) -> Position?
 
+    func segments(inRect: Rect) -> [ClosedRange<Position>]
+
     func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)?
     static func combine(_ a: Self, _ b: Self) -> Self?
     static func combine(_ paths: [Self]) -> Self?
@@ -158,6 +160,23 @@ extension FinitePath {
         guard let (tmp, partC) = self.split(at: x2) else { return nil }
         guard let (partA, partB) = tmp.split(at: x1) else { return nil }
         return (partA, partB, partC)
+    }
+
+    public func subPath(from x1: Position, to x2: Position) -> SomeFinitePath? {
+        guard 0.0.m <= x1 && x1 < x2 && x2 <= self.length else { return nil }
+        return if x1 == 0.0.m && x2 == self.length {
+            switch self.finitePathType {
+            case .linear: .linear(self as! LinearPath)
+            case .circular: .circular(self as! CircularPath)
+            case .compound: .compound(self as! CompoundPath)
+            }
+        } else if x1 == 0.0.m {
+            self.split(at: x2)!.0
+        } else if x2 == self.length {
+            self.split(at: x1)!.1
+        } else {
+            self.split(at: x1, and: x2)!.1
+        }
     }
 }
 
@@ -263,6 +282,54 @@ public struct LinearPath: FinitePath {
         pointsOnPath(atDistance: d, from: point(at: max)!).filter { $0 <= max }.last
     }
 
+    public func segments(inRect rect: Rect) -> [ClosedRange<Position>] {
+        if start.x < rect.minX && end.x < rect.minX {
+            return []
+        } else if start.x > rect.maxX && end.x > rect.maxX {
+            return []
+        } else if start.y < rect.minY && end.y < rect.minY {
+            return []
+        } else if start.y > rect.maxY && end.y > rect.maxY {
+            return []
+        } else if rect.contains(start) && rect.contains(end) {
+            return [0.0.m...length]
+        } else if start.x == end.x {
+            return if start.y < end.y {
+                [max(0.0.m, rect.minY - start.y)...min(length, rect.maxY - start.y)]
+            } else {
+                [max(0.0.m, start.y - rect.maxY)...min(length, start.y - rect.minY)]
+            }
+        } else if start.y == end.y {
+            return if start.x < end.x {
+                [max(0.0.m, rect.minX - start.x)...min(length, rect.maxX - start.x)]
+            } else {
+                [max(0.0.m, start.x - rect.maxX)...min(length, start.x - rect.minX)]
+            }
+        } else {
+            let line = Line(through: start, and: end)!
+            let xs = rect.lines.compactMap { side -> Distance? in
+                guard let (r, s) = Line.argsForIntersection(side, line) else { return nil }
+                guard 0.0.m <= s, s <= length, 0.0.m <= r, rect.contains(side.point(at: r)) else {
+                    return nil
+                }
+                return s
+            }
+            if xs.count == 0 {
+                return []
+            } else if xs.count == 1 {
+                if rect.contains(start) {
+                    return [0.0.m...xs[0]]
+                } else if rect.contains(end) {
+                    return [xs[0]...length]
+                }
+            } else if xs.count == 2 {
+                return [min(xs)...max(xs)]
+            }
+            assertionFailure("unexpected number of xs")
+            return [0.0.m...length]
+        }
+    }
+
     public func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
         if x <= 0.0.m || x >= length {
             return nil
@@ -322,7 +389,7 @@ public struct CircularPath: FinitePath {
         return CircularPath(center: center, radius: offsetRadius, circleRange: circleRange)
     }
 
-    private func toCircleAngle(_ x: Position) -> CircleAngle {
+    public func toCircleAngle(_ x: Position) -> CircleAngle {
         CircleAngle(circleRange.start + circleRange.delta * (x / length))
     }
 
@@ -399,6 +466,40 @@ public struct CircularPath: FinitePath {
         pointsOnPath(atDistance: d, from: point(at: max)!).filter { $0 <= max }.last
     }
 
+    public func segments(inRect rect: Rect) -> [ClosedRange<Position>] {
+        if !Rect.intersect(Rect.square(around: center, length: 2.0 * radius), rect) {
+            return []
+        } else if rect.contains(Rect.square(around: center, length: 2.0 * radius)) {
+            return [0.0.m...length]
+        } else {
+            let xs: [Position] =
+                (rect.lines.flatMap { side -> [Distance] in
+                    side.argsForPoints(
+                        atDistance: radius,
+                        from: center
+                    ).compactMap { x -> Distance? in
+                        let p = side.point(at: x)
+                        let a = CircleAngle(angle(from: center, to: p))
+                        guard circleRange.contains(a) && rect.contains(p) else {
+                            return nil
+                        }
+                        return toPosition(a)
+                    }
+                } + (rect.contains(start) ? [0.0.m] : []) + (rect.contains(end) ? [length] : []))
+                .sorted().reduce([]) { list, x in
+                    (list.last == x) ? list : list + [x]
+                }
+            assert(xs.count % 2 == 0, "Expected even number of xs")
+            var segments: [ClosedRange<Position>] = []
+            for i in 0..<xs.count / 2 {
+                let x1 = xs[2 * i]
+                let x2 = xs[2 * i + 1]
+                segments.append(x1...x2)
+            }
+            return segments
+        }
+    }
+
     public func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
         if !range.contains(x) {
             return nil
@@ -427,7 +528,7 @@ public struct CircularPath: FinitePath {
     public init?(
         center: Point, radius: Distance, circleRange: CircleRange
     ) {
-        if radius * circleRange.absDelta < 0.001.m {
+        if radius * circleRange.absDelta < 1e-6.m {
             return nil
         }
         self.center = center
@@ -574,6 +675,13 @@ public enum AtomicFinitePath: FinitePath {
         switch self {
         case .linear(let path): path.lastPointOnPath(atDistance: d, before: x)
         case .circular(let path): path.lastPointOnPath(atDistance: d, before: x)
+        }
+    }
+
+    public func segments(inRect rect: Rect) -> [ClosedRange<Position>] {
+        switch self {
+        case .linear(let path): path.segments(inRect: rect)
+        case .circular(let path): path.segments(inRect: rect)
         }
     }
 
@@ -784,6 +892,29 @@ public struct CompoundPath: FinitePath {
             }
         }
         return nil
+    }
+
+    public func segments(inRect rect: Rect) -> [ClosedRange<Position>] {
+        let segmentParts = zip(components, contexts).flatMap { (component, context) in
+            let localSegments = component.segments(inRect: rect)
+            let globalSegments = localSegments.map {
+                context.toGlobal($0.lowerBound)...context.toGlobal($0.upperBound)
+            }
+            return globalSegments
+        }
+        var segments: [ClosedRange<Position>] = []
+        var i = 0
+        while i < segmentParts.count {
+            let start = segmentParts[i].lowerBound
+            var end = segmentParts[i].upperBound
+            i += 1
+            while i < segmentParts.count && segmentParts[i].lowerBound == end {
+                end = segmentParts[i].upperBound
+                i += 1
+            }
+            segments.append(start...end)
+        }
+        return segments
     }
 
     public func split(at x: Position) -> (SomeFinitePath, SomeFinitePath)? {
@@ -1055,6 +1186,14 @@ public enum SomeFinitePath: FinitePath {
         case .linear(let path): path.lastPointOnPath(atDistance: d, before: x)
         case .circular(let path): path.lastPointOnPath(atDistance: d, before: x)
         case .compound(let path): path.lastPointOnPath(atDistance: d, before: x)
+        }
+    }
+
+    public func segments(inRect rect: Rect) -> [ClosedRange<Position>] {
+        switch self {
+        case .linear(let path): path.segments(inRect: rect)
+        case .circular(let path): path.segments(inRect: rect)
+        case .compound(let path): path.segments(inRect: rect)
         }
     }
 

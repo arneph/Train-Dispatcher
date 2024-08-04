@@ -139,7 +139,7 @@ class TrackPen: Tool {
         state = .none
     }
 
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _: Rect) {
+    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
         switch state {
         case .none: break
         case .hovering(let penPoint):
@@ -149,14 +149,13 @@ class TrackPen: Tool {
         case .dragging(let penDrag):
             cgContext.saveGState()
             if let proposal = penDrag.proposal {
-                trace(path: proposal.path, cgContext, viewContext)
-                cgContext.setLineWidth(viewContext.toViewDistance(trackBedWidth))
                 if proposal.valid {
                     cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
                 } else {
                     cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5))
                 }
-                cgContext.strokePath()
+                cgContext.setLineWidth(viewContext.toViewDistance(trackBedWidth))
+                stroke(path: proposal.path, cgContext, viewContext, trackBedWidth, dirtyRect)
             } else {
                 cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
                 cgContext.setLineWidth(max(viewContext.toViewDistance(trackBedWidth / 4.0), 3.0))

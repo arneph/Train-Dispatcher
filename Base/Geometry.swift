@@ -92,7 +92,33 @@ public struct Rect: Equatable, Hashable, Codable, CustomStringConvertible,
     public var minXY: Point { origin }
     public var maxXY: Point { Point(x: x + width, y: y + height) }
 
+    public var corners: [Point] {
+        [
+            origin,
+            Point(x: x + width, y: y),
+            Point(x: x + width, y: y + height),
+            Point(x: x, y: y + height),
+        ]
+    }
+    public var lines: [Line] {
+        let points = corners
+        return [
+            Line(through: points[0], and: points[1])!,
+            Line(through: points[1], and: points[2])!,
+            Line(through: points[2], and: points[3])!,
+            Line(through: points[3], and: points[0])!,
+        ]
+    }
+
     public var bounds: Rect { self }
+
+    public func contains(_ p: Point) -> Bool {
+        xRange.contains(p.x) && yRange.contains(p.y)
+    }
+
+    public func contains(_ rect: Rect) -> Bool {
+        contains(rect.minXY) && contains(rect.maxXY)
+    }
 
     public func insetBy(dx: Distance, dy: Distance) -> Rect {
         Rect(x: x + dx, y: y + dy, width: width - 2.0 * dx, height: height - 2.0 * dy)
@@ -263,9 +289,35 @@ public struct Line {
         base + direction * s
     }
 
+    public func arg(for point: Point) -> Distance? {
+        let d = point - base
+        let s1 = d.x / direction.x
+        let s2 = d.y / direction.y
+        return if orientation.isHorizontal {
+            d.y == 0.0.m ? s1 : nil
+        } else if orientation.isVertical {
+            d.x == 0.0.m ? s2 : nil
+        } else {
+            s1 == s2 ? s1 : nil
+        }
+    }
+
     public func closestPoint(to target: Point) -> Point {
         let d = Base.direction(from: base, to: target)
         return base + direction * scalar(d, direction)
+    }
+
+    public func argsForPoints(atDistance radius: Distance, from center: Point) -> [Distance] {
+        let d = base - center
+        let a = direction.x * direction.x + direction.y * direction.y
+        let b = 2.0 * (d.x * direction.x + d.y * direction.y)
+        let c = d.x * d.x + d.y * d.y - radius * radius
+        let discriminant = b * b - 4.0 * a * c
+        if discriminant < 0.0.m² { return [] }
+        if discriminant == 0.0.m² { return [-b / (2.0 * a)] }
+        let s1 = (-b + sqrt(discriminant)) / (2.0 * a)
+        let s2 = (-b - sqrt(discriminant)) / (2.0 * a)
+        return [s1, s2].sorted()
     }
 
     public static func intersection(_ a: Line, _ b: Line) -> Point? {
@@ -283,4 +335,17 @@ public struct Line {
         let y = (c1 * d34.y - d12.y * c2) / denominator
         return Point(x: x, y: y)
     }
+
+    public static func argsForIntersection(_ a: Line, _ b: Line) -> (Distance, Distance)? {
+        let p1 = a.base
+        let p2 = a.base + a.direction * 1.0.m
+        let p3 = b.base
+        let p4 = b.base + b.direction * 1.0.m
+        let denominator = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x)
+        guard denominator != 0.0.m² else { return nil }
+        let r = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / denominator
+        let s = -((p1.x - p2.x) * (p1.y - p3.y) - (p1.y - p2.y) * (p1.x - p3.x)) / denominator
+        return (Distance(r), Distance(s))
+    }
+
 }

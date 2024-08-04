@@ -302,7 +302,7 @@ final class BR186: BaseVehicle, Vehicle {
         let frontContactSupport1P2 = center + contact2L ** forward + topAxleW ** left
         let frontContactSupport2P1 = center + contact1L ** forward + topAxleW ** right
         let frontContactSupport2P2 = center + contact2L ** forward + topAxleW ** right
-        
+
         cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
         cgContext.setLineWidth(viewContext.toViewDistance(0.08.m))
         cgContext.move(to: viewContext.toViewPoint(frontContactSupport1P1))
@@ -311,7 +311,7 @@ final class BR186: BaseVehicle, Vehicle {
         cgContext.move(to: viewContext.toViewPoint(frontContactSupport2P1))
         cgContext.addLine(to: viewContext.toViewPoint(frontContactSupport2P2))
         cgContext.strokePath()
-        
+
         let frontContact1P1 = center + contact1L ** forward + contactW ** left
         let frontContact1P2 = center + contact1L ** forward + contactW ** right
         let frontContact2P1 = center + contact2L ** forward + contactW ** left
@@ -410,12 +410,12 @@ final class BR186: BaseVehicle, Vehicle {
         cgContext.move(to: viewContext.toViewPoint(backUpperArm2P1))
         cgContext.addLine(to: viewContext.toViewPoint(backUpperArm2P2))
         cgContext.strokePath()
-        
+
         let backContactSupport1P1 = center + contact1L ** backward + topAxleW ** left
         let backContactSupport1P2 = center + contact2L ** backward + topAxleW ** left
         let backContactSupport2P1 = center + contact1L ** backward + topAxleW ** right
         let backContactSupport2P2 = center + contact2L ** backward + topAxleW ** right
-        
+
         cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
         cgContext.setLineWidth(viewContext.toViewDistance(0.08.m))
         cgContext.move(to: viewContext.toViewPoint(backContactSupport1P1))
