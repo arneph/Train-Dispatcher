@@ -13,25 +13,46 @@ import Tracks
 final class Map: Codable {
     let groundMap: GroundMap
     let trackMap: TrackMap
-    var vehicles: [Vehicle] = []
+    var trains: [Train] = []
     var containers: [Container] = []
+
+    var lastTick: Date = Date.now
+    var timer: Timer? = nil
 
     init() {
         self.groundMap = GroundMap()
         self.trackMap = TrackMap()
+        self.lastTick = Date.now
+        self.timer = Timer.scheduledTimer(withTimeInterval: 0.001, repeats: true) { timer in
+            let currentTick = Date.now
+            let delta = Duration(self.lastTick.distance(to: currentTick))
+
+            if let train = self.trains.first {
+                let x = train.pathPosition + delta * 100.0.kph
+                if x > train.path.length {
+                    timer.invalidate()
+                    return
+                }
+                train.set(
+                    position: VehiclePosition(
+                        path: self.trains.first!.path,
+                        pathPosition: x,
+                        direction: .forward))
+            }
+
+            self.lastTick = currentTick
+        }
     }
 
     private enum CodingKeys: String, CodingKey {
-        case ground, tracks, vehicles, containers
+        case ground, tracks, trains, containers
     }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.groundMap = try values.decode(GroundMap.self, forKey: .ground)
         self.trackMap = try values.decode(TrackMap.self, forKey: .tracks)
-        self.vehicles = try values.decode(
-            [EncodedVehicle].self, forKey: .vehicles
-        ).map { $0.underlying }
+        self.trains = try values.decode([Train].self, forKey: .trains)
         self.containers = try values.decode([Container].self, forKey: .containers)
     }
 
@@ -39,7 +60,7 @@ final class Map: Codable {
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(groundMap, forKey: .ground)
         try values.encode(trackMap, forKey: .tracks)
-        try values.encode(vehicles.map { EncodedVehicle($0) }, forKey: .vehicles)
+        try values.encode(trains, forKey: .trains)
         try values.encode(containers, forKey: .containers)
     }
 

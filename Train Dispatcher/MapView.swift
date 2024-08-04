@@ -24,6 +24,7 @@ class MapView: NSView,
     NSMenuItemValidation,
     GroundMapObserver,
     TrackMapObserver,
+    TrainObserver,
     ToolOwner,
     ViewContext
 {
@@ -32,12 +33,14 @@ class MapView: NSView,
             if delegate !== newValue {
                 delegate?.map?.groundMap.remove(observer: self)
                 delegate?.map?.trackMap.remove(observer: self)
+                delegate?.map?.trains.forEach { $0.remove(observer: self) }
             }
         }
         didSet {
             if oldValue !== delegate {
                 delegate?.map?.groundMap.add(observer: self)
                 delegate?.map?.trackMap.add(observer: self)
+                delegate?.map?.trains.forEach { $0.add(observer: self) }
                 needsDisplay = true
             }
         }
@@ -84,6 +87,11 @@ class MapView: NSView,
     }
 
     func connectionChanged(_ connection: TrackConnection, onMap map: TrackMap) {
+        needsDisplay = true
+    }
+
+    // MARK: - TrainObserver
+    func positionChanged(_ train: Train) {
         needsDisplay = true
     }
 
@@ -394,7 +402,7 @@ class MapView: NSView,
 
         if let map = map {
             Tracks.draw(tracks: map.trackMap.tracks, context, self, mapRect)
-            map.vehicles.forEach { $0.draw(context, self, mapRect) }
+            map.trains.forEach { $0.draw(context, self, mapRect) }
             map.containers.forEach { $0.draw(context, self, mapRect) }
         }
         tool?.draw(context, self, mapRect)

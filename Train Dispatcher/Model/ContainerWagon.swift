@@ -15,6 +15,8 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
     static let platformLength = Container.length + 0.40.m
     static let width = Container.width + 0.54.m
 
+    var length: Distance { ContainerWagon.length }
+
     var container: Container? {
         didSet {
             if oldValue === container {
@@ -37,7 +39,7 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
         self.container = container
     }
 
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case container
     }
 
@@ -56,6 +58,9 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
 
     // MARK: -  Drawing
     func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
+        if !Rect.intersect(dirtyRect, Rect.square(around: center, length: ContainerWagon.length)) {
+            return
+        }
         cgContext.saveGState()
 
         let p1 =

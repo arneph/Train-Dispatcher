@@ -54,6 +54,8 @@
 		142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */; };
 		142D680D2B9D86D500130757 /* TrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680C2B9D86D400130757 /* TrackMapObserver.swift */; };
 		145411372C4D5CBD006CF940 /* BR186.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411362C4D5CBD006CF940 /* BR186.swift */; };
+		145411392C55EA9E006CF940 /* ICE3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411382C55EA9E006CF940 /* ICE3.swift */; };
+		1454113B2C55F5D2006CF940 /* Train.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454113A2C55F5D2006CF940 /* Train.swift */; };
 		1461ED782BF188D800119738 /* PanelSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1461ED772BF188D800119738 /* PanelSelector.swift */; };
 		1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C7FA2B54BF730042332D /* TrackPen.swift */; };
 		1465C81D2B673DFF0042332D /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81C2B673DFF0042332D /* Tool.swift */; };
@@ -278,6 +280,8 @@
 		144055332B7968BC00A2C5D9 /* Path_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path_Tests.swift; sourceTree = "<group>"; };
 		144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Queries.swift"; sourceTree = "<group>"; };
 		145411362C4D5CBD006CF940 /* BR186.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BR186.swift; sourceTree = "<group>"; };
+		145411382C55EA9E006CF940 /* ICE3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICE3.swift; sourceTree = "<group>"; };
+		1454113A2C55F5D2006CF940 /* Train.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Train.swift; sourceTree = "<group>"; };
 		1461ED772BF188D800119738 /* PanelSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSelector.swift; sourceTree = "<group>"; };
 		1465C7FA2B54BF730042332D /* TrackPen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen.swift; sourceTree = "<group>"; };
 		1465C7FC2B5B54580042332D /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
@@ -553,10 +557,12 @@
 			isa = PBXGroup;
 			children = (
 				14A2AB922B4035000044861E /* Vehicle.swift */,
+				1454113A2C55F5D2006CF940 /* Train.swift */,
 				14E0827B2B158F7600AA29C2 /* Container.swift */,
 				14A2AB902B402D3B0044861E /* ContainerWagon.swift */,
-				14E0827F2B18299600AA29C2 /* Map.swift */,
 				145411362C4D5CBD006CF940 /* BR186.swift */,
+				145411382C55EA9E006CF940 /* ICE3.swift */,
+				14E0827F2B18299600AA29C2 /* Map.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -774,14 +780,12 @@
 					};
 					142D67A52B9D117000130757 = {
 						CreatedOnToolsVersion = 15.3;
-						TestTargetID = 14E0825B2B156E0B00AA29C2;
 					};
 					142D67D42B9D663D00130757 = {
 						CreatedOnToolsVersion = 15.3;
 					};
 					142D67DB2B9D663E00130757 = {
 						CreatedOnToolsVersion = 15.3;
-						TestTargetID = 14E0825B2B156E0B00AA29C2;
 					};
 					14A577952C0CCC9D00419E09 = {
 						CreatedOnToolsVersion = 15.4;
@@ -789,7 +793,6 @@
 					};
 					14A5779C2C0CCC9D00419E09 = {
 						CreatedOnToolsVersion = 15.4;
-						TestTargetID = 14E0825B2B156E0B00AA29C2;
 					};
 					14C7749F2B1D18890096BC97 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -991,6 +994,7 @@
 				1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */,
 				1465C81D2B673DFF0042332D /* Tool.swift in Sources */,
 				14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */,
+				1454113B2C55F5D2006CF940 /* Train.swift in Sources */,
 				1461ED782BF188D800119738 /* PanelSelector.swift in Sources */,
 				14A2AB932B4035000044861E /* Vehicle.swift in Sources */,
 				14E082732B156E9600AA29C2 /* MapView.swift in Sources */,
@@ -1000,6 +1004,7 @@
 				14E082802B18299600AA29C2 /* Map.swift in Sources */,
 				145411372C4D5CBD006CF940 /* BR186.swift in Sources */,
 				146B2CCF2BDDE2A9008D67D5 /* TreePlacer.swift in Sources */,
+				145411392C55EA9E006CF940 /* ICE3.swift in Sources */,
 				14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1242,7 +1247,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
 			};
 			name = Debug;
 		};
@@ -1266,7 +1270,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
 			};
 			name = Release;
 		};
@@ -1380,7 +1383,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
 			};
 			name = Debug;
 		};
@@ -1404,7 +1406,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
 			};
 			name = Release;
 		};
@@ -1518,7 +1519,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
 			};
 			name = Debug;
 		};
@@ -1541,7 +1541,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train Dispatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Train Dispatcher";
 			};
 			name = Release;
 		};

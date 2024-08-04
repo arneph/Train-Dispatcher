@@ -13,6 +13,8 @@ final class BR186: BaseVehicle, Vehicle {
     static let length = 18.90.m
     static let width = 2.978.m
 
+    var length: Distance { BR186.length }
+
     // MARK: -  Drawing
     func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
         cgContext.saveGState()

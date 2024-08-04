@@ -10,56 +10,81 @@ import Cocoa
 import Foundation
 import Tracks
 
+private func randomPath() -> SomeFinitePath {
+    var path: SomeFinitePath = .linear(
+        LinearPath(
+            start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!)
+    while path.length < 30.0.km {
+        let r = Distance(Double.random(in: 100.0...400.0))
+        let t = Bool.random()
+        let d = t ? +90.0.deg : -90.0.deg
+        let c = path.end + (path.endOrientation + d) ** r
+        let alpha = CircleAngle(angle(from: c, to: path.end))
+        let delta = t ? Double.random(in: 15.0...90.0).deg : -Double.random(in: 15.0...90.0).deg
+        let curve = CircularPath(center: c, radius: r, startAngle: alpha, deltaAngle: delta)!
+        let l = Distance(Double.random(in: 20.0...500.0))
+        let straight = LinearPath(
+            start: curve.end,
+            end: curve.end + curve.endOrientation.asAngle ** l)!
+        path = SomeFinitePath.combine([path, .circular(curve), .linear(straight)])!
+    }
+    return path
+}
+
 private func defaultMap() -> Map {
     let map = Map()
+    let middlePath = randomPath()
+    let pathA = middlePath.offsetLeft(by: 2.5.m)!
+    let pathB = middlePath.offsetRight(by: 2.5.m)!
     let (_, _) = map.trackMap.addTrack(
-        withPath: .compound(
-            CompoundPath(components: [
-                .linear(
-                    LinearPath(
-                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!),
-                .circular(
-                    CircularPath(
-                        center: Point(x: 0.0.m, y: 120.0.m), radius: 120.0.m,
-                        startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(0.0.deg),
-                        direction: .positive)!),
-            ])!), startConnection: .none, endConnection: .none)
-    map.vehicles = [
+        withPath: pathA, startConnection: .none, endConnection: .none)
+    let (_, _) = map.trackMap.addTrack(
+        withPath: pathB, startConnection: .none, endConnection: .none)
+    let numContainerWagons = 40
+    let containerWagons: [any Vehicle] = (0..<numContainerWagons).map { i in
         ContainerWagon(
             vehiclePosition:
                 VehiclePosition(
-                    path: LinearPath(
-                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
-                    pathPosition: 10.0.m)),
-        ContainerWagon(
+                    path: pathB,
+                    pathPosition: 10.0.m + ContainerWagon.length * i,
+                    direction: .forward))
+    }
+    let engine = BR186(
+        vehiclePosition:
+            VehiclePosition(
+                path: pathB,
+                pathPosition: 10.0.m + ContainerWagon.length * (Float64(numContainerWagons) - 0.5)
+                    + BR186.length * 0.5,
+                direction: .forward))
+    let freightTrain = Train(vehicles: (containerWagons + [engine]).reversed())
+    let numICEWagons = 6
+    let iceBack = ICE3Head(
+        vehiclePosition: VehiclePosition(
+            path: pathA,
+            pathPosition: 15.0.m,
+            direction: .backward))
+    let iceWagons: [any Vehicle] = (0..<numICEWagons).map { i in
+        ICE3Wagon(
             vehiclePosition:
                 VehiclePosition(
-                    path: LinearPath(
-                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
-                    pathPosition: 10.0.m + ContainerWagon.length)),
-        ContainerWagon(
-            vehiclePosition:
-                VehiclePosition(
-                    path: LinearPath(
-                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
-                    pathPosition: 10.0.m + ContainerWagon.length * 2.0)),
-        BR186(
-            vehiclePosition:
-                VehiclePosition(
-                    path: LinearPath(
-                        start: Point(x: -100.0.m, y: 0.0.m), end: Point(x: 0.0.m, y: 0.0.m))!,
-                    pathPosition: 10.0.m + ContainerWagon.length * 2.5 + BR186.length * 0.5)),
-        ContainerWagon(
-            vehiclePosition:
-                VehiclePosition(
-                    path: CircularPath(
-                        center: Point(x: 0.0.m, y: 120.0.m), radius: 120.0.m,
-                        startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(0.0.deg),
-                        direction: .positive)!, pathPosition: 30.0.m)),
-    ]
+                    path: pathA,
+                    pathPosition: 15.0.m + 0.5 * (ICE3Head.length + ICE3Wagon.length) + i
+                        * ICE3Wagon.length,
+                    direction: i < numICEWagons / 2 ? .backward : .forward),
+            hasPantograph: i == 0 || i == numICEWagons - 1)
+    }
+    let iceFront = ICE3Head(
+        vehiclePosition:
+            VehiclePosition(
+                path: pathA,
+                pathPosition: 15.0.m + ICE3Head.length + 6.0 * ICE3Wagon.length,
+                direction: .forward))
+    let ice = Train(vehicles: [iceBack] + iceWagons + [iceFront])
+    map.trains = [freightTrain, ice]
     map.containers = [
-        Container(center: Point(x: 0.0.m, y: 10.0.m), orientation: CircleAngle(60.0.deg))
+        Container(center: Point(x: 0.0.m, y: 20.0.m), orientation: CircleAngle(60.0.deg))
     ]
+    map.timer?.fire()
     return map
 }
 
