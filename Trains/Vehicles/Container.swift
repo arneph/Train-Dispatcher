@@ -9,13 +9,13 @@ import Base
 import CoreGraphics
 import Foundation
 
-protocol ContainerOwner {
+public protocol ContainerOwner {
     func position(for: Container) -> ObjectPosition
 }
 
-final class Container: Object {
-    static let length = 12.192.m
-    static let width = 2.438.m
+public final class Container: Object {
+    public static let length = 12.192.m
+    public static let width = 2.438.m
 
     private enum Positioning {
         case freely(ObjectPosition)
@@ -23,7 +23,7 @@ final class Container: Object {
     }
     private var positioning: Positioning
 
-    var objectPosition: ObjectPosition {
+    public var objectPosition: ObjectPosition {
         switch positioning {
         case .freely(let position):
             position
@@ -31,13 +31,13 @@ final class Container: Object {
             owner.position(for: self)
         }
     }
-    var center: Point { objectPosition.center }
-    var orientation: CircleAngle { objectPosition.orientation }
+    public var center: Point { objectPosition.center }
+    public var orientation: CircleAngle { objectPosition.orientation }
 
-    func set(owner: ContainerOwner) {
+    public func set(owner: ContainerOwner) {
         positioning = .byOwner(owner)
     }
-    func removeOwner() {
+    public func removeOwner() {
         switch positioning {
         case .freely:
             break
@@ -46,10 +46,10 @@ final class Container: Object {
         }
     }
 
-    var forward: Angle { orientation.asAngle }
-    var left: Angle { orientation + 90.0.deg }
-    var right: Angle { orientation - 90.0.deg }
-    var backward: Angle { orientation + 180.deg }
+    public var forward: Angle { orientation.asAngle }
+    public var left: Angle { orientation + 90.0.deg }
+    public var right: Angle { orientation - 90.0.deg }
+    public var backward: Angle { orientation + 180.deg }
 
     private static let colors =
         [
@@ -64,33 +64,33 @@ final class Container: Object {
             CGColor.init(red: 1.0, green: 0.5, blue: 0.0, alpha: 1.0),
         ]
     private let colorIndex: Int
-    var color: CGColor { Container.colors[colorIndex] }
+    public var color: CGColor { Container.colors[colorIndex] }
 
-    convenience init(center: Point, orientation: CircleAngle) {
+    public convenience init(center: Point, orientation: CircleAngle) {
         self.init(objectPosition: ObjectPosition(center: center, orientation: orientation))
     }
 
-    convenience init(center: Point, orientation: CircleAngle, colorIndex: Int) {
+    public convenience init(center: Point, orientation: CircleAngle, colorIndex: Int) {
         self.init(
             objectPosition: ObjectPosition(center: center, orientation: orientation),
             colorIndex: colorIndex)
     }
 
-    convenience init(objectPosition: ObjectPosition) {
+    public convenience init(objectPosition: ObjectPosition) {
         self.init(
             objectPosition: objectPosition, colorIndex: Container.colors.indices.randomElement()!)
     }
 
-    init(objectPosition: ObjectPosition, colorIndex: Int) {
+    public init(objectPosition: ObjectPosition, colorIndex: Int) {
         self.positioning = .freely(objectPosition)
         self.colorIndex = colorIndex
     }
 
-    convenience init(owner: ContainerOwner) {
+    public convenience init(owner: ContainerOwner) {
         self.init(owner: owner, colorIndex: Container.colors.indices.randomElement()!)
     }
 
-    init(owner: ContainerOwner, colorIndex: Int) {
+    public init(owner: ContainerOwner, colorIndex: Int) {
         self.positioning = .byOwner(owner)
         self.colorIndex = colorIndex
     }
@@ -100,7 +100,7 @@ final class Container: Object {
         case colorIndex
     }
 
-    init(from decoder: Decoder) throws {
+    public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         if let position = try values.decode(ObjectPosition?.self, forKey: .position) {
             self.positioning = .freely(position)
@@ -112,7 +112,7 @@ final class Container: Object {
         colorIndex = try values.decode(Int.self, forKey: .colorIndex)
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var values = encoder.container(keyedBy: CodingKeys.self)
         switch positioning {
         case .freely(let position):
@@ -124,7 +124,7 @@ final class Container: Object {
     }
 
     // MARK: -  Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _: Rect) {
+    public func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _: Rect) {
         cgContext.saveGState()
 
         let p1 = center + 0.5 * Container.length ** forward + 0.5 * Container.width ** left

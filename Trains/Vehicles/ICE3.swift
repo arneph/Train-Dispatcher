@@ -9,14 +9,17 @@ import Base
 import CoreGraphics
 import Foundation
 
-final class ICE3Head: BaseVehicle, Vehicle {
+public final class ICE3Head: Vehicle {
     static let length = 25.835.m
     static let width = 2.950.m
 
-    var length: Distance { ICE3Head.length }
+    public override var length: Distance { ICE3Head.length }
+    public override var frontOverhang: Distance { 5.0.m }
+    public override var backOverhang: Distance { 3.3.m }
 
     // MARK: - Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
+    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
+    {
         cgContext.saveGState()
 
         drawBody(cgContext, viewContext)
@@ -217,16 +220,19 @@ final class ICE3Head: BaseVehicle, Vehicle {
 
 }
 
-final class ICE3Wagon: BaseVehicle, Vehicle {
+public final class ICE3Wagon: Vehicle {
     static let length = 24.775.m
     static let width = 2.950.m
 
-    var length: Distance { ICE3Wagon.length }
+    public override var length: Distance { ICE3Wagon.length }
+    public override var frontOverhang: Distance { 3.3.m }
+    public override var backOverhang: Distance { 3.3.m }
+
     let hasPantograph: Bool
 
-    init(vehiclePosition: VehiclePosition, hasPantograph: Bool) {
+    public init(direction: Vehicle.Direction, hasPantograph: Bool) {
         self.hasPantograph = hasPantograph
-        super.init(vehiclePosition: vehiclePosition)
+        super.init(direction: direction)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -239,14 +245,15 @@ final class ICE3Wagon: BaseVehicle, Vehicle {
         try super.init(from: values.superDecoder())
     }
 
-    override func encode(to encoder: any Encoder) throws {
+    public override func encode(to encoder: any Encoder) throws {
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(hasPantograph, forKey: .hasPantograph)
         try super.encode(to: values.superEncoder())
     }
 
     // MARK: - Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
+    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
+    {
         cgContext.saveGState()
 
         drawBody(cgContext, viewContext)
@@ -260,7 +267,7 @@ final class ICE3Wagon: BaseVehicle, Vehicle {
 
     func drawBody(_ cgContext: CGContext, _ viewContext: ViewContext) {
         let lengthRetreat = 0.5 * ICE3Wagon.length - 0.2.m
-        let roofLineWRetreat = 0.5 * ICE3Head.width - 0.25.m
+        let roofLineWRetreat = 0.5 * ICE3Wagon.width - 0.25.m
 
         let p1 = center + lengthRetreat ** forward + 0.5 * ICE3Wagon.width ** left
         let p2 = center + lengthRetreat ** forward + 0.5 * ICE3Wagon.width ** right

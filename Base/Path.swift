@@ -887,7 +887,7 @@ public struct CompoundPath: FinitePath {
             }
             for xLocal in component.pointsOnPath(atDistance: d, from: p!) {
                 if xLocal <= maxLocal {
-                    return context.toLocal(xLocal)
+                    return context.toGlobal(xLocal)
                 }
             }
         }

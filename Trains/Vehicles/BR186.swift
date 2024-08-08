@@ -9,14 +9,17 @@ import Base
 import CoreGraphics
 import Foundation
 
-final class BR186: BaseVehicle, Vehicle {
+public final class BR186: Vehicle {
     static let length = 18.90.m
     static let width = 2.978.m
 
-    var length: Distance { BR186.length }
+    public override var length: Distance { BR186.length }
+    public override var frontOverhang: Distance { 4.25.m }
+    public override var backOverhang: Distance { 4.25.m }
 
     // MARK: -  Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
+    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
+    {
         cgContext.saveGState()
 
         drawBody(cgContext, viewContext)

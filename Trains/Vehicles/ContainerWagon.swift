@@ -9,13 +9,15 @@ import Base
 import CoreGraphics
 import Foundation
 
-final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
+public final class ContainerWagon: Vehicle, ContainerOwner {
     static let length = 2.0 * bufferLength + platformLength
     static let bufferLength = 0.25.m
     static let platformLength = Container.length + 0.40.m
     static let width = Container.width + 0.54.m
 
-    var length: Distance { ContainerWagon.length }
+    public override var length: Distance { ContainerWagon.length }
+    public override var frontOverhang: Distance { 3.0.m }
+    public override var backOverhang: Distance { 3.0.m }
 
     var container: Container? {
         didSet {
@@ -27,15 +29,15 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
         }
     }
 
-    func position(for container: Container) -> ObjectPosition { objectPosition }
+    public func position(for container: Container) -> ObjectPosition { objectPosition }
 
-    override init(vehiclePosition: VehiclePosition) {
-        super.init(vehiclePosition: vehiclePosition)
+    public override init(direction: Vehicle.Direction) {
+        super.init(direction: direction)
         self.container = Container(owner: self)
     }
 
-    init(vehiclePosition: VehiclePosition, container: Container) {
-        super.init(vehiclePosition: vehiclePosition)
+    public init(direction: Vehicle.Direction, container: Container) {
+        super.init(direction: direction)
         self.container = container
     }
 
@@ -43,21 +45,22 @@ final class ContainerWagon: BaseVehicle, Vehicle, ContainerOwner {
         case container
     }
 
-    required init(from decoder: Decoder) throws {
+    public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.container = try values.decode(Container?.self, forKey: .container)
         try super.init(from: values.superDecoder())
         self.container?.set(owner: self)
     }
 
-    override func encode(to encoder: Encoder) throws {
+    public override func encode(to encoder: Encoder) throws {
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(container, forKey: .container)
         try super.encode(to: values.superEncoder())
     }
 
     // MARK: -  Drawing
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
+    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
+    {
         if !Rect.intersect(dirtyRect, Rect.square(around: center, length: ContainerWagon.length)) {
             return
         }

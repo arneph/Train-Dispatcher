@@ -9,6 +9,7 @@ import Base
 import Cocoa
 import Foundation
 import Tracks
+import Trains
 
 private func randomPath() -> SomeFinitePath {
     var path: SomeFinitePath = .linear(
@@ -41,45 +42,34 @@ private func defaultMap() -> Map {
     let (_, _) = map.trackMap.addTrack(
         withPath: pathB, startConnection: .none, endConnection: .none)
     let numContainerWagons = 40
-    let containerWagons: [any Vehicle] = (0..<numContainerWagons).map { i in
-        ContainerWagon(
-            vehiclePosition:
-                VehiclePosition(
-                    path: pathB,
-                    pathPosition: 10.0.m + ContainerWagon.length * i,
-                    direction: .forward))
+    let containerWagons: [Vehicle] = (0..<numContainerWagons).map { i in
+        ContainerWagon(direction: .forward)
     }
-    let engine = BR186(
-        vehiclePosition:
-            VehiclePosition(
-                path: pathB,
-                pathPosition: 10.0.m + ContainerWagon.length * (Float64(numContainerWagons) - 0.5)
-                    + BR186.length * 0.5,
-                direction: .forward))
-    let freightTrain = Train(vehicles: (containerWagons + [engine]).reversed())
-    let numICEWagons = 6
-    let iceBack = ICE3Head(
-        vehiclePosition: VehiclePosition(
+    let engine = BR186(direction: .forward)
+    let freightTrain = Train(
+        position: TrainPosition(
             path: pathA,
-            pathPosition: 15.0.m,
-            direction: .backward))
-    let iceWagons: [any Vehicle] = (0..<numICEWagons).map { i in
+            position: 600.0.m,
+            direction: .forward),
+        vehicles: [engine] + containerWagons)
+    let numICEWagons = 6
+    let iceBack1 = ICE3Head(direction: .backward)
+    let iceWagons1: [Vehicle] = (0..<numICEWagons).map { i in
         ICE3Wagon(
-            vehiclePosition:
-                VehiclePosition(
-                    path: pathA,
-                    pathPosition: 15.0.m + 0.5 * (ICE3Head.length + ICE3Wagon.length) + i
-                        * ICE3Wagon.length,
-                    direction: i < numICEWagons / 2 ? .backward : .forward),
+            direction: i < numICEWagons / 2 ? .forward : .backward,
             hasPantograph: i == 0 || i == numICEWagons - 1)
     }
-    let iceFront = ICE3Head(
-        vehiclePosition:
-            VehiclePosition(
-                path: pathA,
-                pathPosition: 15.0.m + ICE3Head.length + 6.0 * ICE3Wagon.length,
-                direction: .forward))
-    let ice = Train(vehicles: [iceBack] + iceWagons + [iceFront])
+    let iceFront1 = ICE3Head(direction: .forward)
+    let iceBack2 = ICE3Head(direction: .backward)
+    let iceWagons2: [Vehicle] = (0..<numICEWagons).map { i in
+        ICE3Wagon(
+            direction: i < numICEWagons / 2 ? .forward : .backward,
+            hasPantograph: i == 0 || i == numICEWagons - 1)
+    }
+    let iceFront2 = ICE3Head(direction: .forward)
+    let ice = Train(
+        position: TrainPosition(path: pathB, position: 500.0.m, direction: .forward),
+        vehicles: [iceFront1] + iceWagons1 + [iceBack1] + [iceFront2] + iceWagons2 + [iceBack2])
     map.trains = [freightTrain, ice]
     map.containers = [
         Container(center: Point(x: 0.0.m, y: 20.0.m), orientation: CircleAngle(60.0.deg))

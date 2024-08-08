@@ -9,6 +9,7 @@ import Base
 import Foundation
 import Ground
 import Tracks
+import Trains
 
 final class Map: Codable {
     let groundMap: GroundMap
@@ -28,16 +29,15 @@ final class Map: Codable {
             let delta = Duration(self.lastTick.distance(to: currentTick))
 
             if let train = self.trains.first {
-                let x = train.pathPosition + delta * 100.0.kph
-                if x > train.path.length {
+                let x = train.position.position + delta * 300.0.kph
+                if x > train.position.path.length {
                     timer.invalidate()
                     return
                 }
-                train.set(
-                    position: VehiclePosition(
-                        path: self.trains.first!.path,
-                        pathPosition: x,
-                        direction: .forward))
+                train.position = TrainPosition(
+                    path: train.position.path,
+                    position: x,
+                    direction: train.position.direction)
             }
 
             self.lastTick = currentTick

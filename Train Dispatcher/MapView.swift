@@ -12,6 +12,7 @@ import CoreText
 import Foundation
 import Ground
 import Tracks
+import Trains
 
 protocol MapViewDelegate: AnyObject {
     var map: Map? { get }
@@ -389,6 +390,12 @@ class MapView: NSView,
     }
 
     override func draw(_ viewRect: CGRect) {
+        if let vehicle = map?.trains.first?.vehicles.first {
+            mapCGPointAtViewCenter = CGPoint(
+                x: vehicle.center.x.withoutUnit,
+                y: vehicle.center.y.withoutUnit)
+        }
+
         let t = Date.now
         let mapRect = toMapRect(viewRect: viewRect)
 

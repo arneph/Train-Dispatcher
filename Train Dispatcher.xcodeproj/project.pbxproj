@@ -53,16 +53,30 @@
 		142D68092B9D864D00130757 /* TrackObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68082B9D864D00130757 /* TrackObserver.swift */; };
 		142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */; };
 		142D680D2B9D86D500130757 /* TrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680C2B9D86D400130757 /* TrackMapObserver.swift */; };
-		145411372C4D5CBD006CF940 /* BR186.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411362C4D5CBD006CF940 /* BR186.swift */; };
-		145411392C55EA9E006CF940 /* ICE3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411382C55EA9E006CF940 /* ICE3.swift */; };
-		1454113B2C55F5D2006CF940 /* Train.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454113A2C55F5D2006CF940 /* Train.swift */; };
 		1461ED782BF188D800119738 /* PanelSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1461ED772BF188D800119738 /* PanelSelector.swift */; };
 		1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C7FA2B54BF730042332D /* TrackPen.swift */; };
 		1465C81D2B673DFF0042332D /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81C2B673DFF0042332D /* Tool.swift */; };
 		146B2CCD2BDDE29F008D67D5 /* GroundBrush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146B2CCC2BDDE29F008D67D5 /* GroundBrush.swift */; };
 		146B2CCF2BDDE2A9008D67D5 /* TreePlacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146B2CCE2BDDE2A9008D67D5 /* TreePlacer.swift */; };
-		14A2AB912B402D3B0044861E /* ContainerWagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB902B402D3B0044861E /* ContainerWagon.swift */; };
-		14A2AB932B4035000044861E /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB922B4035000044861E /* Vehicle.swift */; };
+		1480093A2C602C15007D25B7 /* Trains.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148009322C602C15007D25B7 /* Trains.framework */; };
+		1480093F2C602C15007D25B7 /* Train_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1480093E2C602C15007D25B7 /* Train_Tests.swift */; };
+		148009472C602C38007D25B7 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
+		148009482C602C38007D25B7 /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1480094B2C602C38007D25B7 /* Tracks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D67D52B9D663D00130757 /* Tracks.framework */; };
+		1480094C2C602C38007D25B7 /* Tracks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D67D52B9D663D00130757 /* Tracks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		148009502C602C57007D25B7 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
+		148009512C602C57007D25B7 /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		148009542C602C57007D25B7 /* Tracks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D67D52B9D663D00130757 /* Tracks.framework */; };
+		148009552C602C57007D25B7 /* Tracks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D67D52B9D663D00130757 /* Tracks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1480095A2C602CD7007D25B7 /* TrainObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148009592C602CD7007D25B7 /* TrainObserver.swift */; };
+		1480095C2C602CEE007D25B7 /* ContainerWagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB902B402D3B0044861E /* ContainerWagon.swift */; };
+		1480095D2C602CEE007D25B7 /* BR186.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411362C4D5CBD006CF940 /* BR186.swift */; };
+		1480095E2C602CEE007D25B7 /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A2AB922B4035000044861E /* Vehicle.swift */; };
+		1480095F2C602CEE007D25B7 /* ICE3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145411382C55EA9E006CF940 /* ICE3.swift */; };
+		148009602C602CEE007D25B7 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827B2B158F7600AA29C2 /* Container.swift */; };
+		148009612C602CEE007D25B7 /* Train.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1454113A2C55F5D2006CF940 /* Train.swift */; };
+		148009622C602D72007D25B7 /* Trains.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148009322C602C15007D25B7 /* Trains.framework */; };
+		148009632C602D72007D25B7 /* Trains.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 148009322C602C15007D25B7 /* Trains.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		14A5779E2C0CCC9D00419E09 /* Ground.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14A577962C0CCC9D00419E09 /* Ground.framework */; };
 		14A577A52C0CCC9D00419E09 /* GroundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A577A42C0CCC9D00419E09 /* GroundTests.swift */; };
 		14A577A92C0CCC9D00419E09 /* Ground.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14A577962C0CCC9D00419E09 /* Ground.framework */; };
@@ -85,7 +99,6 @@
 		14E082672B156E0E00AA29C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E082662B156E0E00AA29C2 /* Assets.xcassets */; };
 		14E0826A2B156E0E00AA29C2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082682B156E0E00AA29C2 /* MainMenu.xib */; };
 		14E082732B156E9600AA29C2 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082722B156E9600AA29C2 /* MapView.swift */; };
-		14E0827C2B158F7600AA29C2 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827B2B158F7600AA29C2 /* Container.swift */; };
 		14E082802B18299600AA29C2 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827F2B18299600AA29C2 /* Map.swift */; };
 /* End PBXBuildFile section */
 
@@ -160,6 +173,48 @@
 			remoteGlobalIDString = 142D679C2B9D116F00130757;
 			remoteInfo = "Train Dispatcher Base";
 		};
+		1480093B2C602C15007D25B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 148009312C602C15007D25B7;
+			remoteInfo = Trains;
+		};
+		148009492C602C38007D25B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 142D679C2B9D116F00130757;
+			remoteInfo = Base;
+		};
+		1480094D2C602C38007D25B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 142D67D42B9D663D00130757;
+			remoteInfo = Tracks;
+		};
+		148009522C602C57007D25B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 142D679C2B9D116F00130757;
+			remoteInfo = Base;
+		};
+		148009562C602C57007D25B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 142D67D42B9D663D00130757;
+			remoteInfo = Tracks;
+		};
+		148009642C602D72007D25B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 148009312C602C15007D25B7;
+			remoteInfo = Trains;
+		};
 		14A5779F2C0CCC9D00419E09 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 14E082542B156E0B00AA29C2 /* Project object */;
@@ -205,6 +260,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				14A577AA2C0CCC9D00419E09 /* Ground.framework in Embed Frameworks */,
+				148009632C602D72007D25B7 /* Trains.framework in Embed Frameworks */,
 				142D67E92B9D663E00130757 /* Tracks.framework in Embed Frameworks */,
 				142D67B32B9D117000130757 /* Base.framework in Embed Frameworks */,
 			);
@@ -241,6 +297,30 @@
 			dstSubfolderSpec = 10;
 			files = (
 				142D67FC2B9D673800130757 /* Base.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1480094F2C602C38007D25B7 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1480094C2C602C38007D25B7 /* Tracks.framework in Embed Frameworks */,
+				148009482C602C38007D25B7 /* Base.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		148009582C602C57007D25B7 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				148009552C602C57007D25B7 /* Tracks.framework in Embed Frameworks */,
+				148009512C602C57007D25B7 /* Base.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,6 +374,10 @@
 		1465C8202B6B49140042332D /* CircleAngle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleAngle.swift; sourceTree = "<group>"; };
 		146B2CCC2BDDE29F008D67D5 /* GroundBrush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundBrush.swift; sourceTree = "<group>"; };
 		146B2CCE2BDDE2A9008D67D5 /* TreePlacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreePlacer.swift; sourceTree = "<group>"; };
+		148009322C602C15007D25B7 /* Trains.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Trains.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		148009392C602C15007D25B7 /* Trains Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Trains Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1480093E2C602C15007D25B7 /* Train_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Train_Tests.swift; sourceTree = "<group>"; };
+		148009592C602CD7007D25B7 /* TrainObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainObserver.swift; sourceTree = "<group>"; };
 		1486AD822B97FE02008C5E6C /* ChangeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeManager.swift; sourceTree = "<group>"; };
 		1486AD842B994765008C5E6C /* ChangeManager_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeManager_Tests.swift; sourceTree = "<group>"; };
 		1486AD862B9967BF008C5E6C /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
@@ -365,6 +449,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1480092F2C602C15007D25B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1480094B2C602C38007D25B7 /* Tracks.framework in Frameworks */,
+				148009472C602C38007D25B7 /* Base.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		148009362C602C15007D25B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1480093A2C602C15007D25B7 /* Trains.framework in Frameworks */,
+				148009502C602C57007D25B7 /* Base.framework in Frameworks */,
+				148009542C602C57007D25B7 /* Tracks.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		14A577932C0CCC9D00419E09 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -395,6 +498,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14A577A92C0CCC9D00419E09 /* Ground.framework in Frameworks */,
+				148009622C602D72007D25B7 /* Trains.framework in Frameworks */,
 				142D67E82B9D663E00130757 /* Tracks.framework in Frameworks */,
 				142D67B22B9D117000130757 /* Base.framework in Frameworks */,
 			);
@@ -468,6 +572,36 @@
 			path = "Tracks Tests";
 			sourceTree = "<group>";
 		};
+		148009332C602C15007D25B7 /* Trains */ = {
+			isa = PBXGroup;
+			children = (
+				14A2AB922B4035000044861E /* Vehicle.swift */,
+				148009662C602DFC007D25B7 /* Vehicles */,
+				148009592C602CD7007D25B7 /* TrainObserver.swift */,
+				1454113A2C55F5D2006CF940 /* Train.swift */,
+			);
+			path = Trains;
+			sourceTree = "<group>";
+		};
+		1480093D2C602C15007D25B7 /* TrainsTests */ = {
+			isa = PBXGroup;
+			children = (
+				1480093E2C602C15007D25B7 /* Train_Tests.swift */,
+			);
+			path = TrainsTests;
+			sourceTree = "<group>";
+		};
+		148009662C602DFC007D25B7 /* Vehicles */ = {
+			isa = PBXGroup;
+			children = (
+				14E0827B2B158F7600AA29C2 /* Container.swift */,
+				14A2AB902B402D3B0044861E /* ContainerWagon.swift */,
+				145411362C4D5CBD006CF940 /* BR186.swift */,
+				145411382C55EA9E006CF940 /* ICE3.swift */,
+			);
+			path = Vehicles;
+			sourceTree = "<group>";
+		};
 		14A577972C0CCC9D00419E09 /* Ground */ = {
 			isa = PBXGroup;
 			children = (
@@ -511,6 +645,8 @@
 				14A577A32C0CCC9D00419E09 /* GroundTests */,
 				142D67D62B9D663D00130757 /* Tracks */,
 				142D67E22B9D663E00130757 /* Tracks Tests */,
+				148009332C602C15007D25B7 /* Trains */,
+				1480093D2C602C15007D25B7 /* TrainsTests */,
 				14E0825D2B156E0B00AA29C2 /* Products */,
 				142D67972B9C2DF600130757 /* Frameworks */,
 			);
@@ -527,6 +663,8 @@
 				142D67DC2B9D663E00130757 /* Tracks Tests.xctest */,
 				14A577962C0CCC9D00419E09 /* Ground.framework */,
 				14A5779D2C0CCC9D00419E09 /* GroundTests.xctest */,
+				148009322C602C15007D25B7 /* Trains.framework */,
+				148009392C602C15007D25B7 /* Trains Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -556,12 +694,6 @@
 		14E082782B156F7700AA29C2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				14A2AB922B4035000044861E /* Vehicle.swift */,
-				1454113A2C55F5D2006CF940 /* Train.swift */,
-				14E0827B2B158F7600AA29C2 /* Container.swift */,
-				14A2AB902B402D3B0044861E /* ContainerWagon.swift */,
-				145411362C4D5CBD006CF940 /* BR186.swift */,
-				145411382C55EA9E006CF940 /* ICE3.swift */,
 				14E0827F2B18299600AA29C2 /* Map.swift */,
 			);
 			path = Model;
@@ -578,6 +710,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		142D67D02B9D663D00130757 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1480092D2C602C15007D25B7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -675,6 +814,48 @@
 			productReference = 142D67DC2B9D663E00130757 /* Tracks Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		148009312C602C15007D25B7 /* Trains */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 148009452C602C15007D25B7 /* Build configuration list for PBXNativeTarget "Trains" */;
+			buildPhases = (
+				1480092D2C602C15007D25B7 /* Headers */,
+				1480092E2C602C15007D25B7 /* Sources */,
+				1480092F2C602C15007D25B7 /* Frameworks */,
+				148009302C602C15007D25B7 /* Resources */,
+				1480094F2C602C38007D25B7 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1480094A2C602C38007D25B7 /* PBXTargetDependency */,
+				1480094E2C602C38007D25B7 /* PBXTargetDependency */,
+			);
+			name = Trains;
+			productName = Trains;
+			productReference = 148009322C602C15007D25B7 /* Trains.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		148009382C602C15007D25B7 /* Trains Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 148009462C602C15007D25B7 /* Build configuration list for PBXNativeTarget "Trains Tests" */;
+			buildPhases = (
+				148009352C602C15007D25B7 /* Sources */,
+				148009362C602C15007D25B7 /* Frameworks */,
+				148009372C602C15007D25B7 /* Resources */,
+				148009582C602C57007D25B7 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1480093C2C602C15007D25B7 /* PBXTargetDependency */,
+				148009532C602C57007D25B7 /* PBXTargetDependency */,
+				148009572C602C57007D25B7 /* PBXTargetDependency */,
+			);
+			name = "Trains Tests";
+			productName = TrainsTests;
+			productReference = 148009392C602C15007D25B7 /* Trains Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		14A577952C0CCC9D00419E09 /* Ground */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 14A577AF2C0CCC9D00419E09 /* Build configuration list for PBXNativeTarget "Ground" */;
@@ -757,6 +938,7 @@
 				142D67B12B9D117000130757 /* PBXTargetDependency */,
 				142D67E72B9D663E00130757 /* PBXTargetDependency */,
 				14A577A82C0CCC9D00419E09 /* PBXTargetDependency */,
+				148009652C602D72007D25B7 /* PBXTargetDependency */,
 			);
 			name = "Train Dispatcher";
 			packageProductDependencies = (
@@ -786,6 +968,13 @@
 					};
 					142D67DB2B9D663E00130757 = {
 						CreatedOnToolsVersion = 15.3;
+					};
+					148009312C602C15007D25B7 = {
+						CreatedOnToolsVersion = 15.4;
+						LastSwiftMigration = 1540;
+					};
+					148009382C602C15007D25B7 = {
+						CreatedOnToolsVersion = 15.4;
 					};
 					14A577952C0CCC9D00419E09 = {
 						CreatedOnToolsVersion = 15.4;
@@ -825,10 +1014,12 @@
 				142D679C2B9D116F00130757 /* Base */,
 				14A577952C0CCC9D00419E09 /* Ground */,
 				142D67D42B9D663D00130757 /* Tracks */,
+				148009312C602C15007D25B7 /* Trains */,
 				14C7749F2B1D18890096BC97 /* Train Dispatcher Tests */,
 				142D67A52B9D117000130757 /* Base Tests */,
 				14A5779C2C0CCC9D00419E09 /* GroundTests */,
 				142D67DB2B9D663E00130757 /* Tracks Tests */,
+				148009382C602C15007D25B7 /* Trains Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -856,6 +1047,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		142D67DA2B9D663E00130757 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		148009302C602C15007D25B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		148009372C602C15007D25B7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -954,6 +1159,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1480092E2C602C15007D25B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1480095A2C602CD7007D25B7 /* TrainObserver.swift in Sources */,
+				1480095C2C602CEE007D25B7 /* ContainerWagon.swift in Sources */,
+				1480095D2C602CEE007D25B7 /* BR186.swift in Sources */,
+				1480095E2C602CEE007D25B7 /* Vehicle.swift in Sources */,
+				1480095F2C602CEE007D25B7 /* ICE3.swift in Sources */,
+				148009602C602CEE007D25B7 /* Container.swift in Sources */,
+				148009612C602CEE007D25B7 /* Train.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		148009352C602C15007D25B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1480093F2C602C15007D25B7 /* Train_Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		14A577922C0CCC9D00419E09 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -994,17 +1221,11 @@
 				1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */,
 				1465C81D2B673DFF0042332D /* Tool.swift in Sources */,
 				14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */,
-				1454113B2C55F5D2006CF940 /* Train.swift in Sources */,
 				1461ED782BF188D800119738 /* PanelSelector.swift in Sources */,
-				14A2AB932B4035000044861E /* Vehicle.swift in Sources */,
 				14E082732B156E9600AA29C2 /* MapView.swift in Sources */,
 				146B2CCD2BDDE29F008D67D5 /* GroundBrush.swift in Sources */,
-				14E0827C2B158F7600AA29C2 /* Container.swift in Sources */,
-				14A2AB912B402D3B0044861E /* ContainerWagon.swift in Sources */,
 				14E082802B18299600AA29C2 /* Map.swift in Sources */,
-				145411372C4D5CBD006CF940 /* BR186.swift in Sources */,
 				146B2CCF2BDDE2A9008D67D5 /* TreePlacer.swift in Sources */,
-				145411392C55EA9E006CF940 /* ICE3.swift in Sources */,
 				14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1089,6 +1310,36 @@
 			isa = PBXTargetDependency;
 			target = 142D679C2B9D116F00130757 /* Base */;
 			targetProxy = 142D67FD2B9D673800130757 /* PBXContainerItemProxy */;
+		};
+		1480093C2C602C15007D25B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 148009312C602C15007D25B7 /* Trains */;
+			targetProxy = 1480093B2C602C15007D25B7 /* PBXContainerItemProxy */;
+		};
+		1480094A2C602C38007D25B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 142D679C2B9D116F00130757 /* Base */;
+			targetProxy = 148009492C602C38007D25B7 /* PBXContainerItemProxy */;
+		};
+		1480094E2C602C38007D25B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 142D67D42B9D663D00130757 /* Tracks */;
+			targetProxy = 1480094D2C602C38007D25B7 /* PBXContainerItemProxy */;
+		};
+		148009532C602C57007D25B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 142D679C2B9D116F00130757 /* Base */;
+			targetProxy = 148009522C602C57007D25B7 /* PBXContainerItemProxy */;
+		};
+		148009572C602C57007D25B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 142D67D42B9D663D00130757 /* Tracks */;
+			targetProxy = 148009562C602C57007D25B7 /* PBXContainerItemProxy */;
+		};
+		148009652C602D72007D25B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 148009312C602C15007D25B7 /* Trains */;
+			targetProxy = 148009642C602D72007D25B7 /* PBXContainerItemProxy */;
 		};
 		14A577A02C0CCC9D00419E09 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1400,6 +1651,139 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.train-dispatcher.tracks-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		148009412C602C15007D25B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = NL3W2DXR5S;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.train-dispatcher.Trains";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		148009422C602C15007D25B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = NL3W2DXR5S;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.train-dispatcher.Trains";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		148009432C602C15007D25B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NL3W2DXR5S;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.train-dispatcher.TrainsTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		148009442C602C15007D25B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NL3W2DXR5S;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arne-philipeit.train-dispatcher.TrainsTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -1808,6 +2192,24 @@
 			buildConfigurations = (
 				142D67EE2B9D663E00130757 /* Debug */,
 				142D67EF2B9D663E00130757 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		148009452C602C15007D25B7 /* Build configuration list for PBXNativeTarget "Trains" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				148009412C602C15007D25B7 /* Debug */,
+				148009422C602C15007D25B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		148009462C602C15007D25B7 /* Build configuration list for PBXNativeTarget "Trains Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				148009432C602C15007D25B7 /* Debug */,
+				148009442C602C15007D25B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
