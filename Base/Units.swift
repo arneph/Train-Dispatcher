@@ -16,58 +16,59 @@ public struct Radians: Unit {
     }
 }
 public struct Seconds: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.1fs", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.1f s", v) }
 }
 public struct Seconds²: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.1fs²", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.1f s²", v) }
 }
 public struct Seconds³: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.1fs³", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.1f s³", v) }
 }
 public struct Meters: Unit {
     public static func toString(_ v: Float64) -> String {
-        abs(v) >= 1000.0 ? String(format: "%.1fkm", v / 1000.0) : String(format: "%.2fm", v)
+        abs(v) >= 1000.0 ? String(format: "%.1f km", v / 1000.0) : String(format: "%.2f m", v)
     }
 }
 public struct Meters²: Unit {
     public static func toString(_ v: Float64) -> String {
-        abs(v) >= 1000000.0 ? String(format: "%.1fkm²", v / 1000000.0) : String(format: "%.2fm²", v)
+        abs(v) >= 1000000.0
+            ? String(format: "%.1f km²", v / 1000000.0) : String(format: "%.2f m²", v)
     }
 }
 public struct Meters³: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.2fm³", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.2f m³", v) }
 }
 public struct Meters⁴: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.2fm⁴", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.2f m⁴", v) }
 }
 public struct MetersPerSecond: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.0fkm/h", v * 3.6) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.0f km/h", v * 3.6) }
 }
 public struct Meters²PerSecond²: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.2fm²/s²", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.2f m²/s²", v) }
 }
 public struct MetersPerSecond²: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.2fkm/h/s", v * 3.6) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.2f km/h/s", v * 3.6) }
 }
 public struct MetersPerSecond³: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.2fkm/h/s²", v * 3.6) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.2f km/h/s²", v * 3.6) }
 }
 public struct Seconds²PerMeter: Unit {
-    public static func toString(_ v: Float64) -> String { String(format: "%.2fs²/m", v) }
+    public static func toString(_ v: Float64) -> String { String(format: "%.2f s²/m", v) }
 }
 public struct Newtons: Unit {
     public static func toString(_ v: Float64) -> String {
-        abs(v) >= 1000.0 ? String(format: "%.1fkN", v / 1000.0) : String(format: "%.2fN", v)
+        abs(v) >= 1000.0 ? String(format: "%.1f kN", v / 1000.0) : String(format: "%.2f N", v)
     }
 }
 public struct NewtonsPerSecond: Unit {
     public static func toString(_ v: Float64) -> String {
-        abs(v) >= 1000.0 ? String(format: "%.1fkN/s", v / 1000.0) : String(format: "%.2fN/s", v)
+        abs(v) >= 1000.0 ? String(format: "%.1f kN/s", v / 1000.0) : String(format: "%.2f N/s", v)
     }
 }
 public struct Kilograms: Unit {
     public static func toString(_ v: Float64) -> String {
-        abs(v) >= 1000.0 ? String(format: "%.1fT", v / 1000.0) : String(format: "%.0fkg", v)
+        abs(v) >= 1000.0 ? String(format: "%.1f T", v / 1000.0) : String(format: "%.0f kg", v)
     }
 }
 
@@ -212,6 +213,9 @@ extension Double {
     public var m⁴: Distance⁴ { Distance⁴(self) }
     public var mps: Speed { Speed(self) }
     public var kph: Speed { Speed(self / 3.6) }
+    public var N: Force { Force(self) }
+    public var kg: Mass { Mass(self) }
+    public var T: Mass { Mass(self * 1000.0) }
 }
 
 extension Angle {
