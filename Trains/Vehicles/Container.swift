@@ -16,6 +16,7 @@ public protocol ContainerOwner {
 public final class Container: Object {
     public static let length = 12.192.m
     public static let width = 2.438.m
+    public static let weight = 26.68.T
 
     private enum Positioning {
         case freely(ObjectPosition)

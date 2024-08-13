@@ -78,6 +78,76 @@ public class Train: Codable, Drawable {
     }
 
     public var length: Distance { vehicles.map { $0.length }.reduce(0.0.m, +) }
+    public var weight: Mass { vehicles.map { $0.weight }.reduce(0.0.kg, +) }
+
+    public var maxAccelerationForce: Force {
+        vehicles.map {
+            $0.maxAccelerationForce
+        }.reduce(0.0.N, +)
+    }
+    public var maxBrakeForce: Force { vehicles.map { $0.maxBrakeForce }.reduce(0.0.N, +) }
+
+    public var maxSpeed: Speed { min(vehicles.map { $0.maxSpeed }) }
+
+    public enum DirectionMode: Codable {
+        case forward, neutral, backward
+    }
+    public var direction: DirectionMode = .neutral {
+        didSet {
+            observers.forEach { $0.directionChanged(self) }
+            if direction == .neutral {
+                accelerationForce = 0.0.N
+                brakeForce = maxBrakeForce
+            }
+        }
+    }
+    public var accelerationForce: Force = 0.0.N {
+        didSet {
+            observers.forEach { $0.accelerationForceChanged(self) }
+        }
+    }
+    public var brakeForce: Force {
+        didSet {
+            observers.forEach { $0.brakeForceChanged(self) }
+        }
+    }
+
+    public var acceleration: Acceleration {
+        let force = accelerationForce - brakeForce
+        let m =
+            switch direction {
+            case .forward:
+                +1.0
+            case .neutral:
+                0.0
+            case .backward:
+                -1.0
+            }
+        return force * m / weight
+    }
+
+    public private(set) var speed: Speed = 0.0.mps {
+        didSet {
+            observers.forEach { $0.speedChanged(self) }
+        }
+    }
+
+    public func tick(_ delta: Duration) {
+        var newSpeed = speed + acceleration * delta
+        switch direction {
+        case .forward:
+            newSpeed = max(0.0.mps, min(newSpeed, maxSpeed))
+        case .neutral:
+            newSpeed = 0.0.mps
+        case .backward:
+            newSpeed = min(0.0.mps, max(newSpeed, -maxSpeed))
+        }
+        speed = newSpeed
+        position = TrainPosition(
+            path: position.path,
+            position: position.position + speed * delta,
+            direction: position.direction)
+    }
 
     public func draw(_ cgContext: CGContext, _ viewContext: any ViewContext, _ dirtyRect: Rect) {
         vehicles.forEach { $0.draw(cgContext, viewContext, dirtyRect) }
@@ -86,11 +156,12 @@ public class Train: Codable, Drawable {
     public init(position: TrainPosition, vehicles: [Vehicle]) {
         self.position = position
         self.vehicles = vehicles
+        self.brakeForce = vehicles.map { $0.maxBrakeForce }.reduce(0.0.N, +)
         updateVehiclePositions()
     }
 
     private enum CodingKeys: String, CodingKey {
-        case position, vehicles
+        case position, vehicles, direction, accelerationForce, brakeForce, speed
     }
 
     public required init(from decoder: any Decoder) throws {
@@ -100,12 +171,20 @@ public class Train: Codable, Drawable {
             (try values.decode(
                 [EncodedVehicle].self,
                 forKey: .vehicles)).map { $0.underlying }
+        self.direction = try values.decode(DirectionMode.self, forKey: .direction)
+        self.accelerationForce = try values.decode(Force.self, forKey: .accelerationForce)
+        self.brakeForce = try values.decode(Force.self, forKey: .brakeForce)
+        self.speed = try values.decode(Speed.self, forKey: .speed)
     }
 
     public func encode(to encoder: any Encoder) throws {
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(position, forKey: .position)
         try values.encode(vehicles.map { EncodedVehicle($0) }, forKey: .vehicles)
+        try values.encode(direction, forKey: .direction)
+        try values.encode(accelerationForce, forKey: .accelerationForce)
+        try values.encode(brakeForce, forKey: .brakeForce)
+        try values.encode(speed, forKey: .speed)
     }
 
 }

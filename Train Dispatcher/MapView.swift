@@ -18,7 +18,10 @@ protocol MapViewDelegate: AnyObject {
     var map: Map? { get }
     var changeManager: ChangeManager? { get }
 
+    func cameraChanged()
+
     func toolChanged()
+    func selectedTrain(train: Train)
 }
 
 class MapView: NSView,
@@ -114,6 +117,17 @@ class MapView: NSView,
             if mapScale > MapView.maxMapScale {
                 mapScale = MapView.maxMapScale
             }
+            needsDisplay = true
+        }
+    }
+
+    enum Camera {
+        case free
+        case trackingTrain(Train)
+    }
+    var camera: Camera = .free {
+        didSet {
+            delegate?.cameraChanged()
             needsDisplay = true
         }
     }
@@ -285,7 +299,22 @@ class MapView: NSView,
     override func mouseDown(with event: NSEvent) {
         let viewPoint = convert(event.locationInWindow, from: nil)
         let mapPoint = toMapPoint(viewPoint: viewPoint)
-        tool?.mouseDown(point: mapPoint)
+        if let tool = tool {
+            tool.mouseDown(point: mapPoint)
+        } else if let map = map {
+            for train in map.trains {
+                for vehicle in train.vehicles {
+                    let l1 = Line(base: vehicle.center, orientation: vehicle.forward)
+                    let l2 = Line(base: vehicle.center, orientation: vehicle.left)
+                    let d1 = distance(mapPoint, l1.closestPoint(to: mapPoint))
+                    let d2 = distance(mapPoint, l2.closestPoint(to: mapPoint))
+                    if d1 <= vehicle.length && d2 <= vehicle.width {
+                        delegate?.selectedTrain(train: train)
+                        return
+                    }
+                }
+            }
+        }
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -307,9 +336,11 @@ class MapView: NSView,
                 y: Distance(-event.scrollingDeltaY / mapScale))
             if event.modifierFlags.contains(.option) {
                 let p = mapPointAtViewCenter + delta
+                camera = .free
                 mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             } else {
                 let p = mapPointAtViewCenter - delta
+                camera = .free
                 mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             }
         } else {
@@ -337,15 +368,19 @@ class MapView: NSView,
             switch c {
             case Character(UnicodeScalar(NSUpArrowFunctionKey)!), "w":
                 let p = mapPointAtViewCenter + Direction(x: Distance(0.0), y: vOffset)
+                camera = .free
                 animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case Character(UnicodeScalar(NSDownArrowFunctionKey)!), "s":
                 let p = mapPointAtViewCenter - Direction(x: Distance(0.0), y: vOffset)
+                camera = .free
                 animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case Character(UnicodeScalar(NSLeftArrowFunctionKey)!), "a":
                 let p = mapPointAtViewCenter - Direction(x: hOffset, y: Distance(0.0))
+                camera = .free
                 animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case Character(UnicodeScalar(NSRightArrowFunctionKey)!), "d":
                 let p = mapPointAtViewCenter + Direction(x: hOffset, y: Distance(0.0))
+                camera = .free
                 animator().mapCGPointAtViewCenter = CGPoint(x: p.x.withoutUnit, y: p.y.withoutUnit)
             case "q":
                 animator().mapScale = mapScale / zFactor
@@ -390,7 +425,11 @@ class MapView: NSView,
     }
 
     override func draw(_ viewRect: CGRect) {
-        if let vehicle = map?.trains.first?.vehicles.first {
+        switch camera {
+        case .free:
+            break
+        case .trackingTrain(let train):
+            let vehicle = train.vehicles.first!
             mapCGPointAtViewCenter = CGPoint(
                 x: vehicle.center.x.withoutUnit,
                 y: vehicle.center.y.withoutUnit)

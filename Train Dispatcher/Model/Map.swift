@@ -27,19 +27,9 @@ final class Map: Codable {
         self.timer = Timer.scheduledTimer(withTimeInterval: 0.001, repeats: true) { timer in
             let currentTick = Date.now
             let delta = Duration(self.lastTick.distance(to: currentTick))
-
-            if let train = self.trains.first {
-                let x = train.position.position + delta * 300.0.kph
-                if x > train.position.path.length {
-                    timer.invalidate()
-                    return
-                }
-                train.position = TrainPosition(
-                    path: train.position.path,
-                    position: x,
-                    direction: train.position.direction)
+            for train in self.trains {
+                train.tick(delta)
             }
-
             self.lastTick = currentTick
         }
     }

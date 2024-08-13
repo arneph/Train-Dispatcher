@@ -44,6 +44,29 @@ public class Vehicle: Object {
         return 0.0.m
     }
     public var distanceBetweenAxles: Distance { length - frontOverhang - backOverhang }
+    public var width: Distance {
+        assertionFailure("Vehicle.width was not overwritten")
+        return 0.0.m
+    }
+
+    public var weight: Mass {
+        assertionFailure("Vehicle.weight was not overwritten")
+        return 0.0.kg
+    }
+
+    public var maxAccelerationForce: Force {
+        assertionFailure("Vehicle.accelerationForce was not overwritten")
+        return 0.0.N
+    }
+    public var maxBrakeForce: Force {
+        assertionFailure("Vehicle.brakeForce was not overwritten")
+        return 0.0.N
+    }
+
+    public var maxSpeed: Speed {
+        assertionFailure("Vehicle.maxSpeed was not overwritten")
+        return 0.0.mps
+    }
 
     public var center: Point { objectPosition.center }
     public var orientation: CircleAngle { objectPosition.orientation }

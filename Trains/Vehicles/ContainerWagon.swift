@@ -18,6 +18,13 @@ public final class ContainerWagon: Vehicle, ContainerOwner {
     public override var length: Distance { ContainerWagon.length }
     public override var frontOverhang: Distance { 3.0.m }
     public override var backOverhang: Distance { 3.0.m }
+    public override var width: Distance { ContainerWagon.width }
+    public override var weight: Mass {
+        16.0.T + (container != nil ? Container.weight : 0.0.kg)
+    }
+    public override var maxAccelerationForce: Force { 0.0.N }
+    public override var maxBrakeForce: Force { 20_000.N }
+    public override var maxSpeed: Speed { 120.0.kph }
 
     var container: Container? {
         didSet {

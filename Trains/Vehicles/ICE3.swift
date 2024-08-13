@@ -16,6 +16,11 @@ public final class ICE3Head: Vehicle {
     public override var length: Distance { ICE3Head.length }
     public override var frontOverhang: Distance { 5.0.m }
     public override var backOverhang: Distance { 3.3.m }
+    public override var width: Distance { ICE3Head.width }
+    public override var weight: Mass { 61.95.T }
+    public override var maxAccelerationForce: Force { 37_500.0.N }
+    public override var maxBrakeForce: Force { 37_500.0.N }
+    public override var maxSpeed: Speed { 330.0.kph }
 
     // MARK: - Drawing
     public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
@@ -227,6 +232,11 @@ public final class ICE3Wagon: Vehicle {
     public override var length: Distance { ICE3Wagon.length }
     public override var frontOverhang: Distance { 3.3.m }
     public override var backOverhang: Distance { 3.3.m }
+    public override var width: Distance { ICE3Wagon.width }
+    public override var weight: Mass { 61.95.T }
+    public override var maxAccelerationForce: Force { 37_500.0.N }
+    public override var maxBrakeForce: Force { 37_500.0.N }
+    public override var maxSpeed: Speed { 330.0.kph }
 
     let hasPantograph: Bool
 

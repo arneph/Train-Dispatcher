@@ -16,6 +16,11 @@ public final class BR186: Vehicle {
     public override var length: Distance { BR186.length }
     public override var frontOverhang: Distance { 4.25.m }
     public override var backOverhang: Distance { 4.25.m }
+    public override var width: Distance { BR186.width }
+    public override var weight: Mass { 84.0.T }
+    public override var maxAccelerationForce: Force { 300_000.0.N }
+    public override var maxBrakeForce: Force { 300_000.N }
+    public override var maxSpeed: Speed { 140.0.kph }
 
     // MARK: -  Drawing
     public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
