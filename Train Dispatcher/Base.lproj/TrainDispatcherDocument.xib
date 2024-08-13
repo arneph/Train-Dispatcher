@@ -19,6 +19,7 @@
                 <outlet property="mapView" destination="fSs-ah-cau" id="wrt-DN-z78"/>
                 <outlet property="optionsPane" destination="KND-To-3bl" id="1f8-OT-rjq"/>
                 <outlet property="optionsPanelSelector" destination="Wge-8q-vkU" id="maq-70-pK0"/>
+                <outlet property="timeSimulationSegmentedControl" destination="ok4-uJ-dMq" id="Bua-mA-DVp"/>
                 <outlet property="trackPenButton" destination="Vfi-Em-l0j" id="P4e-dr-AZ0"/>
                 <outlet property="trainAccelerationForceLabel" destination="JJ4-Gs-Ab2" id="6y7-kp-RGO"/>
                 <outlet property="trainAcceleratorSlider" destination="rwC-O9-5ML" id="oca-R5-qnk"/>
@@ -43,7 +44,7 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="xOd-HO-29H" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="583" y="276" width="720" height="360"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
             <value key="minSize" type="size" width="720" height="360"/>
             <view key="contentView" id="gIp-Ho-8D9">
                 <rect key="frame" x="0.0" y="0.0" width="720" height="360"/>
@@ -131,6 +132,35 @@
                     </splitView>
                 </subviews>
             </view>
+            <toolbar key="toolbar" implicitIdentifier="C4F08BA7-EA74-478F-9BD4-6CCF7476CD79" autosavesConfiguration="NO" displayMode="iconOnly" sizeMode="regular" id="6tB-8T-hk2">
+                <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="QWo-lc-ACC"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="o5J-Au-3pc"/>
+                    <toolbarItem implicitItemIdentifier="7BD41A6A-A375-4C33-9031-191CBB0B0BAE" label="Simulation Speed" paletteLabel="Simulation Speed" sizingBehavior="auto" id="C7e-RA-wNl">
+                        <nil key="toolTip"/>
+                        <segmentedControl key="view" verticalHuggingPriority="750" id="ok4-uJ-dMq">
+                            <rect key="frame" x="0.0" y="14" width="114" height="26"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectOne" id="dyQ-i4-eij">
+                                <font key="font" metaFont="system"/>
+                                <segments>
+                                    <segment toolTip="Pause" image="pause.fill" catalog="system" width="32"/>
+                                    <segment toolTip="Run at normal speed" image="play.fill" catalog="system" width="32" selected="YES" tag="1"/>
+                                    <segment toolTip="Run at increased speed" image="forward.fill" catalog="system" width="32">
+                                        <nil key="label"/>
+                                    </segment>
+                                </segments>
+                            </segmentedCell>
+                            <connections>
+                                <action selector="timeSimulationSegmentedControlChanged:" target="-2" id="Cbs-Be-805"/>
+                            </connections>
+                        </segmentedControl>
+                    </toolbarItem>
+                </allowedToolbarItems>
+                <defaultToolbarItems>
+                    <toolbarItem reference="C7e-RA-wNl"/>
+                </defaultToolbarItems>
+            </toolbar>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-x8E"/>
             </connections>
@@ -460,10 +490,13 @@
         <image name="arrowshape.forward.fill" catalog="system" width="17" height="14"/>
         <image name="cursorarrow" catalog="system" width="11" height="16"/>
         <image name="eye" catalog="system" width="20" height="13"/>
+        <image name="forward.fill" catalog="system" width="20" height="12"/>
         <image name="lock.fill" catalog="system" width="15" height="15"/>
         <image name="map.fill" catalog="system" width="18" height="15"/>
         <image name="paintbrush.fill" catalog="system" width="16" height="18"/>
+        <image name="pause.fill" catalog="system" width="12" height="13"/>
         <image name="pencil.line" catalog="system" width="15" height="15"/>
+        <image name="play.fill" catalog="system" width="12" height="13"/>
         <image name="tree.fill" catalog="system" width="21" height="19"/>
     </resources>
 </document>

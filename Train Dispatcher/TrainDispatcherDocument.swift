@@ -74,7 +74,6 @@ private func defaultMap() -> Map {
     map.containers = [
         Container(center: Point(x: 0.0.m, y: 20.0.m), orientation: CircleAngle(60.0.deg))
     ]
-    map.timer?.fire()
     return map
 }
 

@@ -11,7 +11,9 @@ import Foundation
 import Trains
 
 class TrainDispatcherWindowController: NSWindowController,
+    NSMenuItemValidation,
     NSSplitViewDelegate,
+    MapObserver,
     MapViewDelegate,
     PanelSelectorDelegate,
     TrainObserver
@@ -19,6 +21,42 @@ class TrainDispatcherWindowController: NSWindowController,
     var trainDispatcherDocument: TrainDispatcherDocument? { document as? TrainDispatcherDocument }
     var map: Map? { trainDispatcherDocument?.map ?? nil }
     var changeManager: ChangeManager? { trainDispatcherDocument?.changeManager }
+
+    // MARK: - Time Simulation
+    @IBOutlet var timeSimulationSegmentedControl: NSSegmentedControl?
+
+    @IBAction func pause(_ sender: Any) {
+        map?.timeSimulation = .paused
+    }
+
+    @IBAction func runAtPoint5x(_ sender: Any) {
+        map?.timeSimulation = .atPoint5x
+    }
+
+    @IBAction func runAtRegularSpeed(_ sender: Any) {
+        map?.timeSimulation = .regular
+    }
+
+    @IBAction func runAt2xSpeed(_ sender: Any) {
+        map?.timeSimulation = .at2x
+    }
+
+    @IBAction func runAt5xSpeed(_ sender: Any) {
+        map?.timeSimulation = .at5x
+    }
+
+    @IBAction func timeSimulationSegmentedControlChanged(_ sender: AnyObject) {
+        guard
+            let speed: Map.TimeSimulation =
+                switch timeSimulationSegmentedControl?.selectedSegment {
+                case 0: .paused
+                case 1: .regular
+                case 2: .at2x
+                default: nil
+                }
+        else { return }
+        map?.timeSimulation = speed
+    }
 
     // MARK: - Tools Pane
     @IBOutlet var cursorButton: NSButton?
@@ -124,7 +162,7 @@ class TrainDispatcherWindowController: NSWindowController,
         }
     }
 
-    // MARK: Map Options Panel
+    // MARK: - Map Options Panel
     @IBOutlet var mapOptionsPanel: NSView?
     @IBOutlet var baseColorWell: NSColorWell?
 
@@ -132,7 +170,7 @@ class TrainDispatcherWindowController: NSWindowController,
         map?.groundMap.baseColor = Color(from: baseColorWell!.color.cgColor)
     }
 
-    // MARK: Ground Brush Options Panel
+    // MARK: - Ground Brush Options Panel
     @IBOutlet var groundBrushOptionsPanel: NSView?
     @IBOutlet var groundBrushColorWell: NSColorWell?
     @IBOutlet var groundBrushSizeField: NSTextField?
@@ -165,7 +203,7 @@ class TrainDispatcherWindowController: NSWindowController,
         groundBrushSizeStepper?.doubleValue = groundBrush.diameter.withoutUnit
     }
 
-    // MARK: Train Stats Panel
+    // MARK: - Train Stats Panel
     @IBOutlet var trainStatsPanel: NSView?
     @IBOutlet var trainStatsCameraTrackingButton: NSButton?
     @IBOutlet var trainLengthLabel: NSTextField?
@@ -294,10 +332,41 @@ class TrainDispatcherWindowController: NSWindowController,
 
     // MARK: - NSWindowController subclass
     override func windowDidLoad() {
+        map?.add(observer: self)
         mapView?.delegate = self
+        timeSimulationSegmentedControl?.selectedSegment =
+            switch map?.timeSimulation {
+            case .paused: 0
+            case .regular: 1
+            case .at2x: 2
+            default: -1
+            }
         selectedOptionsPanel = mapOptionsPanel
         if let map = map {
             baseColorWell?.color = NSColor(cgColor: map.groundMap.baseColor.cgColor)!
+        }
+    }
+
+    // MARK: - NSMenuItemValidation
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        switch menuItem.action {
+        case #selector(pause(_:)):
+            menuItem.state = map?.timeSimulation == .paused ? .on : .off
+            return true
+        case #selector(runAtPoint5x(_:)):
+            menuItem.state = map?.timeSimulation == .atPoint5x ? .on : .off
+            return true
+        case #selector(runAtRegularSpeed(_:)):
+            menuItem.state = map?.timeSimulation == .regular ? .on : .off
+            return true
+        case #selector(runAt2xSpeed(_:)):
+            menuItem.state = map?.timeSimulation == .at2x ? .on : .off
+            return true
+        case #selector(runAt5xSpeed(_:)):
+            menuItem.state = map?.timeSimulation == .at5x ? .on : .off
+            return true
+        default:
+            return false
         }
     }
 
@@ -465,6 +534,17 @@ class TrainDispatcherWindowController: NSWindowController,
                 assertionFailure("Unexpected selected panel index.")
             }
         }
+    }
+
+    // MARK: - MapObserver
+    func timeSimulationChanged(_ map: Map) {
+        timeSimulationSegmentedControl?.selectedSegment =
+            switch map.timeSimulation {
+            case .paused: 0
+            case .regular: 1
+            case .at2x: 2
+            default: -1
+            }
     }
 
     // MARK: - TrainObserver

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -260,6 +260,43 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Simulation" id="vDA-OJ-eQB">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Simulation" id="lxh-t4-J6e">
+                        <items>
+                            <menuItem title="Paused" keyEquivalent="0" id="arz-AY-tfH">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="pause:" target="-1" id="YVc-mL-qlc"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Run at 0.5x" keyEquivalent="9" id="fuk-05-18h" userLabel="Run at 2x">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="runAtPoint5x:" target="-1" id="Yze-cy-zl5"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Run at normal speed" state="on" keyEquivalent="1" id="2V8-QA-uEN" userLabel="Run at normal speed">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="runAtRegularSpeed:" target="-1" id="ywx-yh-e41"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Run at 2x" keyEquivalent="2" id="liG-Ek-B48" userLabel="Run at 2x">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="runAt2xSpeed:" target="-1" id="gxt-c3-mrE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Run at 5x" keyEquivalent="5" id="dXS-G7-lKQ" userLabel="Run at 2x">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="runAt5xSpeed:" target="-1" id="inJ-me-Yfd"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="aUF-d1-5bR">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
@@ -298,7 +335,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="-44" y="-23"/>
+            <point key="canvasLocation" x="-219" y="-1"/>
         </menu>
     </objects>
 </document>
