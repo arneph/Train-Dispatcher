@@ -731,7 +731,7 @@ public struct CompoundPath: FinitePath {
     public var end: Point { components.last!.end }
     public var startOrientation: CircleAngle { components.first!.startOrientation }
     public var endOrientation: CircleAngle { components.last!.endOrientation }
-    public var length: Distance { components.map { $0.length }.reduce(Distance(0.0), +) }
+    public var length: Distance { contexts.last!.globalEnd }
     public var range: ClosedRange<Position> { Position(0.0)...length }
     public var reverse: CompoundPath {
         CompoundPath(checkedComponents: components.map { $0.reverse }.reversed())
@@ -748,24 +748,27 @@ public struct CompoundPath: FinitePath {
 
     public func component(at xGlobal: Position) -> (component: AtomicFinitePath, xLocal: Position)?
     {
-        for (component, context) in zip(components, contexts) {
-            if isApproximatelyInRange(x: xGlobal, range: context.globalRange) {
-                return (component, context.toLocal(xGlobal))
-            }
-        }
-        return nil
+        guard let (_, component, xLocal) = indexAndAtomicFinitePath(at: xGlobal) else { return nil }
+        return (component, xLocal)
     }
 
     private func indexAndAtomicFinitePath(at xGlobal: Position) -> (
         index: Int, component: AtomicFinitePath, xLocal: Position
     )? {
-        for (index, componentAndContext) in zip(components, contexts).enumerated() {
-            let (component, context) = componentAndContext
-            if isApproximatelyInRange(x: xGlobal, range: context.globalRange) {
-                return (index, component, context.toLocal(xGlobal))
+        if xGlobal < 0.0.m || length < xGlobal { return nil }
+        var min = 0
+        var max = components.count - 1
+        var index = components.count / 2
+        while true {
+            if xGlobal < contexts[index].globalStart {
+                max = index - 1
+            } else if xGlobal > contexts[index].globalEnd {
+                min = index + 1
+            } else {
+                return (index, components[index], contexts[index].toLocal(xGlobal))
             }
+            index = (min + max) / 2
         }
-        return nil
     }
 
     public func point(at xGlobal: Position) -> Point? {
