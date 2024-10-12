@@ -19,7 +19,7 @@ extension TrackConnection {
             case .fixed(let track):
                 .changing(StateChange(previous: track, next: next, progress: 0.0))
             case .changing(let change):
-                .changing(StateChange(previous: change.previous, next: next, progress: 1.0))
+                .changing(StateChange(previous: change.previous, next: next, progress: 0.0))
             case nil:
                 .fixed(next)
             }
@@ -36,7 +36,7 @@ extension TrackConnection {
             case .fixed(let track):
                 .changing(StateChange(previous: track, next: next, progress: 0.0))
             case .changing(let change):
-                .changing(StateChange(previous: change.previous, next: next, progress: 1.0))
+                .changing(StateChange(previous: change.previous, next: next, progress: 0.0))
             case nil:
                 .fixed(next)
             }
