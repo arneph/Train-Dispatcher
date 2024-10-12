@@ -53,6 +53,7 @@ public final class Map: Codable {
             let currentTick = Date.now
             let delta =
                 Duration(self.lastTick.distance(to: currentTick)) * self.timeSimulation.rawValue
+            self.trackMap.tick(delta)
             for train in self.trains {
                 train.tick(delta)
             }

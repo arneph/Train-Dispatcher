@@ -10,13 +10,17 @@ import CoreGraphics
 import Foundation
 
 public func draw(
-    tracks: some Sequence<Track>, _ cgContext: CGContext, _ viewContext: ViewContext,
+    trackMap map: TrackMap, _ cgContext: CGContext, _ viewContext: ViewContext,
     _ dirtyRect: Rect
 ) {
     cgContext.saveGState()
     if viewContext.mapScale < 5.0 {
-        for track in tracks {
+        for track in map.tracks {
             drawWithLowDetail(track, cgContext, viewContext, dirtyRect)
+        }
+        for connection in map.connections {
+            drawWithLowDetail(connection, .a, cgContext, viewContext, dirtyRect)
+            drawWithLowDetail(connection, .b, cgContext, viewContext, dirtyRect)
         }
     } else {
         let drawFuncs =
@@ -26,7 +30,7 @@ public func draw(
                 [drawBedFoundations, drawBed, drawSleepers, drawRails]
             }
         for drawFunc in drawFuncs {
-            for track in tracks {
+            for track in map.tracks {
                 drawFunc(track, cgContext, viewContext, dirtyRect)
             }
         }
@@ -46,6 +50,41 @@ private func drawWithLowDetail(
     }
     cgContext.setLineWidth(viewContext.toViewDistance(trackBedWidth))
     stroke(path: track.path, cgContext, viewContext, trackBedWidth, dirtyRect)
+}
+
+private func drawWithLowDetail(
+    _ connection: TrackConnection, _ direction: TrackConnection.Direction, _ cgContext: CGContext,
+    _ viewContext: ViewContext,
+    _ dirtyRect: Rect
+) {
+    if !connection.hasSwitch(inDirection: direction) {
+        return
+    }
+    switch connection.state(inDirection: direction) {
+    case .fixed(let track):
+        cgContext.setStrokeColor(CGColor.init(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0))
+        stroke(
+            path: connection.switchPath(for: track), cgContext, viewContext, trackBedWidth,
+            dirtyRect
+        )
+    case .changing(let change):
+        if change.progress < 0.5 {
+            cgContext.setStrokeColor(
+                CGColor.init(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0 - 2.0 * change.progress))
+            stroke(
+                path: connection.switchPath(for: change.previous), cgContext, viewContext,
+                trackBedWidth, dirtyRect)
+        } else {
+            cgContext.setStrokeColor(
+                CGColor.init(red: 1.0, green: 1.0, blue: 0.0, alpha: 2.0 * change.progress - 1.0))
+            stroke(
+                path: connection.switchPath(for: change.next), cgContext, viewContext,
+                trackBedWidth,
+                dirtyRect)
+        }
+    case .none:
+        return
+    }
 }
 
 private func drawBedFoundations(

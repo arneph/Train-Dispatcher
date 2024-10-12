@@ -308,11 +308,38 @@ class MapView: NSView,
                     let l2 = Line(base: vehicle.center, orientation: vehicle.left)
                     let d1 = distance(mapPoint, l1.closestPoint(to: mapPoint))
                     let d2 = distance(mapPoint, l2.closestPoint(to: mapPoint))
-                    if d1 <= vehicle.length && d2 <= vehicle.width {
+                    if d1 <= 0.5 * vehicle.width && d2 <= 0.5 * vehicle.length {
                         delegate?.selectedTrain(train: train)
                         return
                     }
                 }
+            }
+            var closestSwitch: (TrackConnection, TrackConnection.Direction)? = nil
+            var minDistance: Distance? = nil
+            for connection in map.trackMap.connections {
+                guard distance(mapPoint, connection.point) <= 50.0.m else { continue }
+                for direction in [TrackConnection.Direction.a, .b] {
+                    guard connection.hasSwitch(inDirection: direction) else { continue }
+                    for track in connection.tracks(inDirection: direction) {
+                        let path = connection.switchPath(for: track)
+                        let d = path.closestPointOnPath(from: mapPoint).distance
+                        if let minDistance = minDistance, minDistance < d {
+                            continue
+                        }
+                        closestSwitch = (connection, direction)
+                        minDistance = d
+                    }
+                }
+            }
+            if let (connection, direction) = closestSwitch {
+                let tracks = connection.tracks(inDirection: direction)
+                guard let currentTrack = connection.activeTrack(inDirection: direction) else {
+                    return
+                }
+                let currentIndex = tracks.firstIndex { $0 === currentTrack }!
+                let nextIndex = (currentIndex + 1) % tracks.count
+                let nextTrack = tracks[nextIndex]
+                connection.switchDirection(direction, to: nextTrack)
             }
         }
     }
@@ -447,7 +474,7 @@ class MapView: NSView,
         }
 
         if let map = map {
-            Tracks.draw(tracks: map.trackMap.tracks, context, self, mapRect)
+            Tracks.draw(trackMap: map.trackMap, context, self, mapRect)
             map.trains.forEach { $0.draw(context, self, mapRect) }
             map.containers.forEach { $0.draw(context, self, mapRect) }
         }

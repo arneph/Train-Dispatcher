@@ -691,6 +691,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(newConnection.directionATracks[0] === splitTrack2)
         XCTAssert(newConnection.directionATracks[1] === newTrack)
         XCTAssert(newConnection.directionBTracks[0] === splitTrack1)
+        XCTAssertEqual(newConnection.directionAState, .fixed(splitTrack2))
+        XCTAssertEqual(newConnection.directionBState, .fixed(splitTrack1))
 
         XCTAssertEqual(
             mapObserver.calls,
@@ -777,6 +779,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(newConnection.directionATracks[0] === splitTrack2)
         XCTAssert(newConnection.directionATracks[1] === newTrack)
         XCTAssert(newConnection.directionBTracks[0] === splitTrack1)
+        XCTAssertEqual(newConnection.directionAState, .fixed(splitTrack2))
+        XCTAssertEqual(newConnection.directionBState, .fixed(splitTrack1))
 
         XCTAssertEqual(
             mapObserver.calls,
@@ -886,6 +890,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(connection.directionATracks[1] === curve1)
         XCTAssert(connection.directionBTracks[0] === straight1)
         XCTAssert(connection.directionBTracks[1] === curve2)
+        XCTAssertEqual(connection.directionAState, .fixed(straight2))
+        XCTAssertEqual(connection.directionBState, .fixed(straight1))
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -990,6 +996,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(connection.directionATracks[1] === curve1)
         XCTAssert(connection.directionATracks[2] === curve2)
         XCTAssert(connection.directionBTracks[0] === straight1)
+        XCTAssertEqual(connection.directionAState, .fixed(straight2))
+        XCTAssertEqual(connection.directionBState, .fixed(straight1))
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -1083,6 +1091,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(connection.directionATracks[0] === track4)
         XCTAssert(connection.directionBTracks[0] === track3)
         XCTAssert(connection.directionBTracks[1] === track1)
+        XCTAssertEqual(connection.directionAState, .fixed(track4))
+        XCTAssertEqual(connection.directionBState, .fixed(track3))
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -1184,6 +1194,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(connection.directionATracks[0] === track4)
         XCTAssert(connection.directionBTracks[0] === track3)
         XCTAssert(connection.directionBTracks[1] === track1)
+        XCTAssertEqual(connection.directionAState, .fixed(track4))
+        XCTAssertEqual(connection.directionBState, .fixed(track3))
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -1256,6 +1268,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(connection.directionATracks.contains { $0 === track1 })
         XCTAssert(connection.directionATracks.contains { $0 === track2 })
         XCTAssertEqual(connection.directionBTracks.count, 0)
+        XCTAssertEqual(connection.directionAState, .fixed(track1))
+        XCTAssertNil(connection.directionBState)
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -1317,6 +1331,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(connection.directionATracks.contains { $0 === track1 })
         XCTAssert(connection.directionATracks.contains { $0 === track2 })
         XCTAssertEqual(connection.directionBTracks.count, 0)
+        XCTAssertEqual(connection.directionAState, .fixed(track1))
+        XCTAssertNil(connection.directionBState)
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -1378,6 +1394,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(connection.directionBTracks.count, 2)
         XCTAssert(connection.directionBTracks.contains { $0 === track1 })
         XCTAssert(connection.directionBTracks.contains { $0 === track2 })
+        XCTAssertNil(connection.directionAState)
+        XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -1439,6 +1457,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(connection.directionBTracks.count, 2)
         XCTAssert(connection.directionBTracks.contains { $0 === track1 })
         XCTAssert(connection.directionBTracks.contains { $0 === track2 })
+        XCTAssertNil(connection.directionAState)
+        XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssertEqual(
             mapObserver.calls,
             [

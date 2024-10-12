@@ -56,7 +56,7 @@ final class TrackMap_Codable_Tests: XCTestCase {
                     LinearPath(
                         start: Point(x: 10.0.m, y: 100.0.m), end: Point(x: 10.0.m, y: 0.0.m))!),
             startConnection: .none, endConnection: .none)
-        let _ = originalMap.addTrack(
+        let (originalTrack2, _) = originalMap.addTrack(
             withPath:
                 .circular(
                     CircularPath(
@@ -74,6 +74,8 @@ final class TrackMap_Codable_Tests: XCTestCase {
                         direction: .negative)!),
             startConnection: .toExistingConnection(originalConnection),
             endConnection: .none)
+        originalConnection.switchDirectionB(to: originalTrack2)
+        originalMap.tick(3.0.s)
 
         let resultMap = try encodeAndDecode(originalMap)
         XCTAssertEqual(resultMap.tracks.count, 3)
@@ -115,6 +117,12 @@ final class TrackMap_Codable_Tests: XCTestCase {
         XCTAssert(resultConnection.directionATracks.contains { $0 === resultTrack3 })
         XCTAssert(resultConnection.directionBTracks.contains { $0 === resultTrack1 })
         XCTAssert(resultConnection.directionBTracks.contains { $0 === resultTrack2 })
+        XCTAssertEqual(resultConnection.directionAState, .fixed(resultTrack3))
+        XCTAssertEqual(
+            resultConnection.directionBState,
+            .changing(
+                TrackConnection.StateChange(
+                    previous: resultTrack1, next: resultTrack2, progress: 0.6)))
     }
 
     func testEncodesAndDecodesTrackMapWithConnections() throws {
@@ -125,7 +133,7 @@ final class TrackMap_Codable_Tests: XCTestCase {
                     LinearPath(
                         start: Point(x: 10.0.m, y: 100.0.m), end: Point(x: 10.0.m, y: 0.0.m))!),
             startConnection: .none, endConnection: .none)
-        let _ = originalMap.addTrack(
+        let (originalTrack2, _) = originalMap.addTrack(
             withPath:
                 .circular(
                     CircularPath(
@@ -150,7 +158,7 @@ final class TrackMap_Codable_Tests: XCTestCase {
                     LinearPath(
                         start: Point(x: 210.0.m, y: 100.0.m), end: Point(x: 210.0.m, y: 0.0.m))!),
             startConnection: .none, endConnection: .none)
-        let _ = originalMap.addTrack(
+        let (originalTrack5, _) = originalMap.addTrack(
             withPath:
                 .circular(
                     CircularPath(
@@ -159,7 +167,7 @@ final class TrackMap_Codable_Tests: XCTestCase {
                         direction: .positive)!), startConnection: .none,
             endConnection: .toNewConnection(originalTrack4, 100.0.m))
         let originalConnection2 = originalMap.connections[1]
-        let _ = originalMap.addTrack(
+        let (originalTrack6, _) = originalMap.addTrack(
             withPath:
                 .circular(
                     CircularPath(
@@ -168,6 +176,13 @@ final class TrackMap_Codable_Tests: XCTestCase {
                         direction: .negative)!),
             startConnection: .toExistingConnection(originalConnection2),
             endConnection: .toExistingConnection(originalConnection1))
+
+        originalConnection1.switchDirectionA(to: originalTrack6)
+        originalMap.tick(4.0.s)
+        originalConnection2.switchDirectionB(to: originalTrack5)
+        originalMap.tick(3.0.s)
+        originalConnection1.switchDirectionB(to: originalTrack2)
+        originalMap.tick(1.0.s)
 
         let resultMap = try encodeAndDecode(originalMap)
         XCTAssertEqual(resultMap.tracks.count, 6)
@@ -239,6 +254,12 @@ final class TrackMap_Codable_Tests: XCTestCase {
         XCTAssert(resultConnection1.directionATracks.contains { $0 === resultTrack6 })
         XCTAssert(resultConnection1.directionBTracks.contains { $0 === resultTrack1 })
         XCTAssert(resultConnection1.directionBTracks.contains { $0 === resultTrack2 })
+        XCTAssertEqual(resultConnection1.directionAState, .fixed(resultTrack6))
+        XCTAssertEqual(
+            resultConnection1.directionBState,
+            .changing(
+                TrackConnection.StateChange(
+                    previous: resultTrack1, next: resultTrack2, progress: 0.2)))
         XCTAssertEqual(resultConnection2.point, Point(x: 210.0.m, y: 0.0.m))
         XCTAssertEqual(resultConnection2.directionA, CircleAngle(-90.0.deg))
         XCTAssertEqual(resultConnection2.directionB, CircleAngle(+90.0.deg))
@@ -247,6 +268,12 @@ final class TrackMap_Codable_Tests: XCTestCase {
         XCTAssert(resultConnection2.directionATracks.contains { $0 === resultTrack6 })
         XCTAssert(resultConnection2.directionBTracks.contains { $0 === resultTrack4 })
         XCTAssert(resultConnection2.directionBTracks.contains { $0 === resultTrack5 })
+        XCTAssertEqual(resultConnection2.directionAState, .fixed(resultTrack6))
+        XCTAssertEqual(
+            resultConnection2.directionBState,
+            .changing(
+                TrackConnection.StateChange(
+                    previous: resultTrack4, next: resultTrack5, progress: 0.8)))
     }
 
 }

@@ -221,6 +221,8 @@ final class TrackMap_Remove_Tests: XCTestCase {
 
         XCTAssertEqual(map.connections.count, 1)
         XCTAssert(map.connections.contains { $0 === connection })
+        XCTAssertEqual(connection.directionAState, .fixed(track4))
+        XCTAssertEqual(connection.directionBState, .fixed(track3))
         XCTAssertEqual(
             mapObserver.calls,
             [
@@ -476,6 +478,10 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertNil(newTrack1.endConnection)
         XCTAssertNil(newTrack2.startConnection)
         XCTAssert(newTrack2.endConnection === connection2)
+        XCTAssertEqual(connection1.directionAState, .fixed(newTrack1))
+        XCTAssertNil(connection1.directionBState)
+        XCTAssertNil(connection2.directionAState)
+        XCTAssertEqual(connection2.directionBState, .fixed(newTrack2))
         XCTAssertEqual(
             mapObserver.calls,
             [

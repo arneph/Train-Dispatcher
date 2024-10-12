@@ -1,0 +1,59 @@
+{
+  "configurations" : [
+    {
+      "id" : "375C8AB0-6A22-4E7B-A594-9B92842E0523",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "IDEPreferLogStreaming",
+        "value" : "YES"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Train Dispatcher.xcodeproj",
+      "identifier" : "14E0825B2B156E0B00AA29C2",
+      "name" : "Train Dispatcher"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Train Dispatcher.xcodeproj",
+        "identifier" : "14C7749F2B1D18890096BC97",
+        "name" : "Train Dispatcher Tests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Train Dispatcher.xcodeproj",
+        "identifier" : "142D67A52B9D117000130757",
+        "name" : "Base Tests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Train Dispatcher.xcodeproj",
+        "identifier" : "142D67DB2B9D663E00130757",
+        "name" : "Tracks Tests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Train Dispatcher.xcodeproj",
+        "identifier" : "14A5779C2C0CCC9D00419E09",
+        "name" : "GroundTests"
+      }
+    }
+  ],
+  "version" : 1
+}

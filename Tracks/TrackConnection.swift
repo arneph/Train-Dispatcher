@@ -14,7 +14,7 @@ public final class TrackConnection: IDObject {
         var opposite: Direction { Direction(rawValue: 1 - self.rawValue)! }
     }
 
-    private var observers: [TrackConnectionObserver] = []
+    internal private(set) var observers: [TrackConnectionObserver] = []
     public func add(observer: TrackConnectionObserver) { observers.append(observer) }
     public func remove(observer: TrackConnectionObserver) {
         observers.removeAll { $0 === observer }
@@ -78,49 +78,63 @@ public final class TrackConnection: IDObject {
         }
     }
 
-    internal func add(track: Track) {
-        assert(track.path.start == point || track.path.end == point)
-        if track.path.startPointAndOrientation == pointAndDirectionA
-            || track.path.endPointAndOrientation == pointAndDirectionB
-        {
-            directionATracks.append(track)
-            observers.forEach { $0.added(track: track, toConnection: self, inDirection: .a) }
-        }
-        if track.path.startPointAndOrientation == pointAndDirectionB
-            || track.path.endPointAndOrientation == pointAndDirectionA
-        {
-            directionBTracks.append(track)
-            observers.forEach { $0.added(track: track, toConnection: self, inDirection: .b) }
+    public var hasSwitchInDirectionA: Bool { directionATracks.count > 1 }
+    public var hasSwitchInDirectionB: Bool { directionBTracks.count > 1 }
+
+    public func hasSwitch(inDirection direction: Direction) -> Bool {
+        switch direction {
+        case .a: hasSwitchInDirectionA
+        case .b: hasSwitchInDirectionB
         }
     }
 
-    internal func replace(oldTrack: Track, newTrack: Track) {
-        if directionATracks.contains(where: { $0 === oldTrack }) {
-            directionATracks.removeAll { $0 === oldTrack }
-            directionATracks.append(newTrack)
-            observers.forEach {
-                $0.replaced(
-                    track: oldTrack, withTrack: newTrack, inConnection: self, inDirection: .a)
-            }
-        }
-        if directionBTracks.contains(where: { $0 === oldTrack }) {
-            directionBTracks.removeAll { $0 === oldTrack }
-            directionBTracks.append(newTrack)
-            observers.forEach {
-                $0.replaced(
-                    track: oldTrack, withTrack: newTrack, inConnection: self, inDirection: .b)
+    public struct StateChange {
+        let previous: Track
+        let next: Track
+        let progress: Float64
+    }
+    public enum State {
+        case fixed(Track)
+        case changing(StateChange)
+
+        public var activeTrack: Track? {
+            switch self {
+            case .fixed(let track): track
+            case .changing(_): nil
             }
         }
     }
 
-    internal func remove(track: Track) {
-        directionATracks.removeAll { $0 === track }
-        directionBTracks.removeAll { $0 === track }
-        observers.forEach { $0.removed(track: track, fromConnection: self) }
+    public internal(set) var directionAState: State? = nil
+    public internal(set) var directionBState: State? = nil
+
+    public func state(inDirection direction: Direction) -> State? {
+        switch direction {
+        case .a: directionAState
+        case .b: directionBState
+        }
     }
 
-    internal func informObserversOfRemoval() {
-        observers.forEach { $0.removed(connection: self) }
+    public var directionAActiveTrack: Track? { directionAState?.activeTrack ?? nil }
+    public var directionBActiveTrack: Track? { directionBState?.activeTrack ?? nil }
+
+    public func activeTrack(inDirection direction: Direction) -> Track? {
+        switch direction {
+        case .a: directionAActiveTrack
+        case .b: directionBActiveTrack
+        }
+    }
+
+    public func switchPath(for track: Track) -> SomeFinitePath {
+        let maxLength = 50.0.m
+        let length = min(track.path.length / 2.0, maxLength)
+        return if track.startConnection === self {
+            track.path.subPath(from: 0.0.m, to: length)!
+        } else if track.endConnection === self {
+            track.path.subPath(from: track.path.length - length, to: track.path.length)!
+        } else {
+            fatalError("Track does not end at connection.")
+        }
     }
 
     internal init(id: ID<TrackConnection>, point: Point, directionA: CircleAngle) {

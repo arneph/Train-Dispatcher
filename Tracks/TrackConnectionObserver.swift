@@ -16,6 +16,10 @@ public protocol TrackConnectionObserver: AnyObject {
         inDirection direction: TrackConnection.Direction)
     func removed(track oldTrack: Track, fromConnection connection: TrackConnection)
 
+    func startedChangingState(connection: TrackConnection, direction: TrackConnection.Direction)
+    func progressedStateChange(connection: TrackConnection, direction: TrackConnection.Direction)
+    func stoppedChangingState(connection: TrackConnection, direction: TrackConnection.Direction)
+
     func removed(connection oldConnection: TrackConnection)
 }
 
@@ -28,5 +32,8 @@ extension TrackConnectionObserver {
         inDirection: TrackConnection.Direction
     ) {}
     func removed(track: Track, fromConnection: TrackConnection) {}
+    func startedChangingState(connection: TrackConnection, direction: TrackConnection.Direction) {}
+    func progressedStateChange(connection: TrackConnection, direction: TrackConnection.Direction) {}
+    func stoppedChangingState(connection: TrackConnection, direction: TrackConnection.Direction) {}
     func removed(connection: TrackConnection) {}
 }

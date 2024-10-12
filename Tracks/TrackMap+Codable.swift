@@ -21,11 +21,23 @@ extension TrackMap: Codable {
     }
 
     private struct EncodedConnection: Codable {
+        struct StateChange: Codable {
+            let previous: ID<Track>
+            let next: ID<Track>
+            let progress: Float64
+        }
+        enum State: Codable {
+            case fixed(ID<Track>)
+            case changing(StateChange)
+        }
+
         let id: ID<TrackConnection>
         let point: Point
         let orientation: CircleAngle
         let directionATracks: [ID<Track>]
         let directionBTracks: [ID<Track>]
+        let directionAState: State?
+        let directionBState: State?
     }
 
     public convenience init(from decoder: Decoder) throws {
@@ -57,6 +69,30 @@ extension TrackMap: Codable {
             connection.directionBTracks = encodedConnection.directionBTracks.map { (bID) in
                 trackSet[bID]!
             }
+            connection.directionAState = encodedConnection.directionAState.map {
+                switch $0 {
+                case .fixed(let trackID):
+                    .fixed(trackSet[trackID]!)
+                case .changing(let change):
+                    .changing(
+                        TrackConnection.StateChange(
+                            previous: trackSet[change.previous]!,
+                            next: trackSet[change.next]!,
+                            progress: change.progress))
+                }
+            }
+            connection.directionBState = encodedConnection.directionBState.map {
+                switch $0 {
+                case .fixed(let trackID):
+                    .fixed(trackSet[trackID]!)
+                case .changing(let change):
+                    .changing(
+                        TrackConnection.StateChange(
+                            previous: trackSet[change.previous]!,
+                            next: trackSet[change.next]!,
+                            progress: change.progress))
+                }
+            }
         }
         self.init(tracks: trackSet, connections: connectionSet)
     }
@@ -71,7 +107,31 @@ extension TrackMap: Codable {
             EncodedConnection(
                 id: connection.id, point: connection.point, orientation: connection.directionA,
                 directionATracks: connection.directionATracks.map { $0.id },
-                directionBTracks: connection.directionBTracks.map { $0.id })
+                directionBTracks: connection.directionBTracks.map { $0.id },
+                directionAState: connection.directionAState.map {
+                    switch $0 {
+                    case .fixed(let track):
+                        .fixed(track.id)
+                    case .changing(let change):
+                        .changing(
+                            EncodedConnection.StateChange(
+                                previous: change.previous.id,
+                                next: change.next.id,
+                                progress: change.progress))
+                    }
+                },
+                directionBState: connection.directionBState.map {
+                    switch $0 {
+                    case .fixed(let track):
+                        .fixed(track.id)
+                    case .changing(let change):
+                        .changing(
+                            EncodedConnection.StateChange(
+                                previous: change.previous.id,
+                                next: change.next.id,
+                                progress: change.progress))
+                    }
+                })
         }
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(encodedTracks, forKey: .tracks)
