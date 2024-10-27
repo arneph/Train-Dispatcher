@@ -439,7 +439,7 @@ class TrainDispatcherWindowController: NSWindowController,
         treePlacerButton?.state = toolType == .treePlacer ? .on : .off
         trackPenButton?.state = toolType == .trackPen ? .on : .off
         switch mapView?.tool?.type {
-        case .none, .treePlacer, .trackPen:
+        case .none, .cursor, .treePlacer, .trackPen:
             optionPanelsState = .mapPanelOnly
         case .groundBrush:
             optionPanelsState = .mapPanelAndToolPanel(.groundBrush, .toolPanel)

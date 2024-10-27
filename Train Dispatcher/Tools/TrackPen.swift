@@ -139,7 +139,11 @@ class TrackPen: Tool {
         state = .none
     }
 
-    func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect) {
+    func draw(
+        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: ViewContext,
+        _ dirtyRect: Rect
+    ) {
+        guard layer == .aboveTrackMap else { return }
         switch state {
         case .none: break
         case .hovering(let penPoint):

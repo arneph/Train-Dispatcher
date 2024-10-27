@@ -152,8 +152,12 @@ class MapView: NSView,
         needsDisplay = true
     }
 
+    func selectTrain(train: Train) {
+        delegate?.selectedTrain(train: train)
+    }
+
     @IBAction func selectCursor(_ sender: Any) {
-        tool = nil
+        tool = Cursor(owner: self)
     }
 
     @IBAction func selectGroundBrush(_ sender: Any) {
@@ -171,10 +175,12 @@ class MapView: NSView,
     // MARK: - init
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
+        self.tool = Cursor(owner: self)
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        self.tool = Cursor(owner: self)
     }
 
     // MARK: - NSView notifications
@@ -234,7 +240,7 @@ class MapView: NSView,
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         switch menuItem.action {
         case #selector(selectCursor(_:)):
-            menuItem.state = tool == nil ? .on : .off
+            menuItem.state = tool?.type == .cursor ? .on : .off
             return true
         case #selector(selectGroundBrush(_:)):
             menuItem.state = tool?.type == .groundBrush ? .on : .off
@@ -309,56 +315,6 @@ class MapView: NSView,
         let mapPoint = toMapPoint(viewPoint: viewPoint)
         if let tool = tool {
             tool.mouseDown(point: mapPoint)
-        } else if let map = map {
-            for train in map.trains {
-                for vehicle in train.vehicles {
-                    let l1 = Line(base: vehicle.center, orientation: vehicle.forward)
-                    let l2 = Line(base: vehicle.center, orientation: vehicle.left)
-                    let d1 = distance(mapPoint, l1.closestPoint(to: mapPoint))
-                    let d2 = distance(mapPoint, l2.closestPoint(to: mapPoint))
-                    if d1 <= 0.5 * vehicle.width && d2 <= 0.5 * vehicle.length {
-                        delegate?.selectedTrain(train: train)
-                        return
-                    }
-                }
-            }
-            for signal in map.trackMap.signals {
-                guard distance(mapPoint, signal.point) <= 5.0.m else { continue }
-                let nextState: Signal.BaseState =
-                    switch signal.activeState {
-                    case .blocked: .go
-                    case .go: .blocked
-                    }
-                signal.changeState(to: nextState)
-                return
-            }
-            var closestSwitch: (TrackConnection, TrackConnection.Direction)? = nil
-            var minDistance: Distance? = nil
-            for connection in map.trackMap.connections {
-                guard distance(mapPoint, connection.point) <= 50.0.m else { continue }
-                for direction in [TrackConnection.Direction.a, .b] {
-                    guard connection.hasSwitch(inDirection: direction) else { continue }
-                    for track in connection.tracks(inDirection: direction) {
-                        let path = connection.switchPath(for: track)
-                        let d = path.closestPointOnPath(from: mapPoint).distance
-                        if let minDistance = minDistance, minDistance < d {
-                            continue
-                        }
-                        closestSwitch = (connection, direction)
-                        minDistance = d
-                    }
-                }
-            }
-            if let (connection, direction) = closestSwitch {
-                let tracks = connection.tracks(inDirection: direction)
-                guard let currentTrack = connection.activeTrack(inDirection: direction) else {
-                    return
-                }
-                let currentIndex = tracks.firstIndex { $0 === currentTrack }!
-                let nextIndex = (currentIndex + 1) % tracks.count
-                let nextTrack = tracks[nextIndex]
-                connection.switchDirection(direction, to: nextTrack)
-            }
         }
     }
 
@@ -486,6 +442,7 @@ class MapView: NSView,
         if let map = map {
             map.groundMap.draw(context, self, mapRect)
         }
+        tool?.draw(layer: .aboveGroundMap, context, self, mapRect)
 
         if showGrid {
             drawGrid(mapRect)
@@ -496,10 +453,14 @@ class MapView: NSView,
             for signal in map.trackMap.signals {
                 Tracks.draw(signal: signal, context, self, mapRect)
             }
+        }
+        tool?.draw(layer: .aboveTrackMap, context, self, mapRect)
+
+        if let map = map {
             map.trains.forEach { $0.draw(context, self, mapRect) }
             map.containers.forEach { $0.draw(context, self, mapRect) }
         }
-        tool?.draw(context, self, mapRect)
+        tool?.draw(layer: .aboveTrains, context, self, mapRect)
 
         if showScale {
             drawScale()

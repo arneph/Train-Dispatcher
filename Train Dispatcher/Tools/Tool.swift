@@ -6,20 +6,27 @@
 //
 
 import Base
+import CoreGraphics
 import Foundation
+import Trains
 
 protocol ToolOwner: AnyObject, ViewContext {
     var map: Map? { get }
     var changeManager: ChangeManager? { get }
 
     func stateChanged(tool: Tool)
+    func selectTrain(train: Train)
 }
 
 enum ToolType {
-    case groundBrush, treePlacer, trackPen
+    case cursor, groundBrush, treePlacer, trackPen
 }
 
-protocol Tool: AnyObject, Drawable {
+enum ToolDrawingLayer {
+    case aboveGroundMap, aboveTrackMap, aboveTrains
+}
+
+protocol Tool: AnyObject {
     var type: ToolType { get }
 
     init(owner: ToolOwner)
@@ -31,4 +38,8 @@ protocol Tool: AnyObject, Drawable {
     func mouseDown(point: Point)
     func mouseDragged(point: Point)
     func mouseUp(point: Point)
+
+    func draw(
+        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: ViewContext,
+        _ dirtyRect: Rect)
 }

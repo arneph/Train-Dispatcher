@@ -84,7 +84,10 @@ class GroundBrush: Tool {
         state = .hovering(point)
     }
 
-    func draw(_ cgContext: CGContext, _ viewContext: any ViewContext, _: Rect) {
+    func draw(
+        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: any ViewContext, _: Rect
+    ) {
+        guard layer == .aboveGroundMap else { return }
         switch state {
         case .none:
             break

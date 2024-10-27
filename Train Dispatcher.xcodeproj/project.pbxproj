@@ -109,6 +109,7 @@
 		14E0826A2B156E0E00AA29C2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082682B156E0E00AA29C2 /* MainMenu.xib */; };
 		14E082732B156E9600AA29C2 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082722B156E9600AA29C2 /* MapView.swift */; };
 		14E082802B18299600AA29C2 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827F2B18299600AA29C2 /* Map.swift */; };
+		14EC6BA62CCDC4A100AE3B46 /* Cursor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EC6BA52CCDC4A100AE3B46 /* Cursor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -432,6 +433,7 @@
 		14E0827D2B18227A00AA29C2 /* Drawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
 		14E0827F2B18299600AA29C2 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		14E082812B1829BB00AA29C2 /* TrackMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMap.swift; sourceTree = "<group>"; };
+		14EC6BA52CCDC4A100AE3B46 /* Cursor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cursor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -708,11 +710,8 @@
 				14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */,
 				14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */,
 				14E082722B156E9600AA29C2 /* MapView.swift */,
-				1465C81C2B673DFF0042332D /* Tool.swift */,
-				146B2CCC2BDDE29F008D67D5 /* GroundBrush.swift */,
-				146B2CCE2BDDE2A9008D67D5 /* TreePlacer.swift */,
-				1465C7FA2B54BF730042332D /* TrackPen.swift */,
 				1461ED772BF188D800119738 /* PanelSelector.swift */,
+				14EC6BA42CCDC41800AE3B46 /* Tools */,
 				14E082782B156F7700AA29C2 /* Model */,
 				14E0826B2B156E0E00AA29C2 /* Info.plist */,
 				14E0826C2B156E0E00AA29C2 /* Train_Dispatcher.entitlements */,
@@ -726,6 +725,18 @@
 				14E0827F2B18299600AA29C2 /* Map.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		14EC6BA42CCDC41800AE3B46 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				1465C81C2B673DFF0042332D /* Tool.swift */,
+				14EC6BA52CCDC4A100AE3B46 /* Cursor.swift */,
+				146B2CCC2BDDE29F008D67D5 /* GroundBrush.swift */,
+				146B2CCE2BDDE2A9008D67D5 /* TreePlacer.swift */,
+				1465C7FA2B54BF730042332D /* TrackPen.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1257,6 +1268,7 @@
 			files = (
 				14E082622B156E0B00AA29C2 /* TrainDispatcherDocument.swift in Sources */,
 				1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */,
+				14EC6BA62CCDC4A100AE3B46 /* Cursor.swift in Sources */,
 				1465C81D2B673DFF0042332D /* Tool.swift in Sources */,
 				14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */,
 				1461ED782BF188D800119738 /* PanelSelector.swift in Sources */,
