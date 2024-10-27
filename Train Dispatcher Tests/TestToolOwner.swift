@@ -7,17 +7,23 @@
 
 import Base
 import Foundation
+import Trains
 
 @testable import Train_Dispatcher
 
 final class TestToolOwner: TestViewContext, ToolOwner {
     enum Call: Equatable {
         case stateChanged(Tool)
+        case selectTrain(Train)
 
         static func == (lhs: TestToolOwner.Call, rhs: TestToolOwner.Call) -> Bool {
             switch (lhs, rhs) {
             case (.stateChanged(let lt), .stateChanged(let rt)):
                 lt === rt
+            case (.selectTrain(let lt), .stateChanged(let rt)):
+                lt === rt
+            default:
+                false
             }
         }
     }
@@ -33,5 +39,9 @@ final class TestToolOwner: TestViewContext, ToolOwner {
 
     func stateChanged(tool: Tool) {
         calls.append(.stateChanged(tool))
+    }
+
+    func selectTrain(train: Train) {
+        calls.append(.selectTrain(train))
     }
 }
