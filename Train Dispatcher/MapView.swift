@@ -86,6 +86,14 @@ class MapView: NSView,
         needsDisplay = true
     }
 
+    func added(signal: Tracks.Signal, toMap map: Tracks.TrackMap) {
+        needsDisplay = true
+    }
+
+    func removed(signal oldSignal: Tracks.Signal, fromMap map: Tracks.TrackMap) {
+        needsDisplay = true
+    }
+
     func trackChanged(_ track: Track, onMap map: TrackMap) {
         needsDisplay = true
     }
@@ -314,6 +322,16 @@ class MapView: NSView,
                     }
                 }
             }
+            for signal in map.trackMap.signals {
+                guard distance(mapPoint, signal.point) <= 5.0.m else { continue }
+                let nextState: Signal.BaseState =
+                    switch signal.activeState {
+                    case .blocked: .go
+                    case .go: .blocked
+                    }
+                signal.changeState(to: nextState)
+                return
+            }
             var closestSwitch: (TrackConnection, TrackConnection.Direction)? = nil
             var minDistance: Distance? = nil
             for connection in map.trackMap.connections {
@@ -475,6 +493,9 @@ class MapView: NSView,
 
         if let map = map {
             Tracks.draw(trackMap: map.trackMap, context, self, mapRect)
+            for signal in map.trackMap.signals {
+                Tracks.draw(signal: signal, context, self, mapRect)
+            }
             map.trains.forEach { $0.draw(context, self, mapRect) }
             map.containers.forEach { $0.draw(context, self, mapRect) }
         }

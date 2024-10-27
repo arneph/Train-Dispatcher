@@ -11,7 +11,7 @@ import XCTest
 @testable import Tracks
 
 final class TrackConnection_Switches_Tests: XCTestCase {
-    
+
     func testSwitchesDirectionAState() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
@@ -32,42 +32,56 @@ final class TrackConnection_Switches_Tests: XCTestCase {
         mapObserver.calls = []
         let connection = map.connections[0]
         let connectionObserver = TestTrackConnectionObserver(for: connection)
-        
+
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         map.tick(12.3.s)
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         connection.switchDirectionA(to: track2)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .startedChangingState(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .startedChangingState(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.8)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.8)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(1.5.s)
         XCTAssertEqual(connection.directionAState, .fixed(track2))
-        XCTAssertEqual(connectionObserver.calls, [
-            .stoppedChangingState(connection, .a)
-        ])
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .stoppedChangingState(connection, .a)
+            ])
     }
-    
+
     func testSkipsDirectionAStateChange() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
@@ -88,19 +102,19 @@ final class TrackConnection_Switches_Tests: XCTestCase {
         mapObserver.calls = []
         let connection = map.connections[0]
         let connectionObserver = TestTrackConnectionObserver(for: connection)
-        
+
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         map.tick(12.3.s)
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         connection.switchDirectionA(to: track1)
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
     }
-    
+
     func testInterruptsDirectionAStateChange() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
@@ -121,49 +135,67 @@ final class TrackConnection_Switches_Tests: XCTestCase {
         mapObserver.calls = []
         let connection = map.connections[0]
         let connectionObserver = TestTrackConnectionObserver(for: connection)
-        
+
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         map.tick(12.3.s)
         XCTAssertEqual(connection.directionAState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         connection.switchDirectionA(to: track2)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .startedChangingState(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .startedChangingState(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         connection.switchDirectionA(to: track1)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.0)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .startedChangingState(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.0)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .startedChangingState(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionAState, .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.4)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .a)
-        ])
+        XCTAssertEqual(
+            connection.directionAState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.4)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .a)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(10.0.s)
         XCTAssertEqual(connection.directionAState, .fixed(track1))
-        XCTAssertEqual(connectionObserver.calls, [
-            .stoppedChangingState(connection, .a)
-        ])
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .stoppedChangingState(connection, .a)
+            ])
     }
-    
+
     func testSwitchesDirectionBState() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
@@ -184,42 +216,56 @@ final class TrackConnection_Switches_Tests: XCTestCase {
         mapObserver.calls = []
         let connection = map.connections[0]
         let connectionObserver = TestTrackConnectionObserver(for: connection)
-        
+
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         map.tick(12.3.s)
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         connection.switchDirectionB(to: track2)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .startedChangingState(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .startedChangingState(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.8)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.8)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(1.5.s)
         XCTAssertEqual(connection.directionBState, .fixed(track2))
-        XCTAssertEqual(connectionObserver.calls, [
-            .stoppedChangingState(connection, .b)
-        ])
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .stoppedChangingState(connection, .b)
+            ])
     }
-    
+
     func testSkipsDirectionBStateChange() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
@@ -240,19 +286,19 @@ final class TrackConnection_Switches_Tests: XCTestCase {
         mapObserver.calls = []
         let connection = map.connections[0]
         let connectionObserver = TestTrackConnectionObserver(for: connection)
-        
+
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         map.tick(12.3.s)
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         connection.switchDirectionB(to: track1)
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
     }
-    
+
     func testInterruptsDirectionBStateChange() {
         let map = TrackMap()
         let mapObserver = TestTrackMapObserver(for: map)
@@ -273,48 +319,66 @@ final class TrackConnection_Switches_Tests: XCTestCase {
         mapObserver.calls = []
         let connection = map.connections[0]
         let connectionObserver = TestTrackConnectionObserver(for: connection)
-        
+
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         map.tick(12.3.s)
         XCTAssertEqual(connection.directionBState, .fixed(track1))
         XCTAssert(connectionObserver.calls.isEmpty)
-        
+
         connection.switchDirectionB(to: track2)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .startedChangingState(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.0)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .startedChangingState(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track2, progress: 0.4)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         connection.switchDirectionB(to: track1)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.0)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .startedChangingState(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.0)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .startedChangingState(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(2.0.s)
-        XCTAssertEqual(connection.directionBState, .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.4)))
-        XCTAssertEqual(connectionObserver.calls, [
-            .progressedStateChange(connection, .b)
-        ])
+        XCTAssertEqual(
+            connection.directionBState,
+            .changing(TrackConnection.StateChange(previous: track1, next: track1, progress: 0.4)))
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .progressedStateChange(connection, .b)
+            ])
         connectionObserver.calls = []
-        
+
         map.tick(10.0.s)
         XCTAssertEqual(connection.directionBState, .fixed(track1))
-        XCTAssertEqual(connectionObserver.calls, [
-            .stoppedChangingState(connection, .b)
-        ])
+        XCTAssertEqual(
+            connectionObserver.calls,
+            [
+                .stoppedChangingState(connection, .b)
+            ])
         connectionObserver.calls = []
     }
-    
+
 }

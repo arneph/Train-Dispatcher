@@ -94,15 +94,15 @@ final class TestTrackConnectionObserver: TrackConnectionObserver {
     func startedChangingState(connection: TrackConnection, direction: TrackConnection.Direction) {
         calls.append(.startedChangingState(connection, direction))
     }
-    
+
     func progressedStateChange(connection: TrackConnection, direction: TrackConnection.Direction) {
         calls.append(.progressedStateChange(connection, direction))
     }
-    
+
     func stoppedChangingState(connection: TrackConnection, direction: TrackConnection.Direction) {
         calls.append(.stoppedChangingState(connection, direction))
     }
-    
+
     func removed(connection oldConnection: TrackConnection) {
         calls.append(.removed(oldConnection))
     }

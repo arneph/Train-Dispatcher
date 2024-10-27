@@ -17,6 +17,8 @@ final class TestTrackMapObserver: TrackMapObserver {
         case removedTrack(Track, TrackMap)
         case addedConnection(TrackConnection, TrackMap)
         case removedConnection(TrackConnection, TrackMap)
+        case addedSignal(Signal, TrackMap)
+        case removedSignal(Signal, TrackMap)
         case trackChanged(Track, TrackMap)
         case connectionChanged(TrackConnection, TrackMap)
 
@@ -32,6 +34,10 @@ final class TestTrackMapObserver: TrackMapObserver {
                 lc === rc && lm === rm
             case (.removedConnection(let lc, let lm), .removedConnection(let rc, let rm)):
                 lc === rc && lm === rm
+            case (.addedSignal(let ls, let lm), .addedSignal(let rs, let rm)):
+                ls === rs && lm === rm
+            case (.removedSignal(let ls, let lm), .removedSignal(let rs, let rm)):
+                ls === rs && lm === rm
             case (.trackChanged(let lt, let lm), .trackChanged(let rt, let rm)):
                 lt === rt && lm === rm
             case (.connectionChanged(let lc, let lm), .connectionChanged(let rc, let rm)):
@@ -65,6 +71,14 @@ final class TestTrackMapObserver: TrackMapObserver {
 
     func removed(connection oldConnection: TrackConnection, fromMap map: TrackMap) {
         calls.append(.removedConnection(oldConnection, map))
+    }
+
+    func added(signal: Signal, toMap map: TrackMap) {
+        calls.append(.addedSignal(signal, map))
+    }
+
+    func removed(signal oldSignal: Signal, fromMap map: TrackMap) {
+        calls.append(.removedSignal(oldSignal, map))
     }
 
     func trackChanged(_ track: Track, onMap map: TrackMap) {

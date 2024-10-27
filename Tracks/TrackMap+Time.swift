@@ -13,5 +13,8 @@ extension TrackMap {
         for connection in self.connections {
             connection.tick(delta)
         }
+        for signal in self.signals {
+            signal.tick(delta)
+        }
     }
 }

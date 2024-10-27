@@ -10,7 +10,7 @@ import Foundation
 
 extension TrackMap: Codable {
     private enum CodingKeys: String, CodingKey {
-        case tracks, connections
+        case tracks, connections, signals
     }
 
     private struct EncodedTrack: Codable {
@@ -40,10 +40,17 @@ extension TrackMap: Codable {
         let directionBState: State?
     }
 
+    private struct EncodedSignal: Codable {
+        let id: ID<Signal>
+        let position: PointAndOrientation
+        let state: Signal.State
+    }
+
     public convenience init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let encodedTracks = try values.decode([EncodedTrack].self, forKey: .tracks)
         let encodedConnections = try values.decode([EncodedConnection].self, forKey: .connections)
+        let encodedSignals = try values.decode([EncodedSignal].self, forKey: .signals)
         let trackSet = IDSet<Track>(
             encodedTracks.map { (encodedTrack) in
                 Track(id: encodedTrack.id, path: encodedTrack.path)
@@ -53,6 +60,10 @@ extension TrackMap: Codable {
                 TrackConnection(
                     id: encodedConnection.id, point: encodedConnection.point,
                     directionA: encodedConnection.orientation)
+            })
+        let signalSet = IDSet<Signal>(
+            encodedSignals.map { (encodedSignal) in
+                Signal(id: encodedSignal.id, position: encodedSignal.position)
             })
         zip(trackSet.elements, encodedTracks).forEach { (track, encodedTrack) in
             if let startID = encodedTrack.startConnection {
@@ -94,7 +105,10 @@ extension TrackMap: Codable {
                 }
             }
         }
-        self.init(tracks: trackSet, connections: connectionSet)
+        zip(signalSet.elements, encodedSignals).forEach { (signal, encodedSignal) in
+            signal.state = encodedSignal.state
+        }
+        self.init(tracks: trackSet, connections: connectionSet, signals: signalSet)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -133,9 +147,13 @@ extension TrackMap: Codable {
                     }
                 })
         }
+        let encodedSignals = signals.map { (signal) in
+            EncodedSignal(id: signal.id, position: signal.position, state: signal.state)
+        }
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(encodedTracks, forKey: .tracks)
         try values.encode(encodedConnections, forKey: .connections)
+        try values.encode(encodedSignals, forKey: .signals)
     }
 
 }

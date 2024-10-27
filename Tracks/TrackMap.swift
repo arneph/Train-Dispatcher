@@ -15,17 +15,22 @@ public final class TrackMap {
 
     internal let trackIDGenerator = IDGenerator<Track>()
     internal let connectionIDGenerator = IDGenerator<TrackConnection>()
+    internal let signalIDGenerator = IDGenerator<Signal>()
 
     internal var trackSet = IDSet<Track>()
     internal var connectionSet = IDSet<TrackConnection>()
+    internal var signalSet = IDSet<Signal>()
 
     public var tracks: [Track] { trackSet.elements }
     public var connections: [TrackConnection] { connectionSet.elements }
+    public var signals: [Signal] { signalSet.elements }
 
     public init() {}
-    internal init(tracks: IDSet<Track>, connections: IDSet<TrackConnection>) {
+    internal init(tracks: IDSet<Track>, connections: IDSet<TrackConnection>, signals: IDSet<Signal>)
+    {
         self.trackSet = tracks
         self.connectionSet = connections
+        self.signalSet = signals
     }
 
     deinit {

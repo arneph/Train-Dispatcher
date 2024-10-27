@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		140101CA2CBDF39900AD6707 /* TrackMap+SignalAddition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140101C92CBDF39900AD6707 /* TrackMap+SignalAddition.swift */; };
+		140101CC2CBDF68000AD6707 /* TrackMap+SignalRemoval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140101CB2CBDF68000AD6707 /* TrackMap+SignalRemoval.swift */; };
 		140136FB2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */; };
-		140136FD2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140136FC2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift */; };
+		140136FD2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140136FC2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift */; };
 		1402F0112BB3A17800F3DA27 /* TrackPen_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402F0102BB3A17800F3DA27 /* TrackPen_Tests.swift */; };
 		1402F0132BB3A21800F3DA27 /* TestToolOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402F0122BB3A21800F3DA27 /* TestToolOwner.swift */; };
 		1402F0152BB3A33B00F3DA27 /* TestViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402F0142BB3A33B00F3DA27 /* TestViewContext.swift */; };
@@ -42,7 +44,7 @@
 		142D67F02B9D669400130757 /* TestTrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */; };
 		142D67F12B9D669400130757 /* TestTrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81A2B6584C60042332D /* TestTrackConnectionObserver.swift */; };
 		142D67F22B9D669400130757 /* TestTrackObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8162B64B2DD0042332D /* TestTrackObserver.swift */; };
-		142D67F32B9D669400130757 /* TrackMap+Additon_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8052B6492D00042332D /* TrackMap+Additon_Tests.swift */; };
+		142D67F32B9D669400130757 /* TrackMap+TrackAdditon_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C8052B6492D00042332D /* TrackMap+TrackAdditon_Tests.swift */; };
 		142D67F42B9D66CB00130757 /* TrackMap+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */; };
 		142D67F52B9D66CC00130757 /* TrackMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082812B1829BB00AA29C2 /* TrackMap.swift */; };
 		142D67F62B9D671B00130757 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
@@ -51,7 +53,7 @@
 		142D67FC2B9D673800130757 /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		142D68012B9D697400130757 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68002B9D697400130757 /* Track.swift */; };
 		142D68032B9D69DE00130757 /* TrackConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68022B9D69DE00130757 /* TrackConnection.swift */; };
-		142D68052B9D6B0700130757 /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68042B9D6B0700130757 /* Drawing.swift */; };
+		142D68052B9D6B0700130757 /* TrackDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68042B9D6B0700130757 /* TrackDrawing.swift */; };
 		142D68072B9D6B7E00130757 /* TrackMap+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68062B9D6B7E00130757 /* TrackMap+Codable.swift */; };
 		142D68092B9D864D00130757 /* TrackObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68082B9D864D00130757 /* TrackObserver.swift */; };
 		142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */; };
@@ -97,8 +99,9 @@
 		14D4BBCD2CBB1E4F00852BF0 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBCC2CBB1E4F00852BF0 /* Signal.swift */; };
 		14D4BBCF2CBB21AB00852BF0 /* SignalObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBCE2CBB21AB00852BF0 /* SignalObserver.swift */; };
 		14D4BBD12CBB277A00852BF0 /* TrackConnection+Switches_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBD02CBB277A00852BF0 /* TrackConnection+Switches_Test.swift */; };
-		14DD605B2BB51073007AA7A5 /* TrackMap+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DD605A2BB51073007AA7A5 /* TrackMap+Addition.swift */; };
-		14DD605D2BB51159007AA7A5 /* TrackMap+Removal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DD605C2BB51159007AA7A5 /* TrackMap+Removal.swift */; };
+		14D4BBD32CBB317300852BF0 /* SignalDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBD22CBB317300852BF0 /* SignalDrawing.swift */; };
+		14DD605B2BB51073007AA7A5 /* TrackMap+TrackAddition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DD605A2BB51073007AA7A5 /* TrackMap+TrackAddition.swift */; };
+		14DD605D2BB51159007AA7A5 /* TrackMap+TrackRemoval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DD605C2BB51159007AA7A5 /* TrackMap+TrackRemoval.swift */; };
 		14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */; };
 		14E082622B156E0B00AA29C2 /* TrainDispatcherDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */; };
 		14E082652B156E0B00AA29C2 /* TrainDispatcherDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E082632B156E0B00AA29C2 /* TrainDispatcherDocument.xib */; };
@@ -345,8 +348,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		140101C92CBDF39900AD6707 /* TrackMap+SignalAddition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+SignalAddition.swift"; sourceTree = "<group>"; };
+		140101CB2CBDF68000AD6707 /* TrackMap+SignalRemoval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+SignalRemoval.swift"; sourceTree = "<group>"; };
 		140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Codable_Tests.swift"; sourceTree = "<group>"; };
-		140136FC2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Removal_Tests.swift"; sourceTree = "<group>"; };
+		140136FC2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+TrackRemoval_Tests.swift"; sourceTree = "<group>"; };
 		1402F0102BB3A17800F3DA27 /* TrackPen_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen_Tests.swift; sourceTree = "<group>"; };
 		1402F0122BB3A21800F3DA27 /* TestToolOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestToolOwner.swift; sourceTree = "<group>"; };
 		1402F0142BB3A33B00F3DA27 /* TestViewContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewContext.swift; sourceTree = "<group>"; };
@@ -361,7 +366,7 @@
 		142D67DC2B9D663E00130757 /* Tracks Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tracks Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		142D68002B9D697400130757 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		142D68022B9D69DE00130757 /* TrackConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackConnection.swift; sourceTree = "<group>"; };
-		142D68042B9D6B0700130757 /* Drawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
+		142D68042B9D6B0700130757 /* TrackDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDrawing.swift; sourceTree = "<group>"; };
 		142D68062B9D6B7E00130757 /* TrackMap+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Codable.swift"; sourceTree = "<group>"; };
 		142D68082B9D864D00130757 /* TrackObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackObserver.swift; sourceTree = "<group>"; };
 		142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackConnectionObserver.swift; sourceTree = "<group>"; };
@@ -374,7 +379,7 @@
 		1461ED772BF188D800119738 /* PanelSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSelector.swift; sourceTree = "<group>"; };
 		1465C7FA2B54BF730042332D /* TrackPen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPen.swift; sourceTree = "<group>"; };
 		1465C7FC2B5B54580042332D /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
-		1465C8052B6492D00042332D /* TrackMap+Additon_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Additon_Tests.swift"; sourceTree = "<group>"; };
+		1465C8052B6492D00042332D /* TrackMap+TrackAdditon_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+TrackAdditon_Tests.swift"; sourceTree = "<group>"; };
 		1465C8162B64B2DD0042332D /* TestTrackObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrackObserver.swift; sourceTree = "<group>"; };
 		1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrackMapObserver.swift; sourceTree = "<group>"; };
 		1465C81A2B6584C60042332D /* TestTrackConnectionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrackConnectionObserver.swift; sourceTree = "<group>"; };
@@ -409,8 +414,9 @@
 		14D4BBCC2CBB1E4F00852BF0 /* Signal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
 		14D4BBCE2CBB21AB00852BF0 /* SignalObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalObserver.swift; sourceTree = "<group>"; };
 		14D4BBD02CBB277A00852BF0 /* TrackConnection+Switches_Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Switches_Test.swift"; sourceTree = "<group>"; };
-		14DD605A2BB51073007AA7A5 /* TrackMap+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Addition.swift"; sourceTree = "<group>"; };
-		14DD605C2BB51159007AA7A5 /* TrackMap+Removal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Removal.swift"; sourceTree = "<group>"; };
+		14D4BBD22CBB317300852BF0 /* SignalDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalDrawing.swift; sourceTree = "<group>"; };
+		14DD605A2BB51073007AA7A5 /* TrackMap+TrackAddition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+TrackAddition.swift"; sourceTree = "<group>"; };
+		14DD605C2BB51159007AA7A5 /* TrackMap+TrackRemoval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+TrackRemoval.swift"; sourceTree = "<group>"; };
 		14E0825C2B156E0B00AA29C2 /* Train Dispatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Train Dispatcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E0825F2B156E0B00AA29C2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherDocument.swift; sourceTree = "<group>"; };
@@ -567,12 +573,15 @@
 				14D4BBCE2CBB21AB00852BF0 /* SignalObserver.swift */,
 				14E082812B1829BB00AA29C2 /* TrackMap.swift */,
 				142D68062B9D6B7E00130757 /* TrackMap+Codable.swift */,
-				14DD605A2BB51073007AA7A5 /* TrackMap+Addition.swift */,
-				14DD605C2BB51159007AA7A5 /* TrackMap+Removal.swift */,
+				14DD605A2BB51073007AA7A5 /* TrackMap+TrackAddition.swift */,
+				14DD605C2BB51159007AA7A5 /* TrackMap+TrackRemoval.swift */,
+				140101C92CBDF39900AD6707 /* TrackMap+SignalAddition.swift */,
+				140101CB2CBDF68000AD6707 /* TrackMap+SignalRemoval.swift */,
 				140E52902C97964D007E2D32 /* TrackMap+Time.swift */,
 				144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */,
 				142D680C2B9D86D400130757 /* TrackMapObserver.swift */,
-				142D68042B9D6B0700130757 /* Drawing.swift */,
+				142D68042B9D6B0700130757 /* TrackDrawing.swift */,
+				14D4BBD22CBB317300852BF0 /* SignalDrawing.swift */,
 			);
 			path = Tracks;
 			sourceTree = "<group>";
@@ -585,8 +594,8 @@
 				1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */,
 				14D4BBD02CBB277A00852BF0 /* TrackConnection+Switches_Test.swift */,
 				140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */,
-				1465C8052B6492D00042332D /* TrackMap+Additon_Tests.swift */,
-				140136FC2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift */,
+				1465C8052B6492D00042332D /* TrackMap+TrackAdditon_Tests.swift */,
+				140136FC2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift */,
 			);
 			path = "Tracks Tests";
 			sourceTree = "<group>";
@@ -1153,6 +1162,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				142D67F42B9D66CB00130757 /* TrackMap+Queries.swift in Sources */,
+				14D4BBD32CBB317300852BF0 /* SignalDrawing.swift in Sources */,
+				140101CA2CBDF39900AD6707 /* TrackMap+SignalAddition.swift in Sources */,
 				14D4BBCD2CBB1E4F00852BF0 /* Signal.swift in Sources */,
 				142D68032B9D69DE00130757 /* TrackConnection.swift in Sources */,
 				142D67F52B9D66CC00130757 /* TrackMap.swift in Sources */,
@@ -1160,13 +1171,14 @@
 				14D4BBCF2CBB21AB00852BF0 /* SignalObserver.swift in Sources */,
 				142D68072B9D6B7E00130757 /* TrackMap+Codable.swift in Sources */,
 				140E52952C9797CE007E2D32 /* TrackConnection+Switches.swift in Sources */,
+				140101CC2CBDF68000AD6707 /* TrackMap+SignalRemoval.swift in Sources */,
 				140E52932C979720007E2D32 /* TrackConnection+Modifications.swift in Sources */,
 				142D68012B9D697400130757 /* Track.swift in Sources */,
-				14DD605D2BB51159007AA7A5 /* TrackMap+Removal.swift in Sources */,
+				14DD605D2BB51159007AA7A5 /* TrackMap+TrackRemoval.swift in Sources */,
 				142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */,
-				14DD605B2BB51073007AA7A5 /* TrackMap+Addition.swift in Sources */,
+				14DD605B2BB51073007AA7A5 /* TrackMap+TrackAddition.swift in Sources */,
 				142D680D2B9D86D500130757 /* TrackMapObserver.swift in Sources */,
-				142D68052B9D6B0700130757 /* Drawing.swift in Sources */,
+				142D68052B9D6B0700130757 /* TrackDrawing.swift in Sources */,
 				142D68092B9D864D00130757 /* TrackObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1176,12 +1188,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				142D67F02B9D669400130757 /* TestTrackMapObserver.swift in Sources */,
-				140136FD2BBA101B0080C0E1 /* TrackMap+Removal_Tests.swift in Sources */,
+				140136FD2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift in Sources */,
 				14D4BBD12CBB277A00852BF0 /* TrackConnection+Switches_Test.swift in Sources */,
 				142D67F12B9D669400130757 /* TestTrackConnectionObserver.swift in Sources */,
 				140136FB2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift in Sources */,
 				142D67F22B9D669400130757 /* TestTrackObserver.swift in Sources */,
-				142D67F32B9D669400130757 /* TrackMap+Additon_Tests.swift in Sources */,
+				142D67F32B9D669400130757 /* TrackMap+TrackAdditon_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
