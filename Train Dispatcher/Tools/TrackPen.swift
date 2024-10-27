@@ -186,11 +186,10 @@ class TrackPen: Tool {
             ctx.addLine(to: penPoint.point)
             ctx.strokePath()
             ctx.setFillColor(hintColor)
-            ctx.fillEllipse(
-                in: Rect.square(around: hint.base.point, length: width))
+            ctx.fillCircle(at: hint.base.point, radius: 0.5 * width)
         }
         ctx.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-        ctx.fillEllipse(in: Rect.square(around: penPoint.point, length: width))
+        ctx.fillCircle(at: penPoint.point, radius: 0.5 * width)
     }
 
     private func boundPenPointFor(point: Point) -> PenPoint? {

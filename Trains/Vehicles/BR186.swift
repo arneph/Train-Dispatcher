@@ -165,8 +165,8 @@ public final class BR186: Vehicle {
         let frontFan2P = center + fan2L ** forward + fanW ** left
 
         ctx.setFillColor(CGColor(red: 0.4, green: 0.4, blue: 0.5, alpha: 1.0))
-        ctx.fillEllipse(in: Rect.square(around: frontFan1P, length: 2.0 * fanR))
-        ctx.fillEllipse(in: Rect.square(around: frontFan2P, length: 2.0 * fanR))
+        ctx.fillCircle(at: frontFan1P, radius: fanR)
+        ctx.fillCircle(at: frontFan2P, radius: fanR)
 
         let backP1 = center + lStart ** backward + wStart ** right
         let backP2 = center + lStart ** backward + wEnd ** right
@@ -184,8 +184,8 @@ public final class BR186: Vehicle {
         let backFan2P = center + fan2L ** backward + fanW ** right
 
         ctx.setFillColor(CGColor(red: 0.4, green: 0.4, blue: 0.5, alpha: 1.0))
-        ctx.fillEllipse(in: Rect.square(around: backFan1P, length: 2.0 * fanR))
-        ctx.fillEllipse(in: Rect.square(around: backFan2P, length: 2.0 * fanR))
+        ctx.fillCircle(at: backFan1P, radius: fanR)
+        ctx.fillCircle(at: backFan2P, radius: fanR)
     }
 
     private func drawPantographs(_ ctx: DrawContext) {
@@ -230,8 +230,8 @@ public final class BR186: Vehicle {
         ctx.move(to: frontCableP6)
         ctx.addLine(to: frontCableP7)
         ctx.strokePath()
-        ctx.fillEllipse(in: Rect.square(around: frontCableP6, length: 0.12.m))
-        ctx.fillEllipse(in: Rect.square(around: frontCableP7, length: 0.12.m))
+        ctx.fillCircle(at: frontCableP6, radius: 0.06.m)
+        ctx.fillCircle(at: frontCableP7, radius: 0.06.m)
 
         let frontBottomAxleP1 = center + bottomAxleL ** forward + bottomAxleW ** left
         let frontBottomAxleP2 = center + bottomAxleL ** forward + bottomAxleW ** right
@@ -335,8 +335,8 @@ public final class BR186: Vehicle {
         ctx.move(to: backCableP6)
         ctx.addLine(to: backCableP7)
         ctx.strokePath()
-        ctx.fillEllipse(in: Rect.square(around: backCableP6, length: 0.12.m))
-        ctx.fillEllipse(in: Rect.square(around: backCableP7, length: 0.12.m))
+        ctx.fillCircle(at: backCableP6, radius: 0.06.m)
+        ctx.fillCircle(at: backCableP7, radius: 0.06.m)
 
         let backBottomAxleP1 = center + bottomAxleL ** backward + bottomAxleW ** left
         let backBottomAxleP2 = center + bottomAxleL ** backward + bottomAxleW ** right

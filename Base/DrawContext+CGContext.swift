@@ -105,8 +105,9 @@ extension DrawContext {
         cgContext.fill(viewContext.toViewRect(rect))
     }
 
-    public func fillEllipse(in rect: Rect) {
-        cgContext.fillEllipse(in: viewContext.toViewRect(rect))
+    public func fillCircle(at center: Point, radius: Distance) {
+        cgContext.fillEllipse(
+            in: viewContext.toViewRect(Rect.square(around: center, length: 2.0 * radius)))
     }
 
     public func draw(_ image: CGImage, in rect: Rect, byTiling tiling: Bool) {

@@ -343,8 +343,8 @@ public final class ICE3Wagon: Vehicle {
         ctx.move(to: frontCableP6)
         ctx.addLine(to: frontCableP7)
         ctx.strokePath()
-        ctx.fillEllipse(in: Rect.square(around: frontCableP6, length: 0.12.m))
-        ctx.fillEllipse(in: Rect.square(around: frontCableP7, length: 0.12.m))
+        ctx.fillCircle(at: frontCableP6, radius: 0.06.m)
+        ctx.fillCircle(at: frontCableP7, radius: 0.06.m)
 
         let frontBottomAxleP1 = center + bottomAxleL ** backward + bottomAxleW ** left
         let frontBottomAxleP2 = center + bottomAxleL ** backward + bottomAxleW ** right

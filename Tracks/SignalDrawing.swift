@@ -113,9 +113,9 @@ private func drawWithLowDetail(_ signal: Signal, _ ctx: DrawContext) {
         }
 
     ctx.setFillColor(greenLight)
-    ctx.fillEllipse(in: Rect.square(around: c2, length: 2.0 * lightRadius))
+    ctx.fillCircle(at: c2, radius: lightRadius)
     ctx.setFillColor(redLight)
-    ctx.fillEllipse(in: Rect.square(around: c1, length: 2.0 * lightRadius))
+    ctx.fillCircle(at: c1, radius: lightRadius)
 }
 
 private func drawWithHighDetail(_ signal: Signal, _ ctx: DrawContext) {
