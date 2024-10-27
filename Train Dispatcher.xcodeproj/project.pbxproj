@@ -110,6 +110,8 @@
 		14E082732B156E9600AA29C2 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E082722B156E9600AA29C2 /* MapView.swift */; };
 		14E082802B18299600AA29C2 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827F2B18299600AA29C2 /* Map.swift */; };
 		14EC6BA62CCDC4A100AE3B46 /* Cursor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EC6BA52CCDC4A100AE3B46 /* Cursor.swift */; };
+		14EC6BA82CCDCD7200AE3B46 /* DrawContext+Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EC6BA72CCDCD7200AE3B46 /* DrawContext+Paths.swift */; };
+		14EC6BAA2CCDCE0700AE3B46 /* DrawContext+CGContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EC6BA92CCDCE0700AE3B46 /* DrawContext+CGContext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -434,6 +436,8 @@
 		14E0827F2B18299600AA29C2 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		14E082812B1829BB00AA29C2 /* TrackMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMap.swift; sourceTree = "<group>"; };
 		14EC6BA52CCDC4A100AE3B46 /* Cursor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cursor.swift; sourceTree = "<group>"; };
+		14EC6BA72CCDCD7200AE3B46 /* DrawContext+Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrawContext+Paths.swift"; sourceTree = "<group>"; };
+		14EC6BA92CCDCE0700AE3B46 /* DrawContext+CGContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrawContext+CGContext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -546,6 +550,8 @@
 				1465C7FC2B5B54580042332D /* Path.swift */,
 				141014BA2BDDD4EE004651A0 /* Color.swift */,
 				14E0827D2B18227A00AA29C2 /* Drawing.swift */,
+				14EC6BA72CCDCD7200AE3B46 /* DrawContext+Paths.swift */,
+				14EC6BA92CCDCE0700AE3B46 /* DrawContext+CGContext.swift */,
 				14A2AB942B40364F0044861E /* Object.swift */,
 			);
 			path = Base;
@@ -1149,6 +1155,8 @@
 				142D67C12B9D119F00130757 /* Geometry.swift in Sources */,
 				142D67BC2B9D119F00130757 /* Identifiers.swift in Sources */,
 				142D67BD2B9D119F00130757 /* Units.swift in Sources */,
+				14EC6BAA2CCDCE0700AE3B46 /* DrawContext+CGContext.swift in Sources */,
+				14EC6BA82CCDCD7200AE3B46 /* DrawContext+Paths.swift in Sources */,
 				142D67C22B9D119F00130757 /* Drawing.swift in Sources */,
 				142D67BE2B9D119F00130757 /* Path.swift in Sources */,
 				142D67C02B9D119F00130757 /* Object.swift in Sources */,

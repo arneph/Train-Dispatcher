@@ -125,43 +125,42 @@ public final class Container: Object {
     }
 
     // MARK: -  Drawing
-    public func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _: Rect) {
-        cgContext.saveGState()
+    public func draw(ctx: DrawContext) {
+        ctx.saveGState()
 
         let p1 = center + 0.5 * Container.length ** forward + 0.5 * Container.width ** left
         let p2 = center + 0.5 * Container.length ** backward + 0.5 * Container.width ** left
         let p3 = center + 0.5 * Container.length ** backward + 0.5 * Container.width ** right
         let p4 = center + 0.5 * Container.length ** forward + 0.5 * Container.width ** right
 
-        cgContext.move(to: viewContext.toViewPoint(p1))
-        cgContext.addLine(to: viewContext.toViewPoint(p2))
-        cgContext.addLine(to: viewContext.toViewPoint(p3))
-        cgContext.addLine(to: viewContext.toViewPoint(p4))
-        cgContext.closePath()
+        ctx.move(to: p1)
+        ctx.addLine(to: p2)
+        ctx.addLine(to: p3)
+        ctx.addLine(to: p4)
+        ctx.closePath()
 
-        cgContext.setFillColor(color)
-        cgContext.setStrokeColor(CGColor.init(gray: 0.2, alpha: 1.0))
-        cgContext.drawPath(using: .fillStroke)
+        ctx.setFillColor(color)
+        ctx.setStrokeColor(CGColor.init(gray: 0.2, alpha: 1.0))
+        ctx.drawPath(using: .fillStroke)
 
-        if viewContext.mapScale >= 5.0 {
+        if ctx.mapScale >= 5.0 {
             let lineCount = 15
-            cgContext.setLineWidth(
-                viewContext.toViewDistance(Container.length / Float64(lineCount) * 0.25))
-            cgContext.setStrokeColor(CGColor.init(gray: 0.6, alpha: 1.0))
-            cgContext.setFillColor(CGColor.init(gray: 0.6, alpha: 1.0))
+            ctx.setLineWidth(Container.length / Float64(lineCount) * 0.25)
+            ctx.setStrokeColor(CGColor.init(gray: 0.6, alpha: 1.0))
+            ctx.setFillColor(CGColor.init(gray: 0.6, alpha: 1.0))
 
             for i in 0...lineCount {
                 let lengthDist = Container.length * (-0.5 + Float64(1 + i) / Float64(lineCount + 2))
                 let q1 = center + lengthDist ** forward + 0.4 * Container.width ** left
                 let q2 = center + lengthDist ** forward + 0.4 * Container.width ** right
 
-                cgContext.move(to: viewContext.toViewPoint(q1))
-                cgContext.addLine(to: viewContext.toViewPoint(q2))
-                cgContext.strokePath()
+                ctx.move(to: q1)
+                ctx.addLine(to: q2)
+                ctx.strokePath()
             }
         }
 
-        cgContext.restoreGState()
+        ctx.restoreGState()
     }
 
 }

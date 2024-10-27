@@ -438,29 +438,30 @@ class MapView: NSView,
 
         let t = Date.now
         let mapRect = toMapRect(viewRect: viewRect)
+        let mapContext = DrawContext(cgContext: context, viewContext: self, dirtyRect: mapRect)
 
         if let map = map {
-            map.groundMap.draw(context, self, mapRect)
+            map.groundMap.draw(ctx: mapContext)
         }
-        tool?.draw(layer: .aboveGroundMap, context, self, mapRect)
+        tool?.draw(layer: .aboveGroundMap, ctx: mapContext)
 
         if showGrid {
             drawGrid(mapRect)
         }
 
         if let map = map {
-            Tracks.draw(trackMap: map.trackMap, context, self, mapRect)
+            Tracks.draw(trackMap: map.trackMap, ctx: mapContext)
             for signal in map.trackMap.signals {
-                Tracks.draw(signal: signal, context, self, mapRect)
+                Tracks.draw(signal: signal, ctx: mapContext)
             }
         }
-        tool?.draw(layer: .aboveTrackMap, context, self, mapRect)
+        tool?.draw(layer: .aboveTrackMap, ctx: mapContext)
 
         if let map = map {
-            map.trains.forEach { $0.draw(context, self, mapRect) }
-            map.containers.forEach { $0.draw(context, self, mapRect) }
+            map.trains.forEach { $0.draw(ctx: mapContext) }
+            map.containers.forEach { $0.draw(ctx: mapContext) }
         }
-        tool?.draw(layer: .aboveTrains, context, self, mapRect)
+        tool?.draw(layer: .aboveTrains, ctx: mapContext)
 
         if showScale {
             drawScale()

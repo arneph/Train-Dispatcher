@@ -92,10 +92,6 @@ class Cursor: Tool {
 
     func mouseUp(point: Point) {}
 
-    func draw(
-        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: any Base.ViewContext,
-        _ dirtyRect: Base.Rect
-    ) {
-    }
+    func draw(layer: ToolDrawingLayer, ctx: DrawContext) {}
 
 }

@@ -139,64 +139,58 @@ class TrackPen: Tool {
         state = .none
     }
 
-    func draw(
-        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: ViewContext,
-        _ dirtyRect: Rect
-    ) {
+    func draw(layer: ToolDrawingLayer, ctx: DrawContext) {
         guard layer == .aboveTrackMap else { return }
         switch state {
         case .none: break
         case .hovering(let penPoint):
-            cgContext.saveGState()
-            TrackPen.draw(penPoint: penPoint, cgContext, viewContext)
-            cgContext.restoreGState()
+            ctx.saveGState()
+            TrackPen.draw(penPoint: penPoint, ctx)
+            ctx.restoreGState()
         case .dragging(let penDrag):
-            cgContext.saveGState()
+            ctx.saveGState()
             if let proposal = penDrag.proposal {
                 if proposal.valid {
-                    cgContext.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
+                    ctx.setStrokeColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.5))
                 } else {
-                    cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5))
+                    ctx.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5))
                 }
-                cgContext.setLineWidth(viewContext.toViewDistance(trackBedWidth))
-                stroke(path: proposal.path, cgContext, viewContext, trackBedWidth, dirtyRect)
+                ctx.setLineWidth(trackBedWidth)
+                ctx.stroke(path: proposal.path, trackBedWidth)
             } else {
-                cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
-                cgContext.setLineWidth(max(viewContext.toViewDistance(trackBedWidth / 4.0), 3.0))
-                cgContext.setLineDash(phase: 0.0, lengths: [20.0, 20.0])
-                cgContext.move(to: viewContext.toViewPoint(penDrag.start.point))
-                cgContext.addLine(to: viewContext.toViewPoint(penDrag.end.point))
-                cgContext.strokePath()
+                ctx.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
+                ctx.setLineWidth(ctx.max(trackBedWidth / 4.0, 3.0))
+                ctx.setLineDash(phase: 0.0.m, lengths: [3.0.m, 3.0.m])
+                ctx.move(to: penDrag.start.point)
+                ctx.addLine(to: penDrag.end.point)
+                ctx.strokePath()
             }
-            TrackPen.draw(penPoint: penDrag.start, cgContext, viewContext)
-            TrackPen.draw(penPoint: penDrag.end, cgContext, viewContext)
-            cgContext.restoreGState()
+            TrackPen.draw(penPoint: penDrag.start, ctx)
+            TrackPen.draw(penPoint: penDrag.end, ctx)
+            ctx.restoreGState()
         }
     }
 
-    private static func draw(
-        penPoint: PenPoint, _ cgContext: CGContext, _ viewContext: ViewContext
-    ) {
-        let width = max(1.0.m, viewContext.toMapDistance(viewDistance: 8.0))
+    private static func draw(penPoint: PenPoint, _ ctx: DrawContext) {
+        let width = ctx.max(1.0.m, 8.0)
         if let hint = penPoint.hint {
             let hintColor: CGColor
             switch penPoint.target {
             case .free: hintColor = CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0)
             case .bound: hintColor = CGColor.init(gray: 0.5, alpha: 1.0)
             }
-            cgContext.setStrokeColor(hintColor)
-            cgContext.setLineWidth(viewContext.toViewDistance(width / 4.0))
-            cgContext.setLineDash(phase: 0.0, lengths: [5.0, 5.0])
-            cgContext.move(to: viewContext.toViewPoint(hint.base.point))
-            cgContext.addLine(to: viewContext.toViewPoint(penPoint.point))
-            cgContext.strokePath()
-            cgContext.setFillColor(hintColor)
-            cgContext.fillEllipse(
-                in: viewContext.toViewRect(Rect.square(around: hint.base.point, length: width)))
+            ctx.setStrokeColor(hintColor)
+            ctx.setLineWidth(width / 4.0)
+            ctx.setLineDash(phase: 0.0.m, lengths: [2.0.m, 2.0.m])
+            ctx.move(to: hint.base.point)
+            ctx.addLine(to: penPoint.point)
+            ctx.strokePath()
+            ctx.setFillColor(hintColor)
+            ctx.fillEllipse(
+                in: Rect.square(around: hint.base.point, length: width))
         }
-        cgContext.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
-        cgContext.fillEllipse(
-            in: viewContext.toViewRect(Rect.square(around: penPoint.point, length: width)))
+        ctx.setFillColor(CGColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0))
+        ctx.fillEllipse(in: Rect.square(around: penPoint.point, length: width))
     }
 
     private func boundPenPointFor(point: Point) -> PenPoint? {

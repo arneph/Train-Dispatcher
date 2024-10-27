@@ -11,26 +11,19 @@ import Foundation
 
 extension GroundMap: Drawable {
 
-    public func draw(
-        _ cgContext: CGContext,
-        _ viewContext: any Base.ViewContext,
-        _ dirtyRect: Rect
-    ) {
-        cgContext.saveGState()
+    public func draw(ctx: DrawContext) {
+        ctx.saveGState()
 
-        cgContext.setFillColor(baseColor.cgColor)
-        cgContext.fill(viewContext.toViewRect(dirtyRect))
+        ctx.setFillColor(baseColor)
+        ctx.fill(ctx.dirtyRect)
 
-        forChunks(at: dirtyRect) { (id, chunk) in
+        forChunks(at: ctx.dirtyRect) { (id, chunk) in
             if !chunk.isEmptyImage {
-                cgContext.draw(
-                    chunk.image,
-                    in: viewContext.toViewRect(toRect(id)),
-                    byTiling: false)
+                ctx.draw(chunk.image, in: toRect(id), byTiling: false)
             }
         }
 
-        cgContext.restoreGState()
+        ctx.restoreGState()
     }
 
 }

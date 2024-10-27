@@ -76,7 +76,7 @@ public class Vehicle: Object {
     public var right: Angle { objectPosition.right }
     public var backward: Angle { objectPosition.backward }
 
-    public func draw(_: CGContext, _: any Base.ViewContext, _: Base.Rect) {
+    public func draw(ctx: DrawContext) {
         assertionFailure("Vehicle.draw was not overwritten")
     }
 

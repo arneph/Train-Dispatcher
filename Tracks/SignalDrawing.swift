@@ -9,23 +9,17 @@ import Base
 import CoreGraphics
 import Foundation
 
-public func draw(
-    signal: Signal, _ cgContext: CGContext, _ viewContext: ViewContext,
-    _ dirtyRect: Rect
-) {
-    cgContext.saveGState()
-    if viewContext.mapScale < 5.0 {
-        drawWithLowDetail(signal, cgContext, viewContext, dirtyRect)
+public func draw(signal: Signal, ctx: DrawContext) {
+    ctx.saveGState()
+    if ctx.mapScale < 5.0 {
+        drawWithLowDetail(signal, ctx)
     } else {
-        drawWithHighDetail(signal, cgContext, viewContext, dirtyRect)
+        drawWithHighDetail(signal, ctx)
     }
-    cgContext.restoreGState()
+    ctx.restoreGState()
 }
 
-private func drawWithLowDetail(
-    _ signal: Signal, _ cgContext: CGContext, _ viewContext: ViewContext,
-    _ dirtyRect: Rect
-) {
+private func drawWithLowDetail(_ signal: Signal, _ ctx: DrawContext) {
     let possibleStates = 2
     let lightRadius = 0.5.m
     let lightRim = 0.15.m
@@ -48,40 +42,40 @@ private func drawWithLowDetail(
     let c1 = signal.point + backward ** (0.5 * boardHeight - boardRadius)
     let c2 = signal.point + forward ** (0.5 * boardHeight - boardRadius)
 
-    cgContext.setLineWidth(viewContext.toViewDistance(supportWidth))
-    cgContext.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
+    ctx.setLineWidth(supportWidth)
+    ctx.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
 
-    cgContext.move(to: viewContext.toViewPoint(c1))
-    cgContext.addLine(to: viewContext.toViewPoint(p5))
-    cgContext.strokePath()
+    ctx.move(to: c1)
+    ctx.addLine(to: p5)
+    ctx.strokePath()
 
-    cgContext.move(to: viewContext.toViewPoint(p6))
-    cgContext.addLine(to: viewContext.toViewPoint(p7))
-    cgContext.strokePath()
+    ctx.move(to: p6)
+    ctx.addLine(to: p7)
+    ctx.strokePath()
 
-    cgContext.setLineWidth(viewContext.toViewDistance(0.02.m))
-    cgContext.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
-    cgContext.setFillColor(CGColor(gray: 0.0, alpha: 1.0))
+    ctx.setLineWidth(0.02.m)
+    ctx.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
+    ctx.setFillColor(CGColor(gray: 0.0, alpha: 1.0))
 
-    cgContext.move(to: viewContext.toViewPoint(p1))
-    cgContext.addLine(to: viewContext.toViewPoint(p2))
-    cgContext.addArc(
-        center: viewContext.toViewPoint(c1),
-        radius: viewContext.toViewDistance(boardRadius),
-        startAngle: left.withoutUnit,
-        endAngle: right.withoutUnit,
+    ctx.move(to: p1)
+    ctx.addLine(to: p2)
+    ctx.addArc(
+        center: c1,
+        radius: boardRadius,
+        startAngle: left,
+        endAngle: right,
         clockwise: false)
-    cgContext.addLine(to: viewContext.toViewPoint(p3))
-    cgContext.addLine(to: viewContext.toViewPoint(p4))
-    cgContext.addArc(
-        center: viewContext.toViewPoint(c2),
-        radius: viewContext.toViewDistance(boardRadius),
-        startAngle: right.withoutUnit,
-        endAngle: left.withoutUnit,
+    ctx.addLine(to: p3)
+    ctx.addLine(to: p4)
+    ctx.addArc(
+        center: c2,
+        radius: boardRadius,
+        startAngle: right,
+        endAngle: left,
         clockwise: false)
-    cgContext.closePath()
-    cgContext.fillPath()
-    cgContext.strokePath()
+    ctx.closePath()
+    ctx.fillPath()
+    ctx.strokePath()
 
     let greenLight =
         switch signal.state {
@@ -118,27 +112,19 @@ private func drawWithLowDetail(
         default: CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
         }
 
-    cgContext.setFillColor(greenLight)
-    cgContext.fillEllipse(
-        in: viewContext.toViewRect(Rect.square(around: c2, length: 2.0 * lightRadius)))
-    cgContext.setFillColor(redLight)
-    cgContext.fillEllipse(
-        in: viewContext.toViewRect(Rect.square(around: c1, length: 2.0 * lightRadius)))
+    ctx.setFillColor(greenLight)
+    ctx.fillEllipse(in: Rect.square(around: c2, length: 2.0 * lightRadius))
+    ctx.setFillColor(redLight)
+    ctx.fillEllipse(in: Rect.square(around: c1, length: 2.0 * lightRadius))
 }
 
-private func drawWithHighDetail(
-    _ signal: Signal, _ cgContext: CGContext, _ viewContext: ViewContext,
-    _ dirtyRect: Rect
-) {
-    drawLight(signal, cgContext, viewContext, dirtyRect)
-    drawBasket(signal, cgContext, viewContext, dirtyRect)
-    drawBoard(signal, cgContext, viewContext, dirtyRect)
+private func drawWithHighDetail(_ signal: Signal, _ ctx: DrawContext) {
+    drawLight(signal, ctx)
+    drawBasket(signal, ctx)
+    drawBoard(signal, ctx)
 }
 
-private func drawBasket(
-    _ signal: Signal, _ cgContext: CGContext, _ viewContext: ViewContext,
-    _ dirtyRect: Rect
-) {
+private func drawBasket(_ signal: Signal, _ ctx: DrawContext) {
     let forward = signal.orientation.asAngle
     let left = signal.orientation.asAngle + 90.0.deg
     let right = signal.orientation.asAngle - 90.0.deg
@@ -158,34 +144,31 @@ private func drawBasket(
     let p11 = signal.point + forward ** 0.7.m + left ** 0.4.m
     let p12 = signal.point + forward ** 0.7.m + right ** 0.5.m
 
-    cgContext.setStrokeColor(CGColor(gray: 0.6, alpha: 1.0))
-    cgContext.setLineWidth(viewContext.toViewDistance(0.06.m))
-    cgContext.move(to: viewContext.toViewPoint(p1))
-    cgContext.addLine(to: viewContext.toViewPoint(p2))
-    cgContext.addLine(to: viewContext.toViewPoint(p3))
-    cgContext.addLine(to: viewContext.toViewPoint(p4))
-    cgContext.strokePath()
+    ctx.setStrokeColor(CGColor(gray: 0.6, alpha: 1.0))
+    ctx.setLineWidth(0.06.m)
+    ctx.move(to: p1)
+    ctx.addLine(to: p2)
+    ctx.addLine(to: p3)
+    ctx.addLine(to: p4)
+    ctx.strokePath()
 
-    cgContext.move(to: viewContext.toViewPoint(p9))
-    cgContext.addLine(to: viewContext.toViewPoint(p10))
-    cgContext.strokePath()
+    ctx.move(to: p9)
+    ctx.addLine(to: p10)
+    ctx.strokePath()
 
-    cgContext.move(to: viewContext.toViewPoint(p11))
-    cgContext.addLine(to: viewContext.toViewPoint(p12))
-    cgContext.strokePath()
+    ctx.move(to: p11)
+    ctx.addLine(to: p12)
+    ctx.strokePath()
 
-    cgContext.setFillColor(CGColor(gray: 0.4, alpha: 1.0))
-    cgContext.move(to: viewContext.toViewPoint(p5))
-    cgContext.addLine(to: viewContext.toViewPoint(p6))
-    cgContext.addLine(to: viewContext.toViewPoint(p7))
-    cgContext.addLine(to: viewContext.toViewPoint(p8))
-    cgContext.fillPath()
+    ctx.setFillColor(CGColor(gray: 0.4, alpha: 1.0))
+    ctx.move(to: p5)
+    ctx.addLine(to: p6)
+    ctx.addLine(to: p7)
+    ctx.addLine(to: p8)
+    ctx.fillPath()
 }
 
-private func drawBoard(
-    _ signal: Signal, _ cgContext: CGContext, _ viewContext: ViewContext,
-    _ dirtyRect: Rect
-) {
+private func drawBoard(_ signal: Signal, _ ctx: DrawContext) {
     let forward = signal.orientation.asAngle
     let backward = signal.orientation.asAngle + 180.0.deg
     let left = signal.orientation.asAngle + 90.0.deg
@@ -197,30 +180,27 @@ private func drawBoard(
     let p4 = signal.point + backward ** 0.8.m
     let p5 = signal.point + right ** 0.17.m + backward ** 0.05.m
 
-    cgContext.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
-    cgContext.setLineWidth(viewContext.toViewDistance(0.18.m))
-    cgContext.move(to: viewContext.toViewPoint(p1))
-    cgContext.addLine(to: viewContext.toViewPoint(p2))
-    cgContext.strokePath()
+    ctx.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
+    ctx.setLineWidth(0.18.m)
+    ctx.move(to: p1)
+    ctx.addLine(to: p2)
+    ctx.strokePath()
 
-    cgContext.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
-    cgContext.setLineWidth(viewContext.toViewDistance(0.1.m))
-    cgContext.move(to: viewContext.toViewPoint(p3))
-    cgContext.addLine(to: viewContext.toViewPoint(p5))
-    cgContext.strokePath()
+    ctx.setStrokeColor(CGColor(gray: 0.05, alpha: 1.0))
+    ctx.setLineWidth(0.1.m)
+    ctx.move(to: p3)
+    ctx.addLine(to: p5)
+    ctx.strokePath()
 
-    cgContext.setFillColor(CGColor(gray: 0.05, alpha: 1.0))
-    cgContext.move(to: viewContext.toViewPoint(p3))
-    cgContext.addQuadCurve(to: viewContext.toViewPoint(p5), control: viewContext.toViewPoint(p4))
-    cgContext.closePath()
-    cgContext.fillPath()
+    ctx.setFillColor(CGColor(gray: 0.05, alpha: 1.0))
+    ctx.move(to: p3)
+    ctx.addQuadCurve(to: p5, control: p4)
+    ctx.closePath()
+    ctx.fillPath()
 }
 
-private func drawLight(
-    _ signal: Signal, _ cgContext: CGContext, _ viewContext: ViewContext,
-    _ dirtyRect: Rect
-) {
-    cgContext.saveGState()
+private func drawLight(_ signal: Signal, _ ctx: DrawContext) {
+    ctx.saveGState()
 
     let (lightCenter, lightEdge) =
         switch signal.state {
@@ -281,19 +261,19 @@ private func drawLight(
     let p3 = signal.point + backward ** 5.0.m + right ** 1.2.m
     let p4 = signal.point + backward ** 5.0.m
 
-    cgContext.move(to: viewContext.toViewPoint(p1))
-    cgContext.addQuadCurve(to: viewContext.toViewPoint(p3), control: viewContext.toViewPoint(p2))
-    cgContext.addLine(to: viewContext.toViewPoint(p3))
-    cgContext.closePath()
-    cgContext.clip()
-    cgContext.drawLinearGradient(
+    ctx.move(to: p1)
+    ctx.addQuadCurve(to: p3, control: p2)
+    ctx.addLine(to: p3)
+    ctx.closePath()
+    ctx.clip()
+    ctx.drawLinearGradient(
         CGGradient(
             colorsSpace: nil,
             colors: [lightCenter, lightEdge] as CFArray,
             locations: nil)!,
-        start: viewContext.toViewPoint(signal.point),
-        end: viewContext.toViewPoint(p4),
+        start: signal.point,
+        end: p4,
         options: CGGradientDrawingOptions())
 
-    cgContext.restoreGState()
+    ctx.restoreGState()
 }

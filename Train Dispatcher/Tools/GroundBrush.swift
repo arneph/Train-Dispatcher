@@ -84,28 +84,24 @@ class GroundBrush: Tool {
         state = .hovering(point)
     }
 
-    func draw(
-        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: any ViewContext, _: Rect
-    ) {
+    func draw(layer: ToolDrawingLayer, ctx: DrawContext) {
         guard layer == .aboveGroundMap else { return }
         switch state {
         case .none:
             break
         case .hovering(let point):
-            cgContext.saveGState()
-            cgContext.setLineDash(phase: 0.0, lengths: [viewContext.toViewDistance(diameter / 5.0)])
-            cgContext.setLineWidth(viewContext.toViewDistance(diameter / 20.0))
-            cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
-            cgContext.strokeEllipse(
-                in: viewContext.toViewRect(Rect.square(around: point, length: diameter)))
-            cgContext.restoreGState()
+            ctx.saveGState()
+            ctx.setLineDash(phase: 0.0.m, lengths: [diameter / 5.0])
+            ctx.setLineWidth(diameter / 20.0)
+            ctx.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
+            ctx.strokeEllipse(in: Rect.square(around: point, length: diameter))
+            ctx.restoreGState()
         case .painting(let point):
-            cgContext.saveGState()
-            cgContext.setLineWidth(viewContext.toViewDistance(diameter / 20.0))
-            cgContext.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
-            cgContext.strokeEllipse(
-                in: viewContext.toViewRect(Rect.square(around: point, length: diameter)))
-            cgContext.restoreGState()
+            ctx.saveGState()
+            ctx.setLineWidth(diameter / 20.0)
+            ctx.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
+            ctx.strokeEllipse(in: Rect.square(around: point, length: diameter))
+            ctx.restoreGState()
         }
     }
 

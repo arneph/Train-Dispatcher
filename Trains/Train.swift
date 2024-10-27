@@ -149,8 +149,8 @@ public class Train: Codable, Drawable {
             direction: position.direction)
     }
 
-    public func draw(_ cgContext: CGContext, _ viewContext: any ViewContext, _ dirtyRect: Rect) {
-        vehicles.forEach { $0.draw(cgContext, viewContext, dirtyRect) }
+    public func draw(ctx: DrawContext) {
+        vehicles.forEach { $0.draw(ctx: ctx) }
     }
 
     public init(position: TrainPosition, vehicles: [Vehicle]) {

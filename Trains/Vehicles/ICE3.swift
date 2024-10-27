@@ -23,19 +23,18 @@ public final class ICE3Head: Vehicle {
     public override var maxSpeed: Speed { 330.0.kph }
 
     // MARK: - Drawing
-    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
-    {
-        cgContext.saveGState()
+    public override func draw(ctx: DrawContext) {
+        ctx.saveGState()
 
-        drawBody(cgContext, viewContext)
-        drawHeadlights(cgContext, viewContext)
-        drawFrontWindowAndRoofLine(cgContext, viewContext)
-        drawDoors(cgContext, viewContext)
+        drawBody(ctx)
+        drawHeadlights(ctx)
+        drawFrontWindowAndRoofLine(ctx)
+        drawDoors(ctx)
 
-        cgContext.restoreGState()
+        ctx.restoreGState()
     }
 
-    func drawBody(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func drawBody(_ ctx: DrawContext) {
         let noseLength = 4.35.m
         let frontLengthRetreat = 0.5 * ICE3Head.length - noseLength
         let backLengthRetreat = 0.5 * ICE3Head.length - 0.2.m
@@ -52,33 +51,27 @@ public final class ICE3Head: Vehicle {
         let p6 = center + backLengthRetreat ** backward + 0.5 * ICE3Head.width ** right
         let p7 = center + backLengthRetreat ** backward + 0.5 * ICE3Head.width ** left
 
-        cgContext.setFillColor(CGColor.white)
-        cgContext.move(to: viewContext.toViewPoint(p1))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p3),
-            control: viewContext.toViewPoint(p2))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p5),
-            control: viewContext.toViewPoint(p4))
-        cgContext.addLine(to: viewContext.toViewPoint(p6))
-        cgContext.addLine(to: viewContext.toViewPoint(p7))
-        cgContext.closePath()
-        cgContext.fillPath()
+        ctx.setFillColor(CGColor.white)
+        ctx.move(to: p1)
+        ctx.addQuadCurve(to: p3, control: p2)
+        ctx.addQuadCurve(to: p5, control: p4)
+        ctx.addLine(to: p6)
+        ctx.addLine(to: p7)
+        ctx.closePath()
+        ctx.fillPath()
 
         let p8 = center + couplingL2Retreat ** forward + couplingWRetreat ** left
         let p9 = center + couplingL1Retreat ** forward
         let p10 = center + couplingL2Retreat ** forward + couplingWRetreat ** right
 
-        cgContext.setStrokeColor(CGColor(gray: 0.3, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.02.m))
-        cgContext.move(to: viewContext.toViewPoint(p8))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p10),
-            control: viewContext.toViewPoint(p9))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(gray: 0.3, alpha: 1.0))
+        ctx.setLineWidth(0.02.m)
+        ctx.move(to: p8)
+        ctx.addQuadCurve(to: p10, control: p9)
+        ctx.strokePath()
     }
 
-    func drawHeadlights(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func drawHeadlights(_ ctx: DrawContext) {
         let l1Retreat = 0.5 * ICE3Head.length - 0.63.m
         let l2Retreat = 0.5 * ICE3Head.length - 0.66.m
         let l3Retreat = 0.5 * ICE3Head.length - 0.95.m
@@ -88,38 +81,38 @@ public final class ICE3Head: Vehicle {
         let w3Retreat = 0.5.m
         let w4Retreat = 0.6.m
 
-        cgContext.setFillColor(CGColor(red: 0.85, green: 0.85, blue: 1.0, alpha: 1.0))
-        cgContext.setStrokeColor(CGColor(gray: 0.6, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.02.m))
+        ctx.setFillColor(CGColor(red: 0.85, green: 0.85, blue: 1.0, alpha: 1.0))
+        ctx.setStrokeColor(CGColor(gray: 0.6, alpha: 1.0))
+        ctx.setLineWidth(0.02.m)
 
         let p1Left = center + l1Retreat ** forward + w1Retreat ** left
         let p2Left = center + l3Retreat ** forward + w2Retreat ** left
         let p3Left = center + l4Retreat ** forward + w4Retreat ** left
         let p4Left = center + l2Retreat ** forward + w3Retreat ** left
 
-        cgContext.move(to: viewContext.toViewPoint(p1Left))
-        cgContext.addLine(to: viewContext.toViewPoint(p2Left))
-        cgContext.addLine(to: viewContext.toViewPoint(p3Left))
-        cgContext.addLine(to: viewContext.toViewPoint(p4Left))
-        cgContext.closePath()
-        cgContext.fillPath()
-        cgContext.strokePath()
+        ctx.move(to: p1Left)
+        ctx.addLine(to: p2Left)
+        ctx.addLine(to: p3Left)
+        ctx.addLine(to: p4Left)
+        ctx.closePath()
+        ctx.fillPath()
+        ctx.strokePath()
 
         let p1Right = center + l1Retreat ** forward + w1Retreat ** right
         let p2Right = center + l3Retreat ** forward + w2Retreat ** right
         let p3Right = center + l4Retreat ** forward + w4Retreat ** right
         let p4Right = center + l2Retreat ** forward + w3Retreat ** right
 
-        cgContext.move(to: viewContext.toViewPoint(p1Right))
-        cgContext.addLine(to: viewContext.toViewPoint(p2Right))
-        cgContext.addLine(to: viewContext.toViewPoint(p3Right))
-        cgContext.addLine(to: viewContext.toViewPoint(p4Right))
-        cgContext.closePath()
-        cgContext.fillPath()
-        cgContext.strokePath()
+        ctx.move(to: p1Right)
+        ctx.addLine(to: p2Right)
+        ctx.addLine(to: p3Right)
+        ctx.addLine(to: p4Right)
+        ctx.closePath()
+        ctx.fillPath()
+        ctx.strokePath()
     }
 
-    func drawFrontWindowAndRoofLine(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func drawFrontWindowAndRoofLine(_ ctx: DrawContext) {
         let l1Retreat = 0.5 * ICE3Head.length - 1.0.m
         let l2Retreat = 0.5 * ICE3Head.length - 1.25.m
         let l3Retreat = 0.5 * ICE3Head.length - 2.35.m
@@ -154,72 +147,52 @@ public final class ICE3Head: Vehicle {
         let p17 = center + frontLengthRetreat ** forward + roofLineWRetreat ** right
         let p18 = center + backLengthRetreat ** backward + roofLineWRetreat ** right
 
-        cgContext.setFillColor(CGColor(gray: 0.1, alpha: 1.0))
-        cgContext.move(to: viewContext.toViewPoint(p2))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p4),
-            control: viewContext.toViewPoint(p3))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p6),
-            control: viewContext.toViewPoint(p5))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p2),
-            control: viewContext.toViewPoint(p9))
-        cgContext.closePath()
-        cgContext.fillPath()
+        ctx.setFillColor(CGColor(gray: 0.1, alpha: 1.0))
+        ctx.move(to: p2)
+        ctx.addQuadCurve(to: p4, control: p3)
+        ctx.addQuadCurve(to: p6, control: p5)
+        ctx.addQuadCurve(to: p2, control: p9)
+        ctx.closePath()
+        ctx.fillPath()
 
-        cgContext.setFillColor(CGColor(red: 0.2, green: 0.2, blue: 0.25, alpha: 1.0))
-        cgContext.move(to: viewContext.toViewPoint(p6))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p8),
-            control: viewContext.toViewPoint(p7))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p2),
-            control: viewContext.toViewPoint(p1))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p6),
-            control: viewContext.toViewPoint(p9))
-        cgContext.closePath()
-        cgContext.fillPath()
+        ctx.setFillColor(CGColor(red: 0.2, green: 0.2, blue: 0.25, alpha: 1.0))
+        ctx.move(to: p6)
+        ctx.addQuadCurve(to: p8, control: p7)
+        ctx.addQuadCurve(to: p2, control: p1)
+        ctx.addQuadCurve(to: p6, control: p9)
+        ctx.closePath()
+        ctx.fillPath()
 
-        cgContext.setStrokeColor(CGColor(gray: 0.75, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.03.m))
-        cgContext.move(to: viewContext.toViewPoint(p10))
-        cgContext.addLine(to: viewContext.toViewPoint(p11))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p2),
-            control: viewContext.toViewPoint(p12))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p14),
-            control: viewContext.toViewPoint(p13))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p6),
-            control: viewContext.toViewPoint(p15))
-        cgContext.addQuadCurve(
-            to: viewContext.toViewPoint(p17),
-            control: viewContext.toViewPoint(p16))
-        cgContext.addLine(to: viewContext.toViewPoint(p18))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(gray: 0.75, alpha: 1.0))
+        ctx.setLineWidth(0.03.m)
+        ctx.move(to: p10)
+        ctx.addLine(to: p11)
+        ctx.addQuadCurve(to: p2, control: p12)
+        ctx.addQuadCurve(to: p14, control: p13)
+        ctx.addQuadCurve(to: p6, control: p15)
+        ctx.addQuadCurve(to: p17, control: p16)
+        ctx.addLine(to: p18)
+        ctx.strokePath()
     }
 
-    private func drawDoors(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    private func drawDoors(_ ctx: DrawContext) {
         let doorL1Retreat = 0.5 * ICE3Head.length - 8.0.m
         let doorL2Retreat = 0.5 * ICE3Head.length - 9.2.m
         let doorWRetreat = 0.5 * ICE3Head.width - 0.15.m
 
-        cgContext.setStrokeColor(CGColor(gray: 0.5, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.03.m))
+        ctx.setStrokeColor(CGColor(gray: 0.5, alpha: 1.0))
+        ctx.setLineWidth(0.03.m)
         for (lv, wv) in [(forward, left), (forward, right)] {
             let forntLeftDoorP1 = center + doorL1Retreat ** lv + 0.5 * ICE3Wagon.width ** wv
             let forntLeftDoorP2 = center + doorL1Retreat ** lv + doorWRetreat ** wv
             let forntLeftDoorP3 = center + doorL2Retreat ** lv + doorWRetreat ** wv
             let forntLeftDoorP4 = center + doorL2Retreat ** lv + 0.5 * ICE3Wagon.width ** wv
 
-            cgContext.move(to: viewContext.toViewPoint(forntLeftDoorP1))
-            cgContext.addLine(to: viewContext.toViewPoint(forntLeftDoorP2))
-            cgContext.addLine(to: viewContext.toViewPoint(forntLeftDoorP3))
-            cgContext.addLine(to: viewContext.toViewPoint(forntLeftDoorP4))
-            cgContext.strokePath()
+            ctx.move(to: forntLeftDoorP1)
+            ctx.addLine(to: forntLeftDoorP2)
+            ctx.addLine(to: forntLeftDoorP3)
+            ctx.addLine(to: forntLeftDoorP4)
+            ctx.strokePath()
         }
     }
 
@@ -262,20 +235,19 @@ public final class ICE3Wagon: Vehicle {
     }
 
     // MARK: - Drawing
-    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
-    {
-        cgContext.saveGState()
+    public override func draw(ctx: DrawContext) {
+        ctx.saveGState()
 
-        drawBody(cgContext, viewContext)
-        drawDoors(cgContext, viewContext)
+        drawBody(ctx)
+        drawDoors(ctx)
         if hasPantograph {
-            drawPantograph(cgContext, viewContext)
+            drawPantograph(ctx)
         }
 
-        cgContext.restoreGState()
+        ctx.restoreGState()
     }
 
-    func drawBody(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    func drawBody(_ ctx: DrawContext) {
         let lengthRetreat = 0.5 * ICE3Wagon.length - 0.2.m
         let roofLineWRetreat = 0.5 * ICE3Wagon.width - 0.25.m
 
@@ -288,48 +260,48 @@ public final class ICE3Wagon: Vehicle {
         let p7 = center + lengthRetreat ** forward + roofLineWRetreat ** right
         let p8 = center + lengthRetreat ** backward + roofLineWRetreat ** right
 
-        cgContext.setFillColor(CGColor.white)
-        cgContext.move(to: viewContext.toViewPoint(p1))
-        cgContext.addLine(to: viewContext.toViewPoint(p2))
-        cgContext.addLine(to: viewContext.toViewPoint(p3))
-        cgContext.addLine(to: viewContext.toViewPoint(p4))
-        cgContext.closePath()
-        cgContext.fillPath()
+        ctx.setFillColor(CGColor.white)
+        ctx.move(to: p1)
+        ctx.addLine(to: p2)
+        ctx.addLine(to: p3)
+        ctx.addLine(to: p4)
+        ctx.closePath()
+        ctx.fillPath()
 
-        cgContext.setStrokeColor(CGColor(gray: 0.75, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.03.m))
-        cgContext.move(to: viewContext.toViewPoint(p5))
-        cgContext.addLine(to: viewContext.toViewPoint(p6))
-        cgContext.strokePath()
-        cgContext.move(to: viewContext.toViewPoint(p7))
-        cgContext.addLine(to: viewContext.toViewPoint(p8))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(gray: 0.75, alpha: 1.0))
+        ctx.setLineWidth(0.03.m)
+        ctx.move(to: p5)
+        ctx.addLine(to: p6)
+        ctx.strokePath()
+        ctx.move(to: p7)
+        ctx.addLine(to: p8)
+        ctx.strokePath()
 
     }
 
-    private func drawDoors(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    private func drawDoors(_ ctx: DrawContext) {
         let lengthRetreat = 0.5 * ICE3Wagon.length - 0.2.m
         let doorL1Retreat = lengthRetreat - 0.3.m
         let doorL2Retreat = lengthRetreat - 1.5.m
         let doorWRetreat = 0.5 * ICE3Wagon.width - 0.15.m
 
-        cgContext.setStrokeColor(CGColor(gray: 0.5, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.03.m))
+        ctx.setStrokeColor(CGColor(gray: 0.5, alpha: 1.0))
+        ctx.setLineWidth(0.03.m)
         for (lv, wv) in [(forward, left), (forward, right), (backward, left), (backward, right)] {
             let forntLeftDoorP1 = center + doorL1Retreat ** lv + 0.5 * ICE3Wagon.width ** wv
             let forntLeftDoorP2 = center + doorL1Retreat ** lv + doorWRetreat ** wv
             let forntLeftDoorP3 = center + doorL2Retreat ** lv + doorWRetreat ** wv
             let forntLeftDoorP4 = center + doorL2Retreat ** lv + 0.5 * ICE3Wagon.width ** wv
 
-            cgContext.move(to: viewContext.toViewPoint(forntLeftDoorP1))
-            cgContext.addLine(to: viewContext.toViewPoint(forntLeftDoorP2))
-            cgContext.addLine(to: viewContext.toViewPoint(forntLeftDoorP3))
-            cgContext.addLine(to: viewContext.toViewPoint(forntLeftDoorP4))
-            cgContext.strokePath()
+            ctx.move(to: forntLeftDoorP1)
+            ctx.addLine(to: forntLeftDoorP2)
+            ctx.addLine(to: forntLeftDoorP3)
+            ctx.addLine(to: forntLeftDoorP4)
+            ctx.strokePath()
         }
     }
 
-    private func drawPantograph(_ cgContext: CGContext, _ viewContext: ViewContext) {
+    private func drawPantograph(_ ctx: DrawContext) {
         let cableW = 0.95.m
         let cableR = 0.2.m
         let connectorL = 0.5 * ICE3Wagon.length - 5.2.m
@@ -355,110 +327,102 @@ public final class ICE3Wagon: Vehicle {
         let frontCableP6 = center + connectorL ** backward + connector1W ** right
         let frontCableP7 = center + connectorL ** backward + connector2W ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0))
-        cgContext.setFillColor(CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.06.m))
-        cgContext.move(to: viewContext.toViewPoint(frontCableP1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontCableP2))
-        cgContext.addArc(
-            center: viewContext.toViewPoint(frontCableP3),
-            radius: viewContext.toViewDistance(cableR),
-            startAngle: viewContext.toViewAngle(angle(from: frontCableP3, to: frontCableP2)),
-            endAngle: viewContext.toViewAngle(angle(from: frontCableP3, to: frontCableP4)),
+        ctx.setStrokeColor(CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0))
+        ctx.setFillColor(CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0))
+        ctx.setLineWidth(0.06.m)
+        ctx.move(to: frontCableP1)
+        ctx.addLine(to: frontCableP2)
+        ctx.addArc(
+            center: frontCableP3,
+            radius: cableR,
+            startAngle: angle(from: frontCableP3, to: frontCableP2),
+            endAngle: angle(from: frontCableP3, to: frontCableP4),
             clockwise: false)
-        cgContext.addLine(to: viewContext.toViewPoint(frontCableP5))
-        cgContext.strokePath()
-        cgContext.move(to: viewContext.toViewPoint(frontCableP6))
-        cgContext.addLine(to: viewContext.toViewPoint(frontCableP7))
-        cgContext.strokePath()
-        cgContext.fillEllipse(
-            in: viewContext.toViewRect(
-                Rect.square(
-                    around: frontCableP6,
-                    length: 0.12.m)))
-        cgContext.fillEllipse(
-            in: viewContext.toViewRect(
-                Rect.square(
-                    around: frontCableP7,
-                    length: 0.12.m)))
+        ctx.addLine(to: frontCableP5)
+        ctx.strokePath()
+        ctx.move(to: frontCableP6)
+        ctx.addLine(to: frontCableP7)
+        ctx.strokePath()
+        ctx.fillEllipse(in: Rect.square(around: frontCableP6, length: 0.12.m))
+        ctx.fillEllipse(in: Rect.square(around: frontCableP7, length: 0.12.m))
 
         let frontBottomAxleP1 = center + bottomAxleL ** backward + bottomAxleW ** left
         let frontBottomAxleP2 = center + bottomAxleL ** backward + bottomAxleW ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.16.m))
-        cgContext.move(to: viewContext.toViewPoint(frontBottomAxleP1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontBottomAxleP2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
+        ctx.setLineWidth(0.16.m)
+        ctx.move(to: frontBottomAxleP1)
+        ctx.addLine(to: frontBottomAxleP2)
+        ctx.strokePath()
 
         let frontLowerArmP1 = center + bottomAxleL ** backward
         let frontLowerArmP2 = center + middleAxleL ** backward
 
-        cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.16.m))
-        cgContext.move(to: viewContext.toViewPoint(frontLowerArmP1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontLowerArmP2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
+        ctx.setLineWidth(0.16.m)
+        ctx.move(to: frontLowerArmP1)
+        ctx.addLine(to: frontLowerArmP2)
+        ctx.strokePath()
 
         let frontMiddleAxleP1 = center + middleAxleL ** backward + middleAxleW ** left
         let frontMiddleAxleP2 = center + middleAxleL ** backward + middleAxleW ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.10.m))
-        cgContext.move(to: viewContext.toViewPoint(frontMiddleAxleP1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontMiddleAxleP2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
+        ctx.setLineWidth(0.10.m)
+        ctx.move(to: frontMiddleAxleP1)
+        ctx.addLine(to: frontMiddleAxleP2)
+        ctx.strokePath()
 
         let frontTopAxleP1 = center + topAxleL ** backward + topAxleW ** left
         let frontTopAxleP2 = center + topAxleL ** backward + topAxleW ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.10.m))
-        cgContext.move(to: viewContext.toViewPoint(frontTopAxleP1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontTopAxleP2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
+        ctx.setLineWidth(0.10.m)
+        ctx.move(to: frontTopAxleP1)
+        ctx.addLine(to: frontTopAxleP2)
+        ctx.strokePath()
 
         let frontUpperArm1P1 = center + middleAxleL ** backward + middleAxleW ** left
         let frontUpperArm1P2 = center + topAxleL ** backward + topAxleW ** left
         let frontUpperArm2P1 = center + middleAxleL ** backward + middleAxleW ** right
         let frontUpperArm2P2 = center + topAxleL ** backward + topAxleW ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.08.m))
-        cgContext.move(to: viewContext.toViewPoint(frontUpperArm1P1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontUpperArm1P2))
-        cgContext.strokePath()
-        cgContext.move(to: viewContext.toViewPoint(frontUpperArm2P1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontUpperArm2P2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
+        ctx.setLineWidth(0.08.m)
+        ctx.move(to: frontUpperArm1P1)
+        ctx.addLine(to: frontUpperArm1P2)
+        ctx.strokePath()
+        ctx.move(to: frontUpperArm2P1)
+        ctx.addLine(to: frontUpperArm2P2)
+        ctx.strokePath()
 
         let frontContactSupport1P1 = center + contact1L ** backward + topAxleW ** left
         let frontContactSupport1P2 = center + contact2L ** backward + topAxleW ** left
         let frontContactSupport2P1 = center + contact1L ** backward + topAxleW ** right
         let frontContactSupport2P2 = center + contact2L ** backward + topAxleW ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.08.m))
-        cgContext.move(to: viewContext.toViewPoint(frontContactSupport1P1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontContactSupport1P2))
-        cgContext.strokePath()
-        cgContext.move(to: viewContext.toViewPoint(frontContactSupport2P1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontContactSupport2P2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0))
+        ctx.setLineWidth(0.08.m)
+        ctx.move(to: frontContactSupport1P1)
+        ctx.addLine(to: frontContactSupport1P2)
+        ctx.strokePath()
+        ctx.move(to: frontContactSupport2P1)
+        ctx.addLine(to: frontContactSupport2P2)
+        ctx.strokePath()
 
         let frontContact1P1 = center + contact1L ** backward + contactW ** left
         let frontContact1P2 = center + contact1L ** backward + contactW ** right
         let frontContact2P1 = center + contact2L ** backward + contactW ** left
         let frontContact2P2 = center + contact2L ** backward + contactW ** right
 
-        cgContext.setStrokeColor(CGColor(red: 0.35, green: 0.5, blue: 0.5, alpha: 1.0))
-        cgContext.setLineWidth(viewContext.toViewDistance(0.12.m))
-        cgContext.move(to: viewContext.toViewPoint(frontContact1P1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontContact1P2))
-        cgContext.strokePath()
-        cgContext.move(to: viewContext.toViewPoint(frontContact2P1))
-        cgContext.addLine(to: viewContext.toViewPoint(frontContact2P2))
-        cgContext.strokePath()
+        ctx.setStrokeColor(CGColor(red: 0.35, green: 0.5, blue: 0.5, alpha: 1.0))
+        ctx.setLineWidth(0.12.m)
+        ctx.move(to: frontContact1P1)
+        ctx.addLine(to: frontContact1P2)
+        ctx.strokePath()
+        ctx.move(to: frontContact2P1)
+        ctx.addLine(to: frontContact2P2)
+        ctx.strokePath()
     }
 
 }

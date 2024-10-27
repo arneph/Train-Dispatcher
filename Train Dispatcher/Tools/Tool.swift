@@ -39,7 +39,5 @@ protocol Tool: AnyObject {
     func mouseDragged(point: Point)
     func mouseUp(point: Point)
 
-    func draw(
-        layer: ToolDrawingLayer, _ cgContext: CGContext, _ viewContext: ViewContext,
-        _ dirtyRect: Rect)
+    func draw(layer: ToolDrawingLayer, ctx: DrawContext)
 }

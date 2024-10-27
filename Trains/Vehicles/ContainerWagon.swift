@@ -66,12 +66,13 @@ public final class ContainerWagon: Vehicle, ContainerOwner {
     }
 
     // MARK: -  Drawing
-    public override func draw(_ cgContext: CGContext, _ viewContext: ViewContext, _ dirtyRect: Rect)
-    {
-        if !Rect.intersect(dirtyRect, Rect.square(around: center, length: ContainerWagon.length)) {
+    public override func draw(ctx: DrawContext) {
+        if !Rect.intersect(
+            ctx.dirtyRect, Rect.square(around: center, length: ContainerWagon.length))
+        {
             return
         }
-        cgContext.saveGState()
+        ctx.saveGState()
 
         let p1 =
             center + 0.5 * ContainerWagon.platformLength ** forward
@@ -86,18 +87,18 @@ public final class ContainerWagon: Vehicle, ContainerOwner {
             center + 0.5 * ContainerWagon.platformLength ** forward
             + 0.5 * ContainerWagon.width ** right
 
-        cgContext.move(to: viewContext.toViewPoint(p1))
-        cgContext.addLine(to: viewContext.toViewPoint(p2))
-        cgContext.addLine(to: viewContext.toViewPoint(p3))
-        cgContext.addLine(to: viewContext.toViewPoint(p4))
-        cgContext.closePath()
+        ctx.move(to: p1)
+        ctx.addLine(to: p2)
+        ctx.addLine(to: p3)
+        ctx.addLine(to: p4)
+        ctx.closePath()
 
-        cgContext.setFillColor(CGColor(red: 0.47, green: 0.42, blue: 0.36, alpha: 1.0))
-        cgContext.fillPath()
+        ctx.setFillColor(CGColor(red: 0.47, green: 0.42, blue: 0.36, alpha: 1.0))
+        ctx.fillPath()
 
-        container?.draw(cgContext, viewContext, dirtyRect)
+        container?.draw(ctx: ctx)
 
-        cgContext.restoreGState()
+        ctx.restoreGState()
     }
 
 }
