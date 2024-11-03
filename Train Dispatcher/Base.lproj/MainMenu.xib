@@ -271,6 +271,21 @@
                                     <action selector="selectTrackPen:" target="-1" id="8AH-h8-Lqu"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Section Cutter" keyEquivalent="5" id="BYM-VA-6hd">
+                                <connections>
+                                    <action selector="selectSectionCutter:" target="-1" id="1eF-oe-FEs"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Section Signal Placer" keyEquivalent="6" id="XIe-JN-YvX">
+                                <connections>
+                                    <action selector="selectSectionSignalPlacer:" target="-1" id="VfY-i8-Kxf"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Main Signal Placer" keyEquivalent="7" id="g7T-8b-uoN">
+                                <connections>
+                                    <action selector="selectMainSignalPlacer:" target="-1" id="Jvp-kv-IsE"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

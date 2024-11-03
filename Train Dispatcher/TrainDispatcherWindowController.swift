@@ -63,6 +63,9 @@ class TrainDispatcherWindowController: NSWindowController,
     @IBOutlet var groundBrushButton: NSButton?
     @IBOutlet var treePlacerButton: NSButton?
     @IBOutlet var trackPenButton: NSButton?
+    @IBOutlet var sectionCutterButton: NSButton?
+    @IBOutlet var sectionSignalPlacerButton: NSButton?
+    @IBOutlet var mainSignalPlacerButton: NSButton?
 
     // MARK: - Map View Pane
     @IBOutlet var mapView: MapView?
@@ -438,8 +441,12 @@ class TrainDispatcherWindowController: NSWindowController,
         groundBrushButton?.state = toolType == .groundBrush ? .on : .off
         treePlacerButton?.state = toolType == .treePlacer ? .on : .off
         trackPenButton?.state = toolType == .trackPen ? .on : .off
+        sectionCutterButton?.state = toolType == .sectionCutter ? .on : .off
+        sectionSignalPlacerButton?.state = toolType == .sectionSignalPlacer ? .on : .off
+        mainSignalPlacerButton?.state = toolType == .mainSignalPlacer ? .on : .off
         switch mapView?.tool?.type {
-        case .none, .cursor, .treePlacer, .trackPen:
+        case .none, .cursor, .treePlacer, .trackPen, .sectionCutter, .sectionSignalPlacer,
+            .mainSignalPlacer:
             optionPanelsState = .mapPanelOnly
         case .groundBrush:
             optionPanelsState = .mapPanelAndToolPanel(.groundBrush, .toolPanel)

@@ -19,7 +19,8 @@ protocol ToolOwner: AnyObject, ViewContext {
 }
 
 enum ToolType {
-    case cursor, groundBrush, treePlacer, trackPen
+    case cursor, groundBrush, treePlacer, trackPen, sectionCutter, sectionSignalPlacer,
+        mainSignalPlacer
 }
 
 enum ToolDrawingLayer {

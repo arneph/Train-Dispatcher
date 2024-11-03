@@ -111,11 +111,23 @@ class MapView: NSView, NSMenuItemValidation, ViewContext {
     }
 
     @IBAction func selectTreePlacer(_ sender: Any) {
-        tool = nil
+        tool = TreePlacer(owner: self)
     }
 
     @IBAction func selectTrackPen(_ sender: Any) {
         tool = TrackPen(owner: self)
+    }
+
+    @IBAction func selectSectionCutter(_ sender: Any) {
+        tool = SectionCutter(owner: self)
+    }
+
+    @IBAction func selectSectionSignalPlacer(_ sender: Any) {
+        tool = SectionSignalPlacer(owner: self)
+    }
+
+    @IBAction func selectMainSignalPlacer(_ sender: Any) {
+        tool = MainSignalPlacer(owner: self)
     }
 
     // MARK: - init
@@ -183,6 +195,15 @@ class MapView: NSView, NSMenuItemValidation, ViewContext {
             return true
         case #selector(selectTrackPen(_:)):
             menuItem.state = tool?.type == .trackPen ? .on : .off
+            return true
+        case #selector(selectSectionCutter(_:)):
+            menuItem.state = tool?.type == .sectionCutter ? .on : .off
+            return true
+        case #selector(selectSectionSignalPlacer(_:)):
+            menuItem.state = tool?.type == .sectionSignalPlacer ? .on : .off
+            return true
+        case #selector(selectMainSignalPlacer(_:)):
+            menuItem.state = tool?.type == .mainSignalPlacer ? .on : .off
             return true
         case #selector(toggleGrid(_:)):
             menuItem.state = showGrid ? .on : .off

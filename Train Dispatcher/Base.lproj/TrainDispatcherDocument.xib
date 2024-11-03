@@ -16,10 +16,13 @@
                 <outlet property="groundBrushOptionsPanel" destination="FmD-bg-9Wf" id="Plc-rA-Fsa"/>
                 <outlet property="groundBrushSizeField" destination="Iwa-qh-hXh" id="EAj-3R-tbt"/>
                 <outlet property="groundBrushSizeStepper" destination="fDE-7u-0gZ" id="Xqh-jm-Xw4"/>
+                <outlet property="mainSignalPlacerButton" destination="eYf-No-Ptw" id="kmb-ZC-Je5"/>
                 <outlet property="mapOptionsPanel" destination="IVl-KB-m9N" id="gGd-lw-c1r"/>
                 <outlet property="mapView" destination="fSs-ah-cau" id="wrt-DN-z78"/>
                 <outlet property="optionsPane" destination="KND-To-3bl" id="1f8-OT-rjq"/>
                 <outlet property="optionsPanelSelector" destination="Wge-8q-vkU" id="maq-70-pK0"/>
+                <outlet property="sectionCutterButton" destination="Wdf-aN-S3U" id="YBi-Kv-FDf"/>
+                <outlet property="sectionSignalPlacerButton" destination="6Eq-5v-pqf" id="ptN-5C-uo7"/>
                 <outlet property="timeSimulationSegmentedControl" destination="ok4-uJ-dMq" id="Bua-mA-DVp"/>
                 <outlet property="trackPenButton" destination="Vfi-Em-l0j" id="P4e-dr-AZ0"/>
                 <outlet property="trainAccelerationForceLabel" destination="JJ4-Gs-Ab2" id="6y7-kp-RGO"/>
@@ -97,6 +100,39 @@
                                 </buttonCell>
                                 <connections>
                                     <action selector="selectTrackPen:" target="fSs-ah-cau" id="xRI-fU-z6D"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wdf-aN-S3U">
+                                <rect key="frame" x="0.0" y="148" width="44" height="42"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="scissors" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BH0-E5-YIV">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectSectionCutter:" target="fSs-ah-cau" id="842-XM-3cM"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Eq-5v-pqf">
+                                <rect key="frame" x="0.0" y="107" width="44" height="42"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="circle.grid.2x1.left.filled" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qwU-be-zgH">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectSectionSignalPlacer:" target="fSs-ah-cau" id="AKm-bL-oXp"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eYf-No-Ptw">
+                                <rect key="frame" x="0.0" y="66" width="44" height="42"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="circle.grid.2x1.left.filled" catalog="system" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bbi-hy-UVc">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectMainSignalPlacer:" target="fSs-ah-cau" id="n9x-2y-RXi"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -480,6 +516,7 @@
     <resources>
         <image name="arrowshape.backward.fill" catalog="system" width="17" height="14"/>
         <image name="arrowshape.forward.fill" catalog="system" width="17" height="14"/>
+        <image name="circle.grid.2x1.left.filled" catalog="system" width="19" height="10"/>
         <image name="cursorarrow" catalog="system" width="11" height="16"/>
         <image name="eye" catalog="system" width="20" height="13"/>
         <image name="forward.fill" catalog="system" width="20" height="12"/>
@@ -488,6 +525,7 @@
         <image name="pause.fill" catalog="system" width="12" height="13"/>
         <image name="pencil.line" catalog="system" width="15" height="15"/>
         <image name="play.fill" catalog="system" width="12" height="13"/>
+        <image name="scissors" catalog="system" width="20" height="15"/>
         <image name="tree.fill" catalog="system" width="21" height="19"/>
     </resources>
 </document>
