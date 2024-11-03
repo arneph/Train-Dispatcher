@@ -94,13 +94,13 @@ class GroundBrush: Tool {
             ctx.setLineDash(phase: 0.0.m, lengths: [diameter / 5.0])
             ctx.setLineWidth(diameter / 20.0)
             ctx.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
-            ctx.strokeEllipse(in: Rect.square(around: point, length: diameter))
+            ctx.strokeCircle(at: point, radius: 0.5 * diameter)
             ctx.restoreGState()
         case .painting(let point):
             ctx.saveGState()
             ctx.setLineWidth(diameter / 20.0)
             ctx.setStrokeColor(CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
-            ctx.strokeEllipse(in: Rect.square(around: point, length: diameter))
+            ctx.strokeCircle(at: point, radius: 0.5 * diameter)
             ctx.restoreGState()
         }
     }

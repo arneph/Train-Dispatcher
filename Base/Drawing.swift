@@ -20,18 +20,13 @@ public protocol ViewContext {
     var style: Style { get }
     var mapScale: CGFloat { get }
 
+    func toMapAngle(viewAngle: CGFloat) -> Angle
     func toMapDistance(viewDistance: CGFloat) -> Distance
-
     func toMapPoint(viewPoint: CGPoint) -> Point
-    func toMapSize(viewSize: CGSize) -> Size
-    func toMapRect(viewRect: CGRect) -> Rect
 
     func toViewAngle(_ angle: Angle) -> CGFloat
     func toViewDistance(_ distance: Distance) -> CGFloat
-
     func toViewPoint(_ mapPoint: Point) -> CGPoint
-    func toViewSize(_ mapSize: Size) -> CGSize
-    func toViewRect(_ mapRect: Rect) -> CGRect
 }
 
 public struct DrawContext {

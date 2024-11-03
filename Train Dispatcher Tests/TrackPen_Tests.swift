@@ -18,6 +18,7 @@ final class TrackPen_Tests: XCTestCase {
         let changeManager = ChangeManager()
         let penOwner = TestToolOwner(
             mapPointAtViewCenter: Point(x: 12.34.m, y: 56.78.m),
+            mapRotation: CircleAngle(123.45.deg),
             mapScale: 3.45,
             map: map,
             changeManager: changeManager)

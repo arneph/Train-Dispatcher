@@ -213,6 +213,10 @@ public func / (lhs: Direction, rhs: Float64) -> Direction {
     Direction(x: lhs.x / rhs, y: lhs.y / rhs)
 }
 
+public func angle(of d: Direction) -> Angle {
+    Angle(atan2(d.y.withoutUnit, d.x.withoutUnit))
+}
+
 public func angle(from a: Point, to b: Point) -> Angle {
     Angle(atan2((b.y - a.y).withoutUnit, (b.x - a.x).withoutUnit))
 }
@@ -223,6 +227,10 @@ public func length(_ direction: Direction) -> Distance {
 
 public func length²(_ direction: Direction) -> Distance² {
     pow²(direction.x) + pow²(direction.y)
+}
+
+public func angleAndLength(of d: Direction) -> (Angle, Distance) {
+    (angle(of: d), length(d))
 }
 
 public func scalar(_ a: Direction, _ b: Direction) -> Distance² {

@@ -10,36 +10,31 @@ import CoreGraphics
 import Foundation
 
 class TestViewContext: ViewContext {
-    init(mapPointAtViewCenter: Point, mapScale: CGFloat) {
+    init(mapPointAtViewCenter: Point, mapRotation: CircleAngle, mapScale: CGFloat) {
         self.mapPointAtViewCenter = mapPointAtViewCenter
+        self.mapRotation = mapRotation
         self.mapScale = mapScale
     }
 
     let mapPointAtViewCenter: Point
+    let mapRotation: CircleAngle
     let mapScale: CGFloat
     let style: Base.Style = .light
+
+    func toMapAngle(viewAngle: CGFloat) -> Angle {
+        mapRotation + Angle(viewAngle)
+    }
 
     func toMapDistance(viewDistance: CGFloat) -> Distance {
         Distance(viewDistance / mapScale)
     }
 
     func toMapPoint(viewPoint: CGPoint) -> Point {
-        mapPointAtViewCenter
-            + Point(
-                x: Position(viewPoint.x / mapScale),
-                y: Position(viewPoint.y / mapScale))
-    }
-
-    func toMapSize(viewSize: CGSize) -> Size {
-        Size(
-            width: Distance(viewSize.width / mapScale), height: Distance(viewSize.height / mapScale)
-        )
-    }
-
-    func toMapRect(viewRect: CGRect) -> Rect {
-        Rect(
-            origin: toMapPoint(viewPoint: viewRect.origin),
-            size: toMapSize(viewSize: viewRect.size))
+        let v = Direction(
+            x: Position(viewPoint.x / mapScale),
+            y: Position(viewPoint.y / mapScale))
+        let (a, d) = angleAndLength(of: v)
+        return mapPointAtViewCenter + d ** (mapRotation + a)
     }
 
     func toViewAngle(_ angle: Angle) -> CGFloat { angle.withoutUnit }
@@ -49,18 +44,11 @@ class TestViewContext: ViewContext {
     }
 
     func toViewPoint(_ mapPoint: Point) -> CGPoint {
-        CGPoint(
-            x: mapScale * (mapPoint - mapPointAtViewCenter).x.withoutUnit,
-            y: mapScale * (mapPoint - mapPointAtViewCenter).y.withoutUnit)
+        let (a, d) = angleAndLength(of: mapPoint - mapPointAtViewCenter)
+        let v = d ** (a - mapRotation.asAngle)
+        return CGPoint(
+            x: mapScale * v.x.withoutUnit,
+            y: mapScale * v.y.withoutUnit)
     }
 
-    func toViewSize(_ mapSize: Size) -> CGSize {
-        CGSize(
-            width: mapScale * mapSize.width.withoutUnit,
-            height: mapScale * mapSize.height.withoutUnit)
-    }
-
-    func toViewRect(_ mapRect: Rect) -> CGRect {
-        CGRect(origin: toViewPoint(mapRect.origin), size: toViewSize(mapRect.size))
-    }
 }

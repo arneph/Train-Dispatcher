@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23504" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23504"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -202,6 +203,12 @@
                                     <action selector="toggleScale:" target="-1" id="aFX-TE-APj"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Show Compass" state="on" keyEquivalent="c" id="gaB-Bz-Uaq">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="toggleCompass:" target="-1" id="vAa-Dy-KPi"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="EYL-IS-siV"/>
                             <menuItem title="Actual Size" keyEquivalent="0" id="Zdz-Lt-aFI">
                                 <connections>
@@ -221,6 +228,13 @@
                             <menuItem title="Zoom Out" keyEquivalent="-" id="Qat-pk-sjt">
                                 <connections>
                                     <action selector="zoomOut:" target="-1" id="0gW-GP-XRt"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="D2q-vl-YO0"/>
+                            <menuItem title="Orient North" keyEquivalent="n" id="3hd-e5-RbL">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="orientNorth:" target="-1" id="38A-0w-8gj"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="twU-mc-iHo"/>

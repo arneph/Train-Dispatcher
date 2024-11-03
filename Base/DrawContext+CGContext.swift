@@ -81,8 +81,15 @@ extension DrawContext {
         cgContext.strokePath()
     }
 
-    public func strokeEllipse(in rect: Rect) {
-        cgContext.strokeEllipse(in: viewContext.toViewRect(rect))
+    public func strokeCircle(at mapCenter: Point, radius mapRadius: Distance) {
+        let viewCenter = viewContext.toViewPoint(mapCenter)
+        let viewRadius = viewContext.toViewDistance(mapRadius)
+        let viewRect = CGRect(
+            x: viewCenter.x - viewRadius,
+            y: viewCenter.y - viewRadius,
+            width: 2.0 * viewRadius,
+            height: 2.0 * viewRadius)
+        cgContext.strokeEllipse(in: viewRect)
     }
 
     public func drawPath(using mode: CGPathDrawingMode) {
@@ -102,16 +109,27 @@ extension DrawContext {
     }
 
     public func fill(_ rect: Rect) {
-        cgContext.fill(viewContext.toViewRect(rect))
+        cgContext.move(to: viewContext.toViewPoint(rect.corners[0]))
+        cgContext.addLine(to: viewContext.toViewPoint(rect.corners[1]))
+        cgContext.addLine(to: viewContext.toViewPoint(rect.corners[2]))
+        cgContext.addLine(to: viewContext.toViewPoint(rect.corners[3]))
+        cgContext.fillPath()
     }
 
-    public func fillCircle(at center: Point, radius: Distance) {
-        cgContext.fillEllipse(
-            in: viewContext.toViewRect(Rect.square(around: center, length: 2.0 * radius)))
+    public func fillCircle(at mapCenter: Point, radius mapRadius: Distance) {
+        let viewCenter = viewContext.toViewPoint(mapCenter)
+        let viewRadius = viewContext.toViewDistance(mapRadius)
+        let viewRect = CGRect(
+            x: viewCenter.x - viewRadius,
+            y: viewCenter.y - viewRadius,
+            width: 2.0 * viewRadius,
+            height: 2.0 * viewRadius)
+        cgContext.fillEllipse(in: viewRect)
     }
 
     public func draw(_ image: CGImage, in rect: Rect, byTiling tiling: Bool) {
-        cgContext.draw(image, in: viewContext.toViewRect(rect), byTiling: tiling)
+        // TODO: implement
+        // cgContext.draw(image, in: viewContext.toViewRect(rect), byTiling: tiling)
     }
 
 }

@@ -31,10 +31,16 @@ final class TestToolOwner: TestViewContext, ToolOwner {
     let map: Map?
     let changeManager: ChangeManager?
 
-    init(mapPointAtViewCenter: Point, mapScale: CGFloat, map: Map, changeManager: ChangeManager) {
+    init(
+        mapPointAtViewCenter: Point, mapRotation: CircleAngle, mapScale: CGFloat, map: Map,
+        changeManager: ChangeManager
+    ) {
         self.map = map
         self.changeManager = changeManager
-        super.init(mapPointAtViewCenter: mapPointAtViewCenter, mapScale: mapScale)
+        super.init(
+            mapPointAtViewCenter: mapPointAtViewCenter,
+            mapRotation: mapRotation,
+            mapScale: mapScale)
     }
 
     func stateChanged(tool: Tool) {
