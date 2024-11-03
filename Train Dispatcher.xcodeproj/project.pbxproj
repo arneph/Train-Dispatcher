@@ -96,6 +96,10 @@
 		14A577C12C0CE74F00419E09 /* GroundMap+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A577C02C0CE74F00419E09 /* GroundMap+Codable.swift */; };
 		14A577C32C0FE46100419E09 /* GroundMap+Drawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A577C22C0FE46100419E09 /* GroundMap+Drawable.swift */; };
 		14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */; };
+		14CF8D6E2CD7E4660040EB61 /* MapView+GroundMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF8D6D2CD7E4660040EB61 /* MapView+GroundMapObserver.swift */; };
+		14CF8D702CD7E4C70040EB61 /* MapView+TrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF8D6F2CD7E4C70040EB61 /* MapView+TrackMapObserver.swift */; };
+		14CF8D722CD7E5160040EB61 /* MapView+TrainObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF8D712CD7E5160040EB61 /* MapView+TrainObserver.swift */; };
+		14CF8D742CD7E55F0040EB61 /* MapView+ToolOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF8D732CD7E55F0040EB61 /* MapView+ToolOwner.swift */; };
 		14D4BBCD2CBB1E4F00852BF0 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBCC2CBB1E4F00852BF0 /* Signal.swift */; };
 		14D4BBCF2CBB21AB00852BF0 /* SignalObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBCE2CBB21AB00852BF0 /* SignalObserver.swift */; };
 		14D4BBD12CBB277A00852BF0 /* TrackConnection+Switches_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D4BBD02CBB277A00852BF0 /* TrackConnection+Switches_Test.swift */; };
@@ -413,6 +417,10 @@
 		14A577C22C0FE46100419E09 /* GroundMap+Drawable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroundMap+Drawable.swift"; sourceTree = "<group>"; };
 		14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherWindowController.swift; sourceTree = "<group>"; };
 		14C774A02B1D18890096BC97 /* Train Dispatcher Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Train Dispatcher Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		14CF8D6D2CD7E4660040EB61 /* MapView+GroundMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+GroundMapObserver.swift"; sourceTree = "<group>"; };
+		14CF8D6F2CD7E4C70040EB61 /* MapView+TrackMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+TrackMapObserver.swift"; sourceTree = "<group>"; };
+		14CF8D712CD7E5160040EB61 /* MapView+TrainObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+TrainObserver.swift"; sourceTree = "<group>"; };
+		14CF8D732CD7E55F0040EB61 /* MapView+ToolOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+ToolOwner.swift"; sourceTree = "<group>"; };
 		14D4BBCB2CBA142000852BF0 /* Train Dispatcher.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Train Dispatcher.xctestplan"; sourceTree = "<group>"; };
 		14D4BBCC2CBB1E4F00852BF0 /* Signal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
 		14D4BBCE2CBB21AB00852BF0 /* SignalObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalObserver.swift; sourceTree = "<group>"; };
@@ -716,6 +724,10 @@
 				14E082612B156E0B00AA29C2 /* TrainDispatcherDocument.swift */,
 				14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */,
 				14E082722B156E9600AA29C2 /* MapView.swift */,
+				14CF8D6D2CD7E4660040EB61 /* MapView+GroundMapObserver.swift */,
+				14CF8D6F2CD7E4C70040EB61 /* MapView+TrackMapObserver.swift */,
+				14CF8D712CD7E5160040EB61 /* MapView+TrainObserver.swift */,
+				14CF8D732CD7E55F0040EB61 /* MapView+ToolOwner.swift */,
 				1461ED772BF188D800119738 /* PanelSelector.swift */,
 				14EC6BA42CCDC41800AE3B46 /* Tools */,
 				14E082782B156F7700AA29C2 /* Model */,
@@ -1277,11 +1289,15 @@
 				14E082622B156E0B00AA29C2 /* TrainDispatcherDocument.swift in Sources */,
 				1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */,
 				14EC6BA62CCDC4A100AE3B46 /* Cursor.swift in Sources */,
+				14CF8D6E2CD7E4660040EB61 /* MapView+GroundMapObserver.swift in Sources */,
+				14CF8D702CD7E4C70040EB61 /* MapView+TrackMapObserver.swift in Sources */,
 				1465C81D2B673DFF0042332D /* Tool.swift in Sources */,
 				14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */,
 				1461ED782BF188D800119738 /* PanelSelector.swift in Sources */,
+				14CF8D742CD7E55F0040EB61 /* MapView+ToolOwner.swift in Sources */,
 				14E082732B156E9600AA29C2 /* MapView.swift in Sources */,
 				146B2CCD2BDDE29F008D67D5 /* GroundBrush.swift in Sources */,
+				14CF8D722CD7E5160040EB61 /* MapView+TrainObserver.swift in Sources */,
 				14E082802B18299600AA29C2 /* Map.swift in Sources */,
 				146B2CCF2BDDE2A9008D67D5 /* TreePlacer.swift in Sources */,
 				14E082602B156E0B00AA29C2 /* AppDelegate.swift in Sources */,

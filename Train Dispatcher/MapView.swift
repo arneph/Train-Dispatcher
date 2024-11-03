@@ -24,14 +24,7 @@ protocol MapViewDelegate: AnyObject {
     func selectedTrain(train: Train)
 }
 
-class MapView: NSView,
-    NSMenuItemValidation,
-    GroundMapObserver,
-    TrackMapObserver,
-    TrainObserver,
-    ToolOwner,
-    ViewContext
-{
+class MapView: NSView, NSMenuItemValidation, ViewContext {
     var delegate: MapViewDelegate? {
         willSet {
             if delegate !== newValue {
@@ -57,53 +50,6 @@ class MapView: NSView,
         oldMap.trackMap.remove(observer: self)
         map?.groundMap.add(observer: self)
         map?.trackMap.add(observer: self)
-        needsDisplay = true
-    }
-
-    // MARK: - GroundMapObserver
-    func groundChanged(forMap map: GroundMap) {
-        needsDisplay = true
-    }
-
-    // MARK: - TrackMapObserver
-    func added(track: Track, toMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    func replaced(track oldTrack: Track, withTracks newTracks: [Track], onMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    func removed(track oldTrack: Track, fromMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    func added(connection: TrackConnection, toMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    func removed(connection oldConnection: TrackConnection, fromMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    func added(signal: Tracks.Signal, toMap map: Tracks.TrackMap) {
-        needsDisplay = true
-    }
-
-    func removed(signal oldSignal: Tracks.Signal, fromMap map: Tracks.TrackMap) {
-        needsDisplay = true
-    }
-
-    func trackChanged(_ track: Track, onMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    func connectionChanged(_ connection: TrackConnection, onMap map: TrackMap) {
-        needsDisplay = true
-    }
-
-    // MARK: - TrainObserver
-    func positionChanged(_ train: Train) {
         needsDisplay = true
     }
 
@@ -154,14 +100,6 @@ class MapView: NSView,
             needsDisplay = true
             delegate?.toolChanged()
         }
-    }
-
-    func stateChanged(tool: Tool) {
-        needsDisplay = true
-    }
-
-    func selectTrain(train: Train) {
-        delegate?.selectedTrain(train: train)
     }
 
     @IBAction func selectCursor(_ sender: Any) {
