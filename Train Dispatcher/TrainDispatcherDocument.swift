@@ -42,8 +42,10 @@ private func defaultMap() -> Map {
     let (_, _) = map.trackMap.addTrack(
         withPath: pathB, startConnection: .none, endConnection: .none)
     let (_, _) = map.trackMap.addSignal(
-        at: pathB.offsetRight(by: 2.5.m)!.pointAndOrientation(at: 50.0.m)!)
+        kind: .section,
+        at: pathB.offsetRight(by: 1.5.m)!.pointAndOrientation(at: 50.0.m)!)
     let (_, _) = map.trackMap.addSignal(
+        kind: .main,
         at: pathA.offsetLeft(by: 2.5.m)!.reverse.pointAndOrientation(at: pathB.length - 300.0.m)!)
     let numContainerWagons = 40
     let containerWagons: [Vehicle] = (0..<numContainerWagons).map { i in

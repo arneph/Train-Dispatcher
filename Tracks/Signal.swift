@@ -21,6 +21,12 @@ public final class Signal: IDObject {
     public var point: Point { position.point }
     public var orientation: CircleAngle { position.orientation }
 
+    public enum Kind: Codable, Equatable {
+        case section, main
+    }
+
+    public let kind: Kind
+
     public enum BaseState: Codable, Equatable {
         case blocked
         case go
@@ -74,9 +80,10 @@ public final class Signal: IDObject {
         }
     }
 
-    internal init(id: Base.ID<Signal>, position: PointAndOrientation) {
+    internal init(id: Base.ID<Signal>, position: PointAndOrientation, kind: Kind) {
         self.id = id
         self.position = position
+        self.kind = kind
     }
 
 }

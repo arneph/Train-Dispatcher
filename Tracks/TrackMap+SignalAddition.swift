@@ -14,8 +14,11 @@ extension TrackMap {
         func performChange() -> ChangeHandler { preconditionFailure("implement me!") }
     }
 
-    public func addSignal(at position: PointAndOrientation) -> (Signal, ChangeHandler) {
-        let signal = Signal(id: signalIDGenerator.new(), position: position)
+    public func addSignal(
+        kind: Signal.Kind,
+        at position: PointAndOrientation
+    ) -> (Signal, ChangeHandler) {
+        let signal = Signal(id: signalIDGenerator.new(), position: position, kind: kind)
         signalSet.add(signal)
         observers.forEach { $0.added(signal: signal, toMap: self) }
         return (signal, SignalRemovalChangeHandler())

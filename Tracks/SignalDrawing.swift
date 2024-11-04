@@ -37,26 +37,110 @@ private struct SignalDrawInfo {
 public func draw(signal: Signal, ctx: DrawContext) {
     let info = SignalDrawInfo(position: signal.position, state: signal.state, drawState: .real)
     ctx.saveGState()
-    if ctx.mapScale < 5.0 {
-        drawWithLowDetail(info, ctx)
-    } else {
-        drawWithHighDetail(info, ctx)
+    switch signal.kind {
+    case .section:
+        if ctx.mapScale < 5.0 {
+            drawSectionSignalWithLowDetail(info, ctx)
+        } else {
+            drawSectionSignalWithHighDetail(info, ctx)
+        }
+    case .main:
+        if ctx.mapScale < 5.0 {
+            drawMainSignalWithLowDetail(info, ctx)
+        } else {
+            drawMainSignalWithHighDetail(info, ctx)
+        }
     }
     ctx.restoreGState()
 }
 
-public func drawProposedSignal(at position: PointAndOrientation, ctx: DrawContext) {
+public func drawProposedSectionSignal(at position: PointAndOrientation, ctx: DrawContext) {
     let info = SignalDrawInfo(position: position, state: .fixed(.blocked), drawState: .proposed)
     ctx.saveGState()
     if ctx.mapScale < 5.0 {
-        drawWithLowDetail(info, ctx)
+        drawSectionSignalWithLowDetail(info, ctx)
     } else {
-        drawWithHighDetail(info, ctx)
+        drawSectionSignalWithHighDetail(info, ctx)
     }
     ctx.restoreGState()
 }
 
-private func drawWithLowDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+public func drawProposedMainSignal(at position: PointAndOrientation, ctx: DrawContext) {
+    let info = SignalDrawInfo(position: position, state: .fixed(.blocked), drawState: .proposed)
+    ctx.saveGState()
+    if ctx.mapScale < 5.0 {
+        drawMainSignalWithLowDetail(info, ctx)
+    } else {
+        drawMainSignalWithHighDetail(info, ctx)
+    }
+    ctx.restoreGState()
+}
+
+private func drawSectionSignalWithLowDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+    let lightRadius = 0.5.m
+    let lightRim = 0.15.m
+    let boardRadius = lightRadius + lightRim
+
+    let p1 = info.point + info.left ** boardRadius
+    let p2 = info.point + info.right ** boardRadius
+    let p3 = info.point + info.right ** boardRadius + info.backward ** boardRadius
+    let p4 = info.point + info.left ** boardRadius + info.backward ** boardRadius
+
+    ctx.setFillColor(CGColor(gray: 0.0, alpha: info.drawState.alpha))
+    ctx.move(to: p1)
+    ctx.addArc(
+        center: info.point,
+        radius: boardRadius,
+        startAngle: info.left,
+        endAngle: info.right,
+        clockwise: true)
+    ctx.addLine(to: p2)
+    ctx.addLine(to: p3)
+    ctx.addLine(to: p4)
+    ctx.closePath()
+    ctx.fillPath()
+
+    let light =
+        switch info.state {
+        case .fixed(.blocked): CGColor(red: 1.0, green: 0.2, blue: 0.2, alpha: info.drawState.alpha)
+        case .fixed(.go): CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: info.drawState.alpha)
+        case .changing(let change):
+            switch (change.previous, change.next) {
+            case (.blocked, .blocked):
+                CGColor(red: 1.0, green: 0.2, blue: 0.2, alpha: info.drawState.alpha)
+            case (.go, .go):
+                CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: info.drawState.alpha)
+            case (.blocked, .go):
+                if change.progress < 0.5 {
+                    CGColor(
+                        red: max(1.0 - 1.6 * change.progress, 0.2), green: 0.2, blue: 0.2,
+                        alpha: info.drawState.alpha)
+                } else {
+                    CGColor(
+                        red: max(-0.5 + 1.4 * change.progress, 0.2),
+                        green: max(-0.5 + 1.4 * change.progress, 0.2),
+                        blue: max(-0.5 + 1.4 * change.progress, 0.2),
+                        alpha: info.drawState.alpha)
+                }
+            case (.go, .blocked):
+                if change.progress < 0.5 {
+                    CGColor(
+                        red: max(0.9 - 1.4 * change.progress, 0.2),
+                        green: max(0.9 - 1.4 * change.progress, 0.2),
+                        blue: max(0.9 - 1.4 * change.progress, 0.2),
+                        alpha: info.drawState.alpha)
+                } else {
+                    CGColor(
+                        red: max(-0.6 + 1.6 * change.progress, 0.2), green: 0.2, blue: 0.2,
+                        alpha: info.drawState.alpha)
+                }
+            }
+        }
+    ctx.setFillColor(light)
+    ctx.fillCircle(at: info.point, radius: lightRadius)
+}
+
+private func drawMainSignalWithLowDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
     let possibleStates = 2
     let lightRadius = 0.5.m
     let lightRim = 0.15.m
@@ -163,10 +247,121 @@ private func drawWithLowDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
     ctx.fillCircle(at: c1, radius: lightRadius)
 }
 
-private func drawWithHighDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+private func drawSectionSignalWithHighDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
     switch info.drawState {
     case .real:
-        drawLight(info, ctx)
+        drawSectionSignalLight(info, ctx)
+    case .proposed:
+        break
+    }
+    drawSectionSignalBody(info, ctx)
+}
+
+private func drawSectionSignalBody(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+    let p1 = info.point + info.left ** 0.25.m + info.forward ** 0.15.m
+    let p2 = info.point + info.right ** 0.25.m + info.forward ** 0.15.m
+    let p3 = info.point + info.left ** 0.12.m + info.backward ** 0.05.m
+    let p4 = info.point + info.backward ** 0.2.m
+    let p5 = info.point + info.right ** 0.12.m + info.backward ** 0.05.m
+
+    ctx.setStrokeColor(CGColor(gray: 0.05, alpha: info.drawState.alpha))
+    ctx.setLineWidth(0.30.m)
+    ctx.move(to: p1)
+    ctx.addLine(to: p2)
+    ctx.strokePath()
+
+    ctx.setStrokeColor(CGColor(gray: 0.05, alpha: info.drawState.alpha))
+    ctx.setLineWidth(0.1.m)
+    ctx.move(to: p3)
+    ctx.addLine(to: p5)
+    ctx.strokePath()
+
+    ctx.setFillColor(CGColor(gray: 0.05, alpha: info.drawState.alpha))
+    ctx.move(to: p3)
+    ctx.addQuadCurve(to: p5, control: p4)
+    ctx.closePath()
+    ctx.fillPath()
+}
+
+private func drawSectionSignalLight(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+    ctx.saveGState()
+
+    let (lightCenter, lightEdge) =
+        switch info.state {
+        case .fixed(.blocked):
+            (
+                CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5),
+                CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.0)
+            )
+        case .fixed(.go):
+            (
+                CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.5),
+                CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.0)
+            )
+        case .changing(let change):
+            if change.progress < 0.5 {
+                switch change.previous {
+                case .blocked:
+                    (
+                        CGColor(
+                            red: 1.0, green: 0.0, blue: 0.0,
+                            alpha: max(0.5 - change.progress, 0.0)),
+                        CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                    )
+                case .go:
+                    (
+                        CGColor(
+                            red: 0.9, green: 0.9, blue: 0.9,
+                            alpha: max(0.5 - change.progress, 0.0)),
+                        CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.0)
+                    )
+                }
+            } else {
+                switch change.next {
+                case .blocked:
+                    (
+                        CGColor(
+                            red: 1.0, green: 0.0, blue: 0.0,
+                            alpha: max(-0.5 + change.progress, 0.0)),
+                        CGColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                    )
+                case .go:
+                    (
+                        CGColor(
+                            red: 0.9, green: 0.9, blue: 0.9,
+                            alpha: max(-0.5 + change.progress, 0.0)),
+                        CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.0)
+                    )
+                }
+            }
+        }
+
+    let p1 = info.point + info.backward ** 2.0.m + info.left ** 0.6.m
+    let p2 = info.point + info.forward ** 2.0.m
+    let p3 = info.point + info.backward ** 2.0.m + info.right ** 0.6.m
+    let p4 = info.point + info.backward ** 2.0.m
+
+    ctx.move(to: p1)
+    ctx.addQuadCurve(to: p3, control: p2)
+    ctx.addLine(to: p3)
+    ctx.closePath()
+    ctx.clip()
+    ctx.drawLinearGradient(
+        CGGradient(
+            colorsSpace: nil,
+            colors: [lightCenter, lightEdge] as CFArray,
+            locations: nil)!,
+        start: info.point,
+        end: p4,
+        options: CGGradientDrawingOptions())
+
+    ctx.restoreGState()
+}
+
+private func drawMainSignalWithHighDetail(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+    switch info.drawState {
+    case .real:
+        drawMainSignalLight(info, ctx)
     case .proposed:
         break
     }
@@ -240,7 +435,7 @@ private func drawBoard(_ info: SignalDrawInfo, _ ctx: DrawContext) {
     ctx.fillPath()
 }
 
-private func drawLight(_ info: SignalDrawInfo, _ ctx: DrawContext) {
+private func drawMainSignalLight(_ info: SignalDrawInfo, _ ctx: DrawContext) {
     ctx.saveGState()
 
     let (lightCenter, lightEdge) =

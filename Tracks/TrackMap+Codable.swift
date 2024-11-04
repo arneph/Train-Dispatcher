@@ -43,6 +43,7 @@ extension TrackMap: Codable {
     private struct EncodedSignal: Codable {
         let id: ID<Signal>
         let position: PointAndOrientation
+        let kind: Signal.Kind
         let state: Signal.State
     }
 
@@ -58,12 +59,16 @@ extension TrackMap: Codable {
         let connectionSet = IDSet<TrackConnection>(
             encodedConnections.map { (encodedConnection) in
                 TrackConnection(
-                    id: encodedConnection.id, point: encodedConnection.point,
+                    id: encodedConnection.id,
+                    point: encodedConnection.point,
                     directionA: encodedConnection.orientation)
             })
         let signalSet = IDSet<Signal>(
             encodedSignals.map { (encodedSignal) in
-                Signal(id: encodedSignal.id, position: encodedSignal.position)
+                Signal(
+                    id: encodedSignal.id,
+                    position: encodedSignal.position,
+                    kind: encodedSignal.kind)
             })
         zip(trackSet.elements, encodedTracks).forEach { (track, encodedTrack) in
             if let startID = encodedTrack.startConnection {
@@ -148,7 +153,11 @@ extension TrackMap: Codable {
                 })
         }
         let encodedSignals = signals.map { (signal) in
-            EncodedSignal(id: signal.id, position: signal.position, state: signal.state)
+            EncodedSignal(
+                id: signal.id,
+                position: signal.position,
+                kind: signal.kind,
+                state: signal.state)
         }
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encode(encodedTracks, forKey: .tracks)
