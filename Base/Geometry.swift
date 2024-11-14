@@ -310,6 +310,11 @@ public struct Line {
         }
     }
 
+    public func distance(to target: Point) -> Distance {
+        let p = closestPoint(to: target)
+        return Base.distance(p, target)
+    }
+
     public func closestPoint(to target: Point) -> Point {
         let d = Base.direction(from: base, to: target)
         return base + direction * scalar(d, direction)

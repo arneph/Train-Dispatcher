@@ -107,6 +107,18 @@ final class Line_Tests: XCTestCase {
         XCTAssertNil(line.arg(for: Point(x: 12.4.m, y: 0.0.m)))
     }
 
+    func testFindsDistancesToTargets() {
+        XCTAssertEqual(
+            Line(through: Point(x: -50.0.m, y: 0.0.m), and: Point(x: 0.0.m, y: 0.0.m))!
+                .distance(to: Point(x: -20.0.m, y: 5.0.m)), 5.0.m)
+        XCTAssertEqual(
+            Line(through: Point(x: -50.0.m, y: 0.0.m), and: Point(x: 0.0.m, y: 0.0.m))!
+                .distance(to: Point(x: -70.0.m, y: -15.0.m)), 15.0.m)
+        XCTAssertEqual(
+            Line(through: Point(x: -50.0.m, y: 0.0.m), and: Point(x: 0.0.m, y: 0.0.m))!
+                .distance(to: Point(x: +30.0.m, y: 40.0.m)), 40.0.m)
+    }
+
     func testFindsClosestPointOnLineThroughTwoPoints() {
         XCTAssertEqual(
             Line(through: Point(x: -50.0.m, y: 0.0.m), and: Point(x: 0.0.m, y: 0.0.m))!

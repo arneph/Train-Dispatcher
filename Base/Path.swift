@@ -98,6 +98,8 @@ public protocol Path: Equatable, Hashable, Codable {
 
     func closestPointOnPath(from p: Point) -> ClosestPathPointInfo
     func pointsOnPath(atDistance d: Distance, from p: Point) -> [Position]
+
+    static func isDistance(between a: Self, and b: Self, above minDistance: Distance) -> Bool
 }
 
 extension Path {
@@ -347,6 +349,34 @@ public struct LinearPath: FinitePath {
         return LinearPath(start: a.start, end: b.end)!
     }
 
+    public static func isDistance(
+        between pathA: LinearPath,
+        and pathB: LinearPath,
+        above requiredMinDistance: Distance
+    ) -> Bool {
+        let lineA = Line(through: pathA.start, and: pathA.end)!
+        let lineB = Line(through: pathB.start, and: pathB.end)!
+        if let (argA, argB) = Line.argsForIntersection(lineA, lineB) {
+            let onPathA = 0.0.m <= argA && argA <= pathA.length
+            let onPathB = 0.0.m <= argB && argB <= pathB.length
+            if onPathA && onPathB {
+                return false
+            }
+        } else {
+            let distanceBetweenLines = lineA.distance(to: lineB.base)
+            if distanceBetweenLines > requiredMinDistance {
+                return true
+            }
+        }
+        let actualMinDistance = min([
+            pathA.closestPointOnPath(from: pathB.start).distance,
+            pathA.closestPointOnPath(from: pathB.end).distance,
+            pathB.closestPointOnPath(from: pathA.start).distance,
+            pathB.closestPointOnPath(from: pathA.end).distance,
+        ])
+        return actualMinDistance > requiredMinDistance
+    }
+
     public init?(start: Point, end: Point) {
         if start == end {
             return nil
@@ -523,6 +553,23 @@ public struct CircularPath: FinitePath {
             return nil
         }
         return CircularPath(center: a.center, radius: a.radius, circleRange: circleRange)
+    }
+
+    public static func isDistance(
+        between a: CircularPath,
+        and b: CircularPath,
+        above requiredMinDistance: Distance
+    ) -> Bool {
+        let d = distance(a.center, b.center)
+        if d - a.radius - b.radius > requiredMinDistance {
+            return true
+        }
+        let p1 = a.point(at: a.closestPointOnPath(from: b.center).x)!
+        let d1 = b.closestPointOnPath(from: p1).distance
+        let p2 = b.point(at: b.closestPointOnPath(from: a.center).x)!
+        let d2 = a.closestPointOnPath(from: p2).distance
+        let actualMinDistance = min(d1, d2)
+        return actualMinDistance > requiredMinDistance
     }
 
     public init?(
@@ -709,6 +756,40 @@ public enum AtomicFinitePath: FinitePath {
         case (.linear, .circular), (.circular, .linear):
             nil
         }
+    }
+
+    public static func isDistance(
+        between a: AtomicFinitePath,
+        and b: AtomicFinitePath,
+        above minDistance: Distance
+    ) -> Bool {
+        switch (a, b) {
+        case (.linear(let a), .linear(let b)):
+            LinearPath.isDistance(between: a, and: b, above: minDistance)
+        case (.circular(let a), .circular(let b)):
+            CircularPath.isDistance(between: a, and: b, above: minDistance)
+        case (.linear(let a), .circular(let b)):
+            AtomicFinitePath.isDistance(between: a, and: b, alwaysAbove: minDistance)
+        case (.circular(let a), .linear(let b)):
+            AtomicFinitePath.isDistance(between: b, and: a, alwaysAbove: minDistance)
+        }
+    }
+
+    internal static func isDistance(
+        between pathA: LinearPath,
+        and pathB: CircularPath,
+        alwaysAbove requiredMinDistance: Distance
+    ) -> Bool {
+        let p = pathA.point(at: pathA.closestPointOnPath(from: pathB.center).x)!
+        let d = pathB.closestPointOnPath(from: p).distance
+        let actualMinDistance = min([
+            d,
+            pathA.closestPointOnPath(from: pathB.start).distance,
+            pathA.closestPointOnPath(from: pathB.end).distance,
+            pathB.closestPointOnPath(from: pathA.start).distance,
+            pathB.closestPointOnPath(from: pathA.end).distance,
+        ])
+        return actualMinDistance > requiredMinDistance
     }
 
 }
@@ -993,6 +1074,25 @@ public struct CompoundPath: FinitePath {
         return CompoundPath(checkedComponents: components)
     }
 
+    public static func isDistance(
+        between pathA: CompoundPath,
+        and pathB: CompoundPath,
+        above minDistance: Distance
+    ) -> Bool {
+        for componentA in pathA.components {
+            for componentB in pathB.components {
+                if !AtomicFinitePath.isDistance(
+                    between: componentA,
+                    and: componentB,
+                    above: minDistance)
+                {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
     public static func == (lhs: CompoundPath, rhs: CompoundPath) -> Bool {
         lhs.components == rhs.components
     }
@@ -1269,6 +1369,46 @@ public enum SomeFinitePath: FinitePath {
         }
     }
 
+    public static func isDistance(
+        between a: SomeFinitePath,
+        and b: SomeFinitePath,
+        above minDistance: Distance
+    ) -> Bool {
+        switch (a, b) {
+        case (.linear(let a), .linear(let b)):
+            LinearPath.isDistance(between: a, and: b, above: minDistance)
+        case (.circular(let a), .circular(let b)):
+            CircularPath.isDistance(between: a, and: b, above: minDistance)
+        case (.linear(let a), .circular(let b)):
+            AtomicFinitePath.isDistance(between: a, and: b, alwaysAbove: minDistance)
+        case (.circular(let a), .linear(let b)):
+            AtomicFinitePath.isDistance(between: b, and: a, alwaysAbove: minDistance)
+        case (.linear(let a), .compound(let b)):
+            SomeFinitePath.isDistance(between: b, and: .linear(a), alwaysAbove: minDistance)
+        case (.circular(let a), .compound(let b)):
+            SomeFinitePath.isDistance(between: b, and: .circular(a), alwaysAbove: minDistance)
+        case (.compound(let a), .linear(let b)):
+            SomeFinitePath.isDistance(between: a, and: .linear(b), alwaysAbove: minDistance)
+        case (.compound(let a), .circular(let b)):
+            SomeFinitePath.isDistance(between: a, and: .circular(b), alwaysAbove: minDistance)
+        case (.compound(let a), .compound(let b)):
+            CompoundPath.isDistance(between: a, and: b, above: minDistance)
+        }
+    }
+
+    private static func isDistance(
+        between a: CompoundPath,
+        and b: AtomicFinitePath,
+        alwaysAbove minDistance: Distance
+    ) -> Bool {
+        for component in a.components {
+            if !AtomicFinitePath.isDistance(between: component, and: b, above: minDistance) {
+                return false
+            }
+        }
+        return true
+    }
+
     init(_ path: AtomicFinitePath) {
         switch path {
         case .linear(let path): self = .linear(path)
@@ -1377,6 +1517,13 @@ public struct Loop: Path {
         } else {
             return nil
         }
+    }
+
+    public static func isDistance(between a: Loop, and b: Loop, above minDistance: Distance)
+        -> Bool
+    {
+        SomeFinitePath.isDistance(
+            between: a.underlying, and: b.underlying, above: minDistance)
     }
 
     init?(underlying: SomeFinitePath) {
