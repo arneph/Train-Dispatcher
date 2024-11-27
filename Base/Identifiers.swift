@@ -58,6 +58,10 @@ public struct IDSet<T: IDObject> {
         map[element.id] = element
     }
 
+    public mutating func add(_ elements: [T]) {
+        elements.forEach { add($0) }
+    }
+
     public mutating func remove(_ id: ID<T>) {
         assert(map.keys.contains(id))
         map.removeValue(forKey: id)
@@ -65,6 +69,10 @@ public struct IDSet<T: IDObject> {
 
     public mutating func remove(_ element: T) {
         remove(element.id)
+    }
+
+    public mutating func remove(_ elements: [T]) {
+        elements.forEach { remove($0) }
     }
 
     public init() {}

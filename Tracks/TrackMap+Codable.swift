@@ -72,10 +72,10 @@ extension TrackMap: Codable {
             })
         zip(trackSet.elements, encodedTracks).forEach { (track, encodedTrack) in
             if let startID = encodedTrack.startConnection {
-                track.startConnection = connectionSet[startID]
+                let _ = track.setStartConnection(connectionSet[startID])
             }
             if let endID = encodedTrack.endConnection {
-                track.endConnection = connectionSet[endID]
+                let _ = track.setEndConnection(connectionSet[endID])
             }
         }
         zip(connectionSet.elements, encodedConnections).forEach { (connection, encodedConnection) in

@@ -29,14 +29,14 @@ class MapView: NSView, NSMenuItemValidation, ViewContext {
         willSet {
             if delegate !== newValue {
                 delegate?.map?.groundMap.remove(observer: self)
-                delegate?.map?.trackMap.remove(observer: self)
+                delegate?.map?.trackMap.observers.remove(self)
                 delegate?.map?.trains.forEach { $0.remove(observer: self) }
             }
         }
         didSet {
             if oldValue !== delegate {
                 delegate?.map?.groundMap.add(observer: self)
-                delegate?.map?.trackMap.add(observer: self)
+                delegate?.map?.trackMap.observers.add(self)
                 delegate?.map?.trains.forEach { $0.add(observer: self) }
                 needsDisplay = true
             }
@@ -47,9 +47,9 @@ class MapView: NSView, NSMenuItemValidation, ViewContext {
 
     func mapChanged(oldMap: Map) {
         oldMap.groundMap.remove(observer: self)
-        oldMap.trackMap.remove(observer: self)
+        oldMap.trackMap.observers.remove(self)
         map?.groundMap.add(observer: self)
-        map?.trackMap.add(observer: self)
+        map?.trackMap.observers.add(self)
         needsDisplay = true
     }
 

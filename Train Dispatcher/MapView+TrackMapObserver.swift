@@ -15,7 +15,7 @@ extension MapView: TrackMapObserver {
         needsDisplay = true
     }
 
-    func replaced(track oldTrack: Track, withTracks newTracks: [Track], onMap map: TrackMap) {
+    func replaced(tracks oldTracks: [Track], withTracks newTracks: [Track], onMap map: TrackMap) {
         needsDisplay = true
     }
 

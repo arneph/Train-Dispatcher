@@ -19,8 +19,8 @@ extension TrackMap {
         at position: PointAndOrientation
     ) -> (Signal, ChangeHandler) {
         let signal = Signal(id: signalIDGenerator.new(), position: position, kind: kind)
-        signalSet.add(signal)
-        observers.forEach { $0.added(signal: signal, toMap: self) }
+        let update = add(signal: signal)
+        updateObservers([update])
         return (signal, SignalRemovalChangeHandler())
     }
 

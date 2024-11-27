@@ -13,7 +13,7 @@ import Foundation
 final class TestTrackMapObserver: TrackMapObserver {
     enum Call: Equatable {
         case addedTrack(Track, TrackMap)
-        case replacedTrack(Track, [Track], TrackMap)
+        case replacedTracks([Track], [Track], TrackMap)
         case removedTrack(Track, TrackMap)
         case addedConnection(TrackConnection, TrackMap)
         case removedConnection(TrackConnection, TrackMap)
@@ -26,8 +26,9 @@ final class TestTrackMapObserver: TrackMapObserver {
             switch (lhs, rhs) {
             case (.addedTrack(let lt, let lm), .addedTrack(let rt, let rm)):
                 lt === rt && lm === rm
-            case (.replacedTrack(let lo, let ln, let lm), .replacedTrack(let ro, let rn, let rm)):
-                lo === ro && zip(ln, rn).allSatisfy { $0 === $1 } && lm === rm
+            case (.replacedTracks(let lo, let ln, let lm), .replacedTracks(let ro, let rn, let rm)):
+                zip(lo, ro).allSatisfy { $0 === $1 } && zip(ln, rn).allSatisfy { $0 === $1 }
+                    && lm === rm
             case (.removedTrack(let lt, let lm), .removedTrack(let rt, let rm)):
                 lt === rt && lm === rm
             case (.addedConnection(let lc, let lm), .addedConnection(let rc, let rm)):
@@ -50,15 +51,19 @@ final class TestTrackMapObserver: TrackMapObserver {
     var calls: [Call] = []
 
     init(for map: TrackMap) {
-        map.add(observer: self)
+        map.observers.add(self)
     }
 
     func added(track: Track, toMap map: TrackMap) {
         calls.append(.addedTrack(track, map))
     }
 
-    func replaced(track oldTrack: Track, withTracks newTracks: [Track], onMap map: TrackMap) {
-        calls.append(.replacedTrack(oldTrack, newTracks, map))
+    func replaced(
+        tracks oldTracks: [Track],
+        withTracks newTracks: [Track],
+        onMap map: TrackMap
+    ) {
+        calls.append(.replacedTracks(oldTracks, newTracks, map))
     }
 
     func removed(track oldTrack: Track, fromMap map: TrackMap) {

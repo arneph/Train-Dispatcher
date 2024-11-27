@@ -15,7 +15,8 @@ extension TrackMap {
     }
 
     public func remove(oldSignal: Signal) -> ChangeHandler {
-        signalSet.remove(oldSignal)
+        let updates = remove(signal: oldSignal)
+        updateObservers(updates)
         return SignalAdditionChangeHandler()
     }
 

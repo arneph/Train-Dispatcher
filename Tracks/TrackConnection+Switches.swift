@@ -23,7 +23,7 @@ extension TrackConnection {
             case nil:
                 .fixed(next)
             }
-        observers.forEach { $0.startedChangingState(connection: self, direction: .a) }
+        updateObservers([createObserverUpdateForStartedStateChange(direction: .a)])
     }
 
     public func switchDirectionB(to next: Track) {
@@ -40,7 +40,7 @@ extension TrackConnection {
             case nil:
                 .fixed(next)
             }
-        observers.forEach { $0.startedChangingState(connection: self, direction: .b) }
+        updateObservers([createObserverUpdateForStartedStateChange(direction: .b)])
     }
 
     public func switchDirection(_ direction: Direction, to next: Track) {
@@ -59,17 +59,17 @@ extension TrackConnection {
         case .noChange:
             break
         case .stillChanging:
-            observers.forEach { $0.progressedStateChange(connection: self, direction: .a) }
+            updateObservers([createObserverUpdateForProgressedStateChange(direction: .a)])
         case .finishedChanging:
-            observers.forEach { $0.stoppedChangingState(connection: self, direction: .a) }
+            updateObservers([createObserverUpdateForStoppedStateChange(direction: .a)])
         }
         switch bResult {
         case .noChange:
             break
         case .stillChanging:
-            observers.forEach { $0.progressedStateChange(connection: self, direction: .b) }
+            updateObservers([createObserverUpdateForProgressedStateChange(direction: .b)])
         case .finishedChanging:
-            observers.forEach { $0.stoppedChangingState(connection: self, direction: .b) }
+            updateObservers([createObserverUpdateForStoppedStateChange(direction: .b)])
         }
     }
 
@@ -97,4 +97,25 @@ extension TrackConnection {
             return (state, .noChange)
         }
     }
+
+    private func createObserverUpdateForStartedStateChange(direction: Direction) -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.startedChangingState(connection: self, direction: direction)
+        })
+    }
+
+    private func createObserverUpdateForProgressedStateChange(direction: Direction)
+        -> ObserverUpdate
+    {
+        observers_.createUpdate({
+            $0.progressedStateChange(connection: self, direction: direction)
+        })
+    }
+
+    private func createObserverUpdateForStoppedStateChange(direction: Direction) -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.stoppedChangingState(connection: self, direction: direction)
+        })
+    }
+
 }

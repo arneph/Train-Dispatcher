@@ -72,7 +72,7 @@ final class TestTrackObserver: TrackObserver {
     var calls: [Call] = []
 
     init(for track: Track) {
-        track.add(observer: self)
+        track.observers.add(self)
     }
 
     func pathChanged(forTrack track: Track, withPositionUpdate f: @escaping PositionUpdateFunc) {

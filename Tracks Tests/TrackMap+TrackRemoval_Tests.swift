@@ -94,7 +94,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack1, map),
-                .replacedTrack(oldTrack1, [oldTrack3, oldTrack4], map),
+                .replacedTracks([oldTrack1], [oldTrack3, oldTrack4], map),
                 .addedConnection(oldConnection, map),
                 .addedTrack(oldTrack2, map),
             ])
@@ -114,10 +114,9 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertEqual(
             mapObserver.calls,
             [
-                .replacedTrack(oldTrack4, [newTrack], map),
-                .replacedTrack(oldTrack3, [newTrack], map),
-                .removedConnection(oldConnection, map),
                 .removedTrack(oldTrack2, map),
+                .replacedTracks([oldTrack4, oldTrack3], [newTrack], map),
+                .removedConnection(oldConnection, map),
             ])
         XCTAssertEqual(
             oldTrack2Observer.calls,
@@ -196,7 +195,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack1, map),
-                .replacedTrack(oldTrack1, [track3, track4], map),
+                .replacedTracks([oldTrack1], [track3, track4], map),
                 .addedConnection(connection, map),
                 .addedTrack(oldTrack2, map),
                 .connectionChanged(connection, map),
@@ -270,7 +269,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack1, map),
-                .replacedTrack(oldTrack1, [oldTrack3, oldTrack4], map),
+                .replacedTracks([oldTrack1], [oldTrack3, oldTrack4], map),
                 .addedConnection(oldConnection, map),
                 .addedTrack(oldTrack2, map),
             ])
@@ -290,10 +289,9 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertEqual(
             mapObserver.calls,
             [
-                .replacedTrack(oldTrack4, [newTrack], map),
-                .replacedTrack(oldTrack3, [newTrack], map),
-                .removedConnection(oldConnection, map),
                 .removedTrack(oldTrack2, map),
+                .replacedTracks([oldTrack4, oldTrack3], [newTrack], map),
+                .removedConnection(oldConnection, map),
             ])
         XCTAssertEqual(
             oldTrack2Observer.calls,
@@ -405,7 +403,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack, map),
-                .replacedTrack(oldTrack, [newTrack1, newTrack2], map),
+                .replacedTracks([oldTrack], [newTrack1, newTrack2], map),
             ])
         XCTAssertEqual(
             oldTrackObserver.calls,
@@ -490,7 +488,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                 .addedTrack(connectedTrack1, map),
                 .addedConnection(connection2, map),
                 .addedTrack(connectedTrack2, map),
-                .replacedTrack(oldTrack, [newTrack1, newTrack2], map),
+                .replacedTracks([oldTrack], [newTrack1, newTrack2], map),
             ])
         XCTAssertEqual(
             oldTrackObserver.calls,
@@ -590,7 +588,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack1, map),
-                .replacedTrack(oldTrack1, [oldTrack3, oldTrack4], map),
+                .replacedTracks([oldTrack1], [oldTrack3, oldTrack4], map),
                 .addedConnection(oldConnection, map),
                 .addedTrack(oldTrack2, map),
             ])
@@ -613,8 +611,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertEqual(
             mapObserver.calls,
             [
-                .replacedTrack(oldTrack4, [newTrack], map),
-                .replacedTrack(oldTrack3, [newTrack], map),
+                .replacedTracks([oldTrack4, oldTrack3], [newTrack], map),
                 .removedConnection(oldConnection, map),
                 .trackChanged(oldTrack2, map),
             ])
@@ -690,7 +687,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack1, map),
-                .replacedTrack(oldTrack1, [oldTrack3, oldTrack4], map),
+                .replacedTracks([oldTrack1], [oldTrack3, oldTrack4], map),
                 .addedConnection(oldConnection, map),
                 .addedTrack(oldTrack2, map),
             ])
@@ -713,8 +710,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertEqual(
             mapObserver.calls,
             [
-                .replacedTrack(oldTrack4, [newTrack], map),
-                .replacedTrack(oldTrack3, [newTrack], map),
+                .replacedTracks([oldTrack4, oldTrack3], [newTrack], map),
                 .removedConnection(oldConnection, map),
                 .trackChanged(oldTrack2, map),
             ])

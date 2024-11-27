@@ -35,9 +35,8 @@ public func isValid(trackPath path: SomeFinitePath) -> Bool {
 }
 
 public final class Track: IDObject {
-    private var observers: [TrackObserver] = []
-    public func add(observer: TrackObserver) { observers.append(observer) }
-    public func remove(observer: TrackObserver) { observers.removeAll { $0 === observer } }
+    private let observers_ = ObserversOwner<TrackObserver>()
+    public var observers: Observers<TrackObserver> { observers_ }
 
     public let id: ID<Track>
 
@@ -55,21 +54,15 @@ public final class Track: IDObject {
 
     internal func set(
         path: SomeFinitePath, withPositionUpdate positionUpdate: @escaping PositionUpdateFunc
-    ) {
+    ) -> ObserverUpdate {
         self.path = path
-        observers.forEach { $0.pathChanged(forTrack: self, withPositionUpdate: positionUpdate) }
+        return observers_.createUpdate({
+            $0.pathChanged(forTrack: self, withPositionUpdate: positionUpdate)
+        })
     }
 
-    public internal(set) weak var startConnection: TrackConnection? = nil {
-        didSet {
-            observers.forEach { $0.startConnectionChanged(forTrack: self, oldConnection: oldValue) }
-        }
-    }
-    public internal(set) weak var endConnection: TrackConnection? = nil {
-        didSet {
-            observers.forEach { $0.endConnectionChanged(forTrack: self, oldConnection: oldValue) }
-        }
-    }
+    public private(set) weak var startConnection: TrackConnection? = nil
+    public private(set) weak var endConnection: TrackConnection? = nil
 
     public func connection(at extremity: PathExtremity) -> TrackConnection? {
         switch extremity {
@@ -78,21 +71,41 @@ public final class Track: IDObject {
         }
     }
 
-    internal func setConnection(_ connection: TrackConnection, at extremity: PathExtremity) {
+    internal func setStartConnection(_ newConnection: TrackConnection?) -> ObserverUpdate {
+        let oldConnection = startConnection
+        startConnection = newConnection
+        return observers_.createUpdate({
+            $0.startConnectionChanged(forTrack: self, oldConnection: oldConnection)
+        })
+    }
+
+    internal func setEndConnection(_ newConnection: TrackConnection?) -> ObserverUpdate {
+        let oldConnection = endConnection
+        endConnection = newConnection
+        return observers_.createUpdate({
+            $0.endConnectionChanged(forTrack: self, oldConnection: oldConnection)
+        })
+    }
+
+    internal func setConnection(_ connection: TrackConnection, at extremity: PathExtremity)
+        -> ObserverUpdate
+    {
         switch extremity {
-        case .start: startConnection = connection
-        case .end: endConnection = connection
+        case .start: setStartConnection(connection)
+        case .end: setEndConnection(connection)
         }
     }
 
-    internal func informObserversOfReplacement(
+    internal func createObserverUpdateForReplacement(
         by newTracks: [Track], withUpdateFunc f: @escaping TrackAndPostionUpdateFunc
-    ) {
-        observers.forEach { $0.replaced(track: self, withTracks: newTracks, withUpdateFunc: f) }
+    ) -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.replaced(track: self, withTracks: newTracks, withUpdateFunc: f)
+        })
     }
 
-    internal func informObserversOfRemoval() {
-        observers.forEach { $0.removed(track: self) }
+    internal func createObserverUpdateForRemoval() -> ObserverUpdate {
+        observers_.createUpdate({ $0.removed(track: self) })
     }
 
     internal init(id: ID<Track>, path: SomeFinitePath) {
@@ -100,10 +113,6 @@ public final class Track: IDObject {
         self.path = path
         self.leftRail = path.offsetLeft(by: (gauge + railTopWidth) / 2.0)!
         self.rightRail = path.offsetRight(by: (gauge + railTopWidth) / 2.0)!
-    }
-
-    deinit {
-        observers = []
     }
 
 }

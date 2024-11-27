@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol TrackMapObserver: AnyObject {
-    func added(track: Track, toMap map: TrackMap)
-    func replaced(track oldTrack: Track, withTracks newTracks: [Track], onMap map: TrackMap)
+    func added(track newTrack: Track, toMap map: TrackMap)
+    func replaced(tracks oldTracks: [Track], withTracks newTracks: [Track], onMap map: TrackMap)
     func removed(track oldTrack: Track, fromMap map: TrackMap)
 
     func added(connection: TrackConnection, toMap map: TrackMap)
@@ -24,7 +24,7 @@ public protocol TrackMapObserver: AnyObject {
 
 extension TrackMapObserver {
     func added(track: Track, toMap: TrackMap) {}
-    func replaced(track: Track, withTracks: [Track], onMap: TrackMap) {}
+    func replaced(tracks: [Track], withTracks: [Track], onMap: TrackMap) {}
     func removed(track: Track, fromMap: TrackMap) {}
 
     func added(connection: TrackConnection, toMap: TrackMap) {}

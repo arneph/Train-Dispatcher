@@ -9,18 +9,15 @@ import Base
 import Foundation
 
 public final class TrackConnection: IDObject {
+    internal let observers_ = ObserversOwner<TrackConnectionObserver>()
+    public var observers: Observers<TrackConnectionObserver> { observers_ }
+
+    public let id: ID<TrackConnection>
+
     public enum Direction: Int {
         case a, b
         var opposite: Direction { Direction(rawValue: 1 - self.rawValue)! }
     }
-
-    internal private(set) var observers: [TrackConnectionObserver] = []
-    public func add(observer: TrackConnectionObserver) { observers.append(observer) }
-    public func remove(observer: TrackConnectionObserver) {
-        observers.removeAll { $0 === observer }
-    }
-
-    public let id: ID<TrackConnection>
 
     public let point: Point
     public let directionA: CircleAngle
@@ -141,10 +138,6 @@ public final class TrackConnection: IDObject {
         self.id = id
         self.point = point
         self.directionA = directionA
-    }
-
-    deinit {
-        observers = []
     }
 
 }

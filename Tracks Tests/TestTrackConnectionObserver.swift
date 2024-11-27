@@ -70,7 +70,7 @@ final class TestTrackConnectionObserver: TrackConnectionObserver {
     var calls: [Call] = []
 
     init(for connection: TrackConnection) {
-        connection.add(observer: self)
+        connection.observers.add(self)
     }
 
     func added(

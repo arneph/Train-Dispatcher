@@ -43,40 +43,52 @@ extension TrackMap {
         withPath path: SomeFinitePath, startConnection: ConnectionOption,
         endConnection: ConnectionOption
     ) -> (Track, ChangeHandler) {
-        switch (startConnection, endConnection) {
-        case (
-            .toExistingTrack(let trackA, let extremityA),
-            .toExistingTrack(let trackB, let extremityB)
-        ):
-            return merge(
-                trackA: trackA, trackAExtremity: extremityA, trackB: trackB,
-                trackBExtremity: extremityB, viaPath: path)
-        case (.toExistingTrack(let existingTrack, let existingTrackExtremity), _):
-            let undo = extend(
-                track: existingTrack, at: existingTrackExtremity, withPath: path, at: .start)
-            make(endConnection: NonMergingConnectionOption(endConnection)!, ofTrack: existingTrack)
-            return (existingTrack, undo)
-        case (_, .toExistingTrack(let existingTrack, let existingTrackExtremity)):
-            let undo = extend(
-                track: existingTrack, at: existingTrackExtremity, withPath: path, at: .end)
-            make(
-                startConnection: NonMergingConnectionOption(startConnection)!,
-                ofTrack: existingTrack)
-            return (existingTrack, undo)
-        default:
-            let newTrack = Track(id: trackIDGenerator.new(), path: path)
-            make(startConnection: NonMergingConnectionOption(startConnection)!, ofTrack: newTrack)
-            make(endConnection: NonMergingConnectionOption(endConnection)!, ofTrack: newTrack)
-            trackSet.add(newTrack)
-            observers.forEach { $0.added(track: newTrack, toMap: self) }
-            return (newTrack, TrackRemovalHandler(change: { self.remove(oldTrack: newTrack) }))
-        }
+        let (track, updates, changeHandler) = {
+            switch (startConnection, endConnection) {
+            case (
+                .toExistingTrack(let trackA, let extremityA),
+                .toExistingTrack(let trackB, let extremityB)
+            ):
+                return merge(
+                    trackA: trackA, trackAExtremity: extremityA, trackB: trackB,
+                    trackBExtremity: extremityB, viaPath: path)
+            case (.toExistingTrack(let existingTrack, let existingTrackExtremity), _):
+                let (updates1, undo) = extend(
+                    track: existingTrack, at: existingTrackExtremity, withPath: path, at: .start)
+                let updates2 = make(
+                    endConnection: NonMergingConnectionOption(endConnection)!,
+                    ofTrack: existingTrack)
+                return (existingTrack, updates1 + updates2, undo)
+            case (_, .toExistingTrack(let existingTrack, let existingTrackExtremity)):
+                let (updates1, undo) = extend(
+                    track: existingTrack, at: existingTrackExtremity, withPath: path, at: .end)
+                let updates2 = make(
+                    startConnection: NonMergingConnectionOption(startConnection)!,
+                    ofTrack: existingTrack)
+                return (existingTrack, updates1 + updates2, undo)
+            default:
+                let newTrack = Track(id: trackIDGenerator.new(), path: path)
+                let updates1 = make(
+                    startConnection: NonMergingConnectionOption(startConnection)!, ofTrack: newTrack
+                )
+                let updates2 = make(
+                    endConnection: NonMergingConnectionOption(endConnection)!, ofTrack: newTrack)
+                let updates3 = [add(track: newTrack)]
+                return (
+                    newTrack,
+                    updates1 + updates2 + updates3,
+                    TrackRemovalHandler(change: { self.remove(oldTrack: newTrack) })
+                )
+            }
+        }()
+        updateObservers(updates)
+        return (track, changeHandler)
     }
 
     private func merge(
         trackA: Track, trackAExtremity: PathExtremity, trackB: Track,
         trackBExtremity: PathExtremity, viaPath middlePath: SomeFinitePath
-    ) -> (Track, ChangeHandler) {
+    ) -> (Track, [ObserverUpdate], ChangeHandler) {
         let (combinedPath, pathAUpdate, pathBUpdate) = TrackMap.merge(
             pathA: trackA.path, pathAExtremity: trackAExtremity, pathB: trackB.path,
             pathBExtremity: trackBExtremity, middlePath: middlePath)
@@ -89,26 +101,38 @@ extension TrackMap {
         })
         let startConnection: TrackConnection? = trackA.connection(at: trackAExtremity.opposite)
         let endConnection: TrackConnection? = trackB.connection(at: trackBExtremity.opposite)
-        newTrack.startConnection = startConnection
-        newTrack.endConnection = endConnection
-        trackSet.add(newTrack)
-        trackSet.remove(trackA)
-        trackSet.remove(trackB)
+        var updates: [ObserverUpdate] = []
         if let startConnection = startConnection {
-            startConnection.replace(oldTrack: trackA, newTrack: newTrack)
-            observers.forEach { $0.connectionChanged(startConnection, onMap: self) }
+            updates.append(newTrack.setStartConnection(startConnection))
+            updates.append(
+                contentsOf: startConnection.replace(
+                    oldTrack: trackA,
+                    newTrack: newTrack))
+            updates.append(
+                observers_.createUpdate({
+                    $0.connectionChanged(startConnection, onMap: self)
+                }))
         }
         if let endConnection = endConnection {
-            endConnection.replace(oldTrack: trackB, newTrack: newTrack)
-            observers.forEach { $0.connectionChanged(endConnection, onMap: self) }
+            updates.append(newTrack.setEndConnection(endConnection))
+            updates.append(
+                contentsOf: endConnection.replace(
+                    oldTrack: trackB,
+                    newTrack: newTrack))
+            updates.append(
+                observers_.createUpdate({
+                    $0.connectionChanged(endConnection, onMap: self)
+                }))
         }
-        trackA.informObserversOfReplacement(
-            by: [newTrack], withUpdateFunc: { (newTrack, pathAUpdate($0)) })
-        trackB.informObserversOfReplacement(
-            by: [newTrack], withUpdateFunc: { (newTrack, pathBUpdate($0)) })
-        observers.forEach { $0.replaced(track: trackA, withTracks: [newTrack], onMap: self) }
-        observers.forEach { $0.replaced(track: trackB, withTracks: [newTrack], onMap: self) }
-        return (newTrack, undoHandler)
+        updates.append(
+            contentsOf: replace(
+                oldTracksAndUpdateFuncs: [
+                    (trackA, { (newTrack, pathAUpdate($0)) }),
+                    (trackB, { (newTrack, pathBUpdate($0)) }),
+                ],
+                withTracks: [newTrack])
+        )
+        return (newTrack, updates, undoHandler)
     }
 
     private static func merge(
@@ -145,7 +169,7 @@ extension TrackMap {
     private func extend(
         track existingTrack: Track, at existingTrackExtremity: PathExtremity,
         withPath newPath: SomeFinitePath, at newPathExtremity: PathExtremity
-    ) -> ChangeHandler {
+    ) -> ([ObserverUpdate], ChangeHandler) {
         let oldLength = existingTrack.path.length
         let (combinedPath, pathAUpdate) = TrackMap.merge(
             pathA: existingTrack.path, pathAExtremity: existingTrackExtremity, pathB: newPath,
@@ -155,9 +179,11 @@ extension TrackMap {
                 ofTrack: existingTrack, from: oldLength, to: newPath.length)
             return undoHandler
         })
-        existingTrack.set(path: combinedPath, withPositionUpdate: pathAUpdate)
-        observers.forEach { $0.trackChanged(existingTrack, onMap: self) }
-        return undoHandler
+        let update1 = existingTrack.set(path: combinedPath, withPositionUpdate: pathAUpdate)
+        let update2 = observers_.createUpdate({
+            $0.trackChanged(existingTrack, onMap: self)
+        })
+        return ([update1, update2], undoHandler)
     }
 
     private static func merge(
@@ -176,64 +202,80 @@ extension TrackMap {
         }
     }
 
-    private func make(startConnection: NonMergingConnectionOption, ofTrack track: Track) {
+    private func make(startConnection: NonMergingConnectionOption, ofTrack track: Track)
+        -> [ObserverUpdate]
+    {
         switch startConnection {
         case .none:
-            break
+            return []
         case .toExistingConnection(let connection):
-            track.startConnection = connection
-            connection.add(track: track)
-            observers.forEach { $0.connectionChanged(connection, onMap: self) }
+            let updates1 = [track.setStartConnection(connection)]
+            let updates2 = connection.add(track: track)
+            let updates3 = [
+                observers_.createUpdate({
+                    $0.connectionChanged(connection, onMap: self)
+                })
+            ]
+            return updates1 + updates2 + updates3
         case .toNewConnection(let existingTrack, let x):
-            let newConnection = createNewConnection(toExistingTrack: existingTrack, at: x)
-            track.startConnection = newConnection
-            newConnection.add(track: track)
+            let (newConnection, updates1) = createNewConnection(
+                toExistingTrack: existingTrack, at: x)
+            let updates2 = [track.setStartConnection(newConnection)]
+            let updates3 = newConnection.add(track: track)
+            return updates1 + updates2 + updates3
         }
     }
 
-    private func make(endConnection: NonMergingConnectionOption, ofTrack track: Track) {
+    private func make(endConnection: NonMergingConnectionOption, ofTrack track: Track)
+        -> [ObserverUpdate]
+    {
         switch endConnection {
         case .none:
-            break
+            return []
         case .toExistingConnection(let connection):
-            track.endConnection = connection
-            connection.add(track: track)
-            observers.forEach { $0.connectionChanged(connection, onMap: self) }
+            let updates1 = [track.setEndConnection(connection)]
+            let updates2 = connection.add(track: track)
+            let updates3 = [
+                observers_.createUpdate({
+                    $0.connectionChanged(connection, onMap: self)
+                })
+            ]
+            return updates1 + updates2 + updates3
         case .toNewConnection(let existingTrack, let x):
-            let newConnection = createNewConnection(toExistingTrack: existingTrack, at: x)
-            track.endConnection = newConnection
-            newConnection.add(track: track)
+            let (newConnection, updates1) = createNewConnection(
+                toExistingTrack: existingTrack, at: x)
+            let updates2 = [track.setEndConnection(newConnection)]
+            let updates3 = newConnection.add(track: track)
+            return updates1 + updates2 + updates3
         }
     }
 
     private func createNewConnection(
         toExistingTrack existingTrack: Track,
         at x: Position
-    ) -> TrackConnection {
-        let newConnection: TrackConnection
+    ) -> (TrackConnection, [ObserverUpdate]) {
         if x == 0.0.m {
-            newConnection = TrackConnection(
+            let newConnection = TrackConnection(
                 id: connectionIDGenerator.new(), point: existingTrack.path.start,
                 directionA: existingTrack.path.startOrientation)
-            newConnection.add(track: existingTrack)
-            existingTrack.startConnection = newConnection
-            connectionSet.add(newConnection)
-            observers.forEach { $0.added(connection: newConnection, toMap: self) }
+            let updates1 = newConnection.add(track: existingTrack)
+            let updates2 = [existingTrack.setStartConnection(newConnection)]
+            let updates3 = [add(connection: newConnection)]
+            return (newConnection, updates1 + updates2 + updates3)
         } else if x == existingTrack.path.length {
-            newConnection = TrackConnection(
+            let newConnection = TrackConnection(
                 id: connectionIDGenerator.new(), point: existingTrack.path.end,
                 directionA: existingTrack.path.endOrientation)
-            newConnection.add(track: existingTrack)
-            existingTrack.endConnection = newConnection
-            connectionSet.add(newConnection)
-            observers.forEach { $0.added(connection: newConnection, toMap: self) }
+            let updates1 = newConnection.add(track: existingTrack)
+            let updates2 = [existingTrack.setEndConnection(newConnection)]
+            let updates3 = [add(connection: newConnection)]
+            return (newConnection, updates1 + updates2 + updates3)
         } else {
-            newConnection = split(oldTrack: existingTrack, at: x)
+            return split(oldTrack: existingTrack, at: x)
         }
-        return newConnection
     }
 
-    private func split(oldTrack: Track, at x: Position) -> TrackConnection {
+    private func split(oldTrack: Track, at x: Position) -> (TrackConnection, [ObserverUpdate]) {
         assert(trackSet.contains(oldTrack))
         assert(0.0.m < x && x < oldTrack.path.length)
         let point = oldTrack.path.point(at: x)!
@@ -241,34 +283,35 @@ extension TrackMap {
         let (splitPathA, splitPathB) = oldTrack.path.split(at: x)!
         let splitTrackA = Track(id: trackIDGenerator.new(), path: splitPathA)
         let splitTrackB = Track(id: trackIDGenerator.new(), path: splitPathB)
+        var updates: [ObserverUpdate] = []
         if let connectionA = oldTrack.startConnection {
-            splitTrackA.startConnection = connectionA
-            connectionA.replace(oldTrack: oldTrack, newTrack: splitTrackA)
+            updates.append(splitTrackA.setStartConnection(connectionA))
+            updates.append(
+                contentsOf: connectionA.replace(
+                    oldTrack: oldTrack,
+                    newTrack: splitTrackA))
         }
         if let connectionB = oldTrack.endConnection {
-            splitTrackB.endConnection = connectionB
-            connectionB.replace(oldTrack: oldTrack, newTrack: splitTrackB)
+            updates.append(splitTrackB.setStartConnection(connectionB))
+            updates.append(
+                contentsOf: connectionB.replace(
+                    oldTrack: oldTrack,
+                    newTrack: splitTrackB))
         }
         let newConnection = TrackConnection(
             id: connectionIDGenerator.new(), point: point, directionA: directionA)
-        splitTrackA.endConnection = newConnection
-        splitTrackB.startConnection = newConnection
-        newConnection.add(track: splitTrackA)
-        newConnection.add(track: splitTrackB)
-        trackSet.remove(oldTrack)
-        trackSet.add(splitTrackA)
-        trackSet.add(splitTrackB)
-        connectionSet.add(newConnection)
-        oldTrack.informObserversOfReplacement(
-            by: [splitTrackA, splitTrackB],
-            withUpdateFunc: { (y) in
-                (y < x) ? (splitTrackA, y) : (splitTrackB, y - x)
-            })
-        observers.forEach {
-            $0.replaced(track: oldTrack, withTracks: [splitTrackA, splitTrackB], onMap: self)
-        }
-        observers.forEach { $0.added(connection: newConnection, toMap: self) }
-        return newConnection
+        updates.append(splitTrackA.setEndConnection(newConnection))
+        updates.append(splitTrackB.setStartConnection(newConnection))
+        updates.append(contentsOf: newConnection.add(track: splitTrackA))
+        updates.append(contentsOf: newConnection.add(track: splitTrackB))
+        updates.append(
+            contentsOf: replace(
+                oldTracksAndUpdateFuncs: [
+                    (oldTrack, { (y) in (y < x) ? (splitTrackA, y) : (splitTrackB, y - x) })
+                ],
+                withTracks: [splitTrackA, splitTrackB]))
+        updates.append(add(connection: newConnection))
+        return (newConnection, updates)
     }
 
 }

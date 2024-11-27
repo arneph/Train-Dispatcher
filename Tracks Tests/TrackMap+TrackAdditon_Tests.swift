@@ -124,8 +124,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map),
-                .replacedTrack(track1, [resultTrack], map),
-                .replacedTrack(track2, [resultTrack], map),
+                .replacedTracks([track1, track2], [resultTrack], map),
             ])
         XCTAssert(resultTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -188,8 +187,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map),
-                .replacedTrack(track1, [resultTrack], map),
-                .replacedTrack(track2, [resultTrack], map),
+                .replacedTracks([track1, track2], [resultTrack], map),
             ])
         XCTAssert(resultTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -252,8 +250,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map),
-                .replacedTrack(track1, [resultTrack], map),
-                .replacedTrack(track2, [resultTrack], map),
+                .replacedTracks([track1, track2], [resultTrack], map),
             ])
         XCTAssert(resultTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -316,8 +313,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map),
-                .replacedTrack(track1, [resultTrack], map),
-                .replacedTrack(track2, [resultTrack], map),
+                .replacedTracks([track1, track2], [resultTrack], map),
             ])
         XCTAssert(resultTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -389,8 +385,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map),
-                .replacedTrack(track1, [resultTrack], map),
-                .replacedTrack(track2, [resultTrack], map),
+                .replacedTracks([track1, track2], [resultTrack], map),
             ])
         XCTAssert(resultTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -698,7 +693,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack, map),
-                .replacedTrack(oldTrack, [splitTrack1, splitTrack2], map),
+                .replacedTracks([oldTrack], [splitTrack1, splitTrack2], map),
                 .addedConnection(newConnection, map), .addedTrack(newTrack, map),
             ])
         XCTAssertEqual(
@@ -786,7 +781,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(oldTrack, map),
-                .replacedTrack(oldTrack, [splitTrack1, splitTrack2], map),
+                .replacedTracks([oldTrack], [splitTrack1, splitTrack2], map),
                 .addedConnection(newConnection, map), .addedTrack(newTrack, map),
             ])
         XCTAssertEqual(
@@ -895,7 +890,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             mapObserver.calls,
             [
-                .addedTrack(tmpTrack, map), .replacedTrack(tmpTrack, [straight1, straight2], map),
+                .addedTrack(tmpTrack, map),
+                .replacedTracks([tmpTrack], [straight1, straight2], map),
                 .addedConnection(connection, map), .addedTrack(curve1, map),
                 .connectionChanged(connection, map), .addedTrack(curve2, map),
             ])
@@ -1001,7 +997,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             mapObserver.calls,
             [
-                .addedTrack(tmpTrack, map), .replacedTrack(tmpTrack, [straight1, straight2], map),
+                .addedTrack(tmpTrack, map),
+                .replacedTracks([tmpTrack], [straight1, straight2], map),
                 .addedConnection(connection, map), .addedTrack(curve1, map),
                 .connectionChanged(connection, map), .addedTrack(curve2, map),
             ])
@@ -1097,7 +1094,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map), .trackChanged(track1, map),
-                .replacedTrack(track2, [track3, track4], map), .addedConnection(connection, map),
+                .replacedTracks([track2], [track3, track4], map), .addedConnection(connection, map),
             ])
         XCTAssertEqual(
             track1Observer.calls,
@@ -1200,7 +1197,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             mapObserver.calls,
             [
                 .addedTrack(track1, map), .addedTrack(track2, map), .trackChanged(track1, map),
-                .replacedTrack(track2, [track3, track4], map), .addedConnection(connection, map),
+                .replacedTracks([track2], [track3, track4], map), .addedConnection(connection, map),
             ])
         XCTAssertEqual(
             track1Observer.calls,

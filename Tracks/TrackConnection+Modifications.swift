@@ -9,8 +9,9 @@ import Base
 import Foundation
 
 extension TrackConnection {
-    internal func add(track: Track) {
+    internal func add(track: Track) -> [ObserverUpdate] {
         assert(track.path.start == point || track.path.end == point)
+        var observerUpdates: [ObserverUpdate] = []
         if track.path.startPointAndOrientation == pointAndDirectionA
             || track.path.endPointAndOrientation == pointAndDirectionB
         {
@@ -18,7 +19,10 @@ extension TrackConnection {
             if directionATracks.count == 1 {
                 directionAState = .fixed(track)
             }
-            observers.forEach { $0.added(track: track, toConnection: self, inDirection: .a) }
+            observerUpdates.append(
+                observers_.createUpdate({
+                    $0.added(track: track, toConnection: self, inDirection: .a)
+                }))
         }
         if track.path.startPointAndOrientation == pointAndDirectionB
             || track.path.endPointAndOrientation == pointAndDirectionA
@@ -27,11 +31,16 @@ extension TrackConnection {
             if directionBTracks.count == 1 {
                 directionBState = .fixed(track)
             }
-            observers.forEach { $0.added(track: track, toConnection: self, inDirection: .b) }
+            observerUpdates.append(
+                observers_.createUpdate({
+                    $0.added(track: track, toConnection: self, inDirection: .b)
+                }))
         }
+        return observerUpdates
     }
 
-    internal func replace(oldTrack: Track, newTrack: Track) {
+    internal func replace(oldTrack: Track, newTrack: Track) -> [ObserverUpdate] {
+        var observerUpdates: [ObserverUpdate] = []
         if directionATracks.contains(where: { $0 === oldTrack }) {
             directionATracks.removeAll { $0 === oldTrack }
             directionATracks.append(newTrack)
@@ -39,10 +48,11 @@ extension TrackConnection {
                 in: directionAState,
                 oldTrack: oldTrack,
                 newTrack: newTrack)
-            observers.forEach {
-                $0.replaced(
-                    track: oldTrack, withTrack: newTrack, inConnection: self, inDirection: .a)
-            }
+            observerUpdates.append(
+                observers_.createUpdate({
+                    $0.replaced(
+                        track: oldTrack, withTrack: newTrack, inConnection: self, inDirection: .a)
+                }))
         }
         if directionBTracks.contains(where: { $0 === oldTrack }) {
             directionBTracks.removeAll { $0 === oldTrack }
@@ -51,11 +61,13 @@ extension TrackConnection {
                 in: directionBState,
                 oldTrack: oldTrack,
                 newTrack: newTrack)
-            observers.forEach {
-                $0.replaced(
-                    track: oldTrack, withTrack: newTrack, inConnection: self, inDirection: .b)
-            }
+            observerUpdates.append(
+                observers_.createUpdate({
+                    $0.replaced(
+                        track: oldTrack, withTrack: newTrack, inConnection: self, inDirection: .b)
+                }))
         }
+        return observerUpdates
     }
 
     private static func replace(
@@ -81,7 +93,7 @@ extension TrackConnection {
         }
     }
 
-    internal func remove(track: Track) {
+    internal func remove(track: Track) -> ObserverUpdate {
         directionATracks.removeAll { $0 === track }
         directionAState = TrackConnection.remove(
             in: directionAState,
@@ -92,7 +104,9 @@ extension TrackConnection {
             in: directionBState,
             oldTrack: track,
             potentialNewTrack: directionBTracks.first)
-        observers.forEach { $0.removed(track: track, fromConnection: self) }
+        return observers_.createUpdate({
+            $0.removed(track: track, fromConnection: self)
+        })
     }
 
     private static func remove(in state: State?, oldTrack: Track, potentialNewTrack: Track?)
@@ -126,7 +140,9 @@ extension TrackConnection {
         }
     }
 
-    internal func informObserversOfRemoval() {
-        observers.forEach { $0.removed(connection: self) }
+    internal func createObserverUpdateForRemoval() -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.removed(connection: self)
+        })
     }
 }

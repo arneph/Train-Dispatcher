@@ -9,11 +9,8 @@ import Base
 import Foundation
 
 public final class Signal: IDObject {
-    internal private(set) var observers: [SignalObserver] = []
-    public func add(observer: SignalObserver) { observers.append(observer) }
-    public func remove(observer: SignalObserver) {
-        observers.removeAll { $0 === observer }
-    }
+    private let observers_ = ObserversOwner<SignalObserver>()
+    public var observers: Observers<SignalObserver> { observers_ }
 
     public let id: Base.ID<Signal>
 
@@ -56,7 +53,7 @@ public final class Signal: IDObject {
             return
         }
         state = .changing(StateChange(previous: activeState, next: next, progress: 0.0))
-        observers.forEach { $0.startedChangingState(signal: self) }
+        updateObservers([createObserverUpdateForStartedStateChange()])
     }
 
     internal func tick(_ delta: Duration) {
@@ -72,12 +69,36 @@ public final class Signal: IDObject {
                         previous: change.previous,
                         next: change.next,
                         progress: newProgress))
-                observers.forEach { $0.progressedStateChange(signal: self) }
+                updateObservers([createObserverUpdateForProgressedStateChange()])
             } else {
                 state = .fixed(change.next)
-                observers.forEach { $0.stoppedChangingState(signal: self) }
+                updateObservers([createObserverUpdateForStoppedStateChange()])
             }
         }
+    }
+
+    private func createObserverUpdateForStartedStateChange() -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.startedChangingState(signal: self)
+        })
+    }
+
+    private func createObserverUpdateForProgressedStateChange() -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.progressedStateChange(signal: self)
+        })
+    }
+
+    private func createObserverUpdateForStoppedStateChange() -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.stoppedChangingState(signal: self)
+        })
+    }
+
+    internal func createObserverUpdateForRemoval() -> ObserverUpdate {
+        observers_.createUpdate({
+            $0.removed(signal: self)
+        })
     }
 
     internal init(id: Base.ID<Signal>, position: PointAndOrientation, kind: Kind) {
