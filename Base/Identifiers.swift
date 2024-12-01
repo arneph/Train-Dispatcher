@@ -40,21 +40,24 @@ public class IDGenerator<T>: Equatable, Codable {
     public init() {}
 }
 
-public protocol IDObject {
+public protocol IDObject: AnyObject {
     var id: ID<Self> { get }
 }
 
 public struct IDSet<T: IDObject> {
     private var map: OrderedDictionary<ID<T>, T> = [:]
     public var elements: [T] { map.values.elements }
+    public var isEmpty: Bool { map.isEmpty }
+    public var count: Int { map.count }
 
     public subscript(id: ID<T>) -> T? { map[id] }
 
     public func contains(_ id: ID<T>) -> Bool { map.keys.contains(id) }
-    public func contains(_ element: T) -> Bool { contains(element.id) }
+    public func contains(_ element: T) -> Bool { map[element.id] === element }
 
     public mutating func add(_ element: T) {
-        assert(!map.keys.contains(element.id))
+        precondition(!contains(element.id))
+        precondition(!contains(element))
         map[element.id] = element
     }
 
@@ -63,11 +66,12 @@ public struct IDSet<T: IDObject> {
     }
 
     public mutating func remove(_ id: ID<T>) {
-        assert(map.keys.contains(id))
+        precondition(map.keys.contains(id))
         map.removeValue(forKey: id)
     }
 
     public mutating func remove(_ element: T) {
+        precondition(contains(element))
         remove(element.id)
     }
 
@@ -81,5 +85,54 @@ public struct IDSet<T: IDObject> {
             add(element)
         }
     }
+
+}
+
+public struct IDMap<Key: IDObject, Value> {
+    public struct Entry {
+        let key: Key
+        let value: Value
+    }
+    private var map: OrderedDictionary<ID<Key>, Entry> = [:]
+    public var keys: [Key] { map.values.map { $0.key } }
+    public var values: [Value] { map.values.map { $0.value } }
+    public var entries: [Entry] { Array(map.values) }
+    public var isEmpty: Bool { map.isEmpty }
+    public var count: Int { map.count }
+
+    public subscript(id: ID<Key>) -> Value? { map[id]?.value ?? nil }
+    public subscript(key: Key) -> Value? {
+        get {
+            if let entry = map[key.id] {
+                if entry.key === key { entry.value } else { nil }
+            } else {
+                nil
+            }
+        }
+        set {
+            precondition(newValue != nil)
+            insert(key: key, value: newValue!)
+        }
+    }
+
+    public func contains(_ id: ID<Key>) -> Bool { map.keys.contains(id) }
+    public func contains(_ key: Key) -> Bool { map[key.id]?.key ?? nil === key }
+
+    public mutating func insert(key: Key, value: Value) {
+        precondition(!contains(key.id) || contains(key))
+        map[key.id] = Entry(key: key, value: value)
+    }
+
+    public mutating func removeValue(forID id: ID<Key>) {
+        precondition(contains(id))
+        map.removeValue(forKey: id)
+    }
+
+    public mutating func removeValue(forKey key: Key) {
+        precondition(contains(key))
+        map.removeValue(forKey: key.id)
+    }
+
+    public init() {}
 
 }

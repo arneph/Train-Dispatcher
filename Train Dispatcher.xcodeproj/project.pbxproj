@@ -20,6 +20,7 @@
 		140E52932C979720007E2D32 /* TrackConnection+Modifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E52922C979720007E2D32 /* TrackConnection+Modifications.swift */; };
 		140E52952C9797CE007E2D32 /* TrackConnection+Switches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E52942C9797CE007E2D32 /* TrackConnection+Switches.swift */; };
 		141014BB2BDDD4EE004651A0 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141014BA2BDDD4EE004651A0 /* Color.swift */; };
+		142343D82CFCCC9E00C42727 /* Identifiers_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */; };
 		142D67A72B9D117000130757 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
 		142D67B22B9D117000130757 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
 		142D67B32B9D117000130757 /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -371,6 +372,7 @@
 		140E52922C979720007E2D32 /* TrackConnection+Modifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Modifications.swift"; sourceTree = "<group>"; };
 		140E52942C9797CE007E2D32 /* TrackConnection+Switches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Switches.swift"; sourceTree = "<group>"; };
 		141014BA2BDDD4EE004651A0 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers_Tests.swift; sourceTree = "<group>"; };
 		1423CB202B80541000DA1420 /* Geometry_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geometry_Tests.swift; sourceTree = "<group>"; };
 		142D679D2B9D116F00130757 /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		142D67A62B9D117000130757 /* Base Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Base Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -580,6 +582,7 @@
 			isa = PBXGroup;
 			children = (
 				1486AD842B994765008C5E6C /* ChangeManager_Tests.swift */,
+				142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */,
 				1423CB202B80541000DA1420 /* Geometry_Tests.swift */,
 				1465C81E2B6B46A90042332D /* CircleAngle_Tests.swift */,
 				144055332B7968BC00A2C5D9 /* Path_Tests.swift */,
@@ -1199,6 +1202,7 @@
 			files = (
 				142D67C52B9D22CF00130757 /* CircleAngle_Tests.swift in Sources */,
 				142D67C72B9D22CF00130757 /* Path_Tests.swift in Sources */,
+				142343D82CFCCC9E00C42727 /* Identifiers_Tests.swift in Sources */,
 				142D67C82B9D22CF00130757 /* ChangeManager_Tests.swift in Sources */,
 				142D67C62B9D22CF00130757 /* Geometry_Tests.swift in Sources */,
 			);
