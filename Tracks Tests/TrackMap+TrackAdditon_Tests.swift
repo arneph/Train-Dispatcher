@@ -47,6 +47,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
                 .addedTrack(track, map)
             ])
         XCTAssert(trackObserver.calls.isEmpty)
+        check(map)
     }
 
     func testRemovesSingleTrack() {
@@ -74,6 +75,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .removed(track)
             ])
+        check(map)
     }
 
     func testConnectsTrackStartAndTrackStartWithLinearPath() {
@@ -137,6 +139,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(track2, [resultTrack], { (resultTrack, $0 + 20.0.m) })
             ])
+        check(map)
     }
 
     func testConnectsTrackStartAndTrackEndWithLinearPath() {
@@ -200,6 +203,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(track2, [resultTrack], { (resultTrack, 30.0.m - $0) })
             ])
+        check(map)
     }
 
     func testConnectsTrackEndAndTrackStartWithLinearPath() {
@@ -263,6 +267,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(track2, [resultTrack], { (resultTrack, $0 + 20.0.m) })
             ])
+        check(map)
     }
 
     func testConnectsTrackEndAndTrackEndWithLinearPath() {
@@ -326,6 +331,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(track2, [resultTrack], { (resultTrack, 30.0.m - $0) })
             ])
+        check(map)
     }
 
     func testConnectsTracksWithCircularPath() {
@@ -399,6 +405,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
                 .replaced(
                     track2, [resultTrack], { (resultTrack, 40.0.m + 90.0.deg * 200.0.m - $0) })
             ])
+        check(map)
     }
 
     func testExtendsTrackStartWithPathStart() {
@@ -413,9 +420,12 @@ final class TrackMap_Addition_Tests: XCTestCase {
             withPath:
                 .circular(
                     CircularPath(
-                        center: Point(x: -5.0.m, y: 99.0.m), radius: 99.0.m,
-                        startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
-                        direction: .negative)!), startConnection: .toExistingTrack(track, .start),
+                        center: Point(x: -5.0.m, y: 99.0.m),
+                        radius: 99.0.m,
+                        startAngle: CircleAngle(-90.0.deg),
+                        endAngle: CircleAngle(-160.0.deg),
+                        direction: .negative)!),
+            startConnection: .toExistingTrack(track, .start),
             endConnection: .none)
         XCTAssert(track === resultTrack)
         XCTAssertEqual(map.tracks.count, 1)
@@ -425,42 +435,49 @@ final class TrackMap_Addition_Tests: XCTestCase {
             track.path,
             .compound(
                 CompoundPath(components: [
-                    .linear(
-                        LinearPath(
-                            start: Point(x: +5.0.m, y: 0.0.m), end: Point(x: -5.0.m, y: 0.0.m))!),
                     .circular(
                         CircularPath(
-                            center: Point(x: -5.0.m, y: 99.0.m), radius: 99.0.m,
-                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
-                            direction: .negative)!),
+                            center: Point(x: -5.0.m, y: 99.0.m),
+                            radius: 99.0.m,
+                            startAngle: CircleAngle(-160.0.deg),
+                            endAngle: CircleAngle(-90.0.deg),
+                            direction: .positive)!),
+                    .linear(
+                        LinearPath(
+                            start: Point(x: -5.0.m, y: 0.0.m),
+                            end: Point(x: +5.0.m, y: 0.0.m))!),
                 ])!))
         XCTAssertEqual(
             track.leftRail,
             .compound(
                 CompoundPath(components: [
-                    .linear(
-                        LinearPath(
-                            start: Point(x: +5.0.m, y: -0.7425.m),
-                            end: Point(x: -5.0.m, y: -0.7425.m))!),
                     .circular(
                         CircularPath(
-                            center: Point(x: -5.0.m, y: 99.0.m), radius: 99.7425.m,
-                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
-                            direction: .negative)!),
+                            center: Point(x: -5.0.m, y: 99.0.m),
+                            radius: 98.2575.m,
+                            startAngle: CircleAngle(-160.0.deg),
+                            endAngle: CircleAngle(-90.0.deg),
+                            direction: .positive)!),
+                    .linear(
+                        LinearPath(
+                            start: Point(x: -5.0.m, y: +0.7425.m),
+                            end: Point(x: +5.0.m, y: +0.7425.m))!),
                 ])!))
         XCTAssertEqual(
             track.rightRail,
             .compound(
                 CompoundPath(components: [
-                    .linear(
-                        LinearPath(
-                            start: Point(x: +5.0.m, y: +0.7425.m),
-                            end: Point(x: -5.0.m, y: +0.7425.m))!),
                     .circular(
                         CircularPath(
-                            center: Point(x: -5.0.m, y: 99.0.m), radius: 98.2575.m,
-                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
-                            direction: .negative)!),
+                            center: Point(x: -5.0.m, y: 99.0.m),
+                            radius: 99.7425.m,
+                            startAngle: CircleAngle(-160.0.deg),
+                            endAngle: CircleAngle(-90.0.deg),
+                            direction: .positive)!),
+                    .linear(
+                        LinearPath(
+                            start: Point(x: -5.0.m, y: -0.7425.m),
+                            end: Point(x: +5.0.m, y: -0.7425.m))!),
                 ])!))
         XCTAssertNil(track.startConnection)
         XCTAssertNil(track.endConnection)
@@ -472,8 +489,9 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { 10.0.m - $0 })
+                .pathChanged(track, { 99.0.m * 70.0.deg + $0 })
             ])
+        check(map)
     }
 
     func testExtendsTrackStartWithPathEnd() {
@@ -500,14 +518,14 @@ final class TrackMap_Addition_Tests: XCTestCase {
             track.path,
             .compound(
                 CompoundPath(components: [
-                    .linear(
-                        LinearPath(
-                            start: Point(x: +5.0.m, y: 0.0.m), end: Point(x: -5.0.m, y: 0.0.m))!),
                     .circular(
                         CircularPath(
                             center: Point(x: -5.0.m, y: 99.0.m), radius: 99.0.m,
-                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(-160.0.deg),
-                            direction: .negative)!),
+                            startAngle: CircleAngle(-160.0.deg), endAngle: CircleAngle(-90.0.deg),
+                            direction: .positive)!),
+                    .linear(
+                        LinearPath(
+                            start: Point(x: -5.0.m, y: 0.0.m), end: Point(x: +5.0.m, y: 0.0.m))!),
                 ])!))
         XCTAssertEqual(track.leftRail.finitePathType, .compound)
         XCTAssertEqual(track.rightRail.finitePathType, .compound)
@@ -521,8 +539,9 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { 10.0.m - $0 })
+                .pathChanged(track, { 99.0.m * 70.0.deg + $0 })
             ])
+        check(map)
     }
 
     func testExtendsTrackEndWithPathStart() {
@@ -572,6 +591,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .pathChanged(track, { $0 })
             ])
+        check(map)
     }
 
     func testExtendsTrackEndWithPathEnd() {
@@ -621,6 +641,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .pathChanged(track, { $0 })
             ])
+        check(map)
     }
 
     func testAddsTrackToNewConnectionAtStart() {
@@ -709,6 +730,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(splitTrack2Observer.calls.isEmpty)
         XCTAssert(newTrackObserver.calls.isEmpty)
         XCTAssert(newConnectionObserver.calls.isEmpty)
+        check(map)
     }
 
     func testAddsTrackToNewConnectionAtEnd() {
@@ -797,6 +819,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(splitTrack2Observer.calls.isEmpty)
         XCTAssert(newTrackObserver.calls.isEmpty)
         XCTAssert(newConnectionObserver.calls.isEmpty)
+        check(map)
     }
 
     func testAddsTrackToExistingConnectionAtStart() {
@@ -904,6 +927,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .addedTrack(curve2, connection, .b)
             ])
+        check(map)
     }
 
     func testAddsTrackToExistingConnectionAtEnd() {
@@ -1011,6 +1035,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .addedTrack(curve2, connection, .a)
             ])
+        check(map)
     }
 
     func testExtendsTrackStartToNewConnection() {
@@ -1035,9 +1060,12 @@ final class TrackMap_Addition_Tests: XCTestCase {
             withPath:
                 .circular(
                     CircularPath(
-                        center: Point(x: 50.0.m, y: 150.0.m), radius: 120.0.m,
-                        startAngle: CircleAngle(0.0.deg), endAngle: CircleAngle(-90.0.deg),
-                        direction: .negative)!), startConnection: .toNewConnection(track2, 110.0.m),
+                        center: Point(x: 50.0.m, y: 150.0.m),
+                        radius: 120.0.m,
+                        startAngle: CircleAngle(0.0.deg),
+                        endAngle: CircleAngle(-90.0.deg),
+                        direction: .negative)!),
+            startConnection: .toNewConnection(track2, 110.0.m),
             endConnection: .toExistingTrack(track1, .start))
 
         XCTAssert(track1 === result)
@@ -1055,14 +1083,16 @@ final class TrackMap_Addition_Tests: XCTestCase {
             track1.path,
             .compound(
                 CompoundPath(components: [
-                    .linear(
-                        LinearPath(
-                            start: Point(x: 10.0.m, y: 30.0.m), end: Point(x: 50.0.m, y: 30.0.m))!),
                     .circular(
                         CircularPath(
-                            center: Point(x: 50.0.m, y: 150.0.m), radius: 120.0.m,
-                            startAngle: CircleAngle(-90.0.deg), endAngle: CircleAngle(0.0.deg),
-                            direction: .positive)!),
+                            center: Point(x: 50.0.m, y: 150.0.m),
+                            radius: 120.0.m,
+                            startAngle: CircleAngle(0.0.deg),
+                            endAngle: CircleAngle(-90.0.deg),
+                            direction: .negative)!),
+                    .linear(
+                        LinearPath(
+                            start: Point(x: 50.0.m, y: 30.0.m), end: Point(x: 10.0.m, y: 30.0.m))!),
                 ])!))
         XCTAssert(track1.startConnection === connection)
         XCTAssertNil(track1.endConnection)
@@ -1099,7 +1129,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .pathChanged(track1, { 40.0.m - $0 }),
+                .pathChanged(track1, { 120.0.m * 90.0.deg + $0 }),
                 .startConnectionChanged(track1, nil),
             ])
         XCTAssertEqual(
@@ -1114,6 +1144,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(track3Observer.calls.isEmpty)
         XCTAssert(track4Observer.calls.isEmpty)
         XCTAssert(connectionObserver.calls.isEmpty)
+        check(map)
     }
 
     func testExtendsTrackEndToNewConnection() {
@@ -1216,6 +1247,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssert(track3Observer.calls.isEmpty)
         XCTAssert(track4Observer.calls.isEmpty)
         XCTAssert(connectionObserver.calls.isEmpty)
+        check(map)
     }
 
     func testJoinsTrackStartAndTrackStartWithNewConnection() {
@@ -1279,6 +1311,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
                 .startConnectionChanged(track1, nil)
             ])
         XCTAssert(track2Observer.calls.isEmpty)
+        check(map)
     }
 
     func testJoinsTrackStartAndTrackEndWithNewConnection() {
@@ -1342,6 +1375,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
                 .startConnectionChanged(track1, nil)
             ])
         XCTAssert(track2Observer.calls.isEmpty)
+        check(map)
     }
 
     func testJoinsTrackEndAndTrackStartWithNewConnection() {
@@ -1405,6 +1439,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
                 .endConnectionChanged(track1, nil)
             ])
         XCTAssert(track2Observer.calls.isEmpty)
+        check(map)
     }
 
     func testJoinsTrackEndAndTrackEndWithNewConnection() {
@@ -1468,6 +1503,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
                 .endConnectionChanged(track1, nil)
             ])
         XCTAssert(track2Observer.calls.isEmpty)
+        check(map)
     }
 
 }

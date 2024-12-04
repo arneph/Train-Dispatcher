@@ -419,8 +419,10 @@ public func reduce<T: Unit>(ranges: [ClosedRange<Quantity<T>>]) -> [ClosedRange<
                     priorRanges + [currentRange]
                 } else {
                     priorRanges.dropLast() + [
-                        lastPriorRange.lowerBound...max(lastPriorRange.upperBound,
-                                                        currentRange.upperBound)
+                        lastPriorRange
+                            .lowerBound...max(
+                                lastPriorRange.upperBound,
+                                currentRange.upperBound)
                     ]
                 }
             } else {

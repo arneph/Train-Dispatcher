@@ -192,9 +192,9 @@ extension TrackMap {
     ) -> (combinedPath: SomeFinitePath, pathAUpdate: PositionUpdateFunc) {
         switch (pathAExtremity, pathBExtremity) {
         case (.start, .start):
-            (SomeFinitePath.combine(pathA.reverse, pathB)!, { pathA.length - $0 })
+            (SomeFinitePath.combine(pathB.reverse, pathA)!, { pathB.length + $0 })
         case (.start, .end):
-            (SomeFinitePath.combine(pathA.reverse, pathB.reverse)!, { pathA.length - $0 })
+            (SomeFinitePath.combine(pathB, pathA)!, { pathB.length + $0 })
         case (.end, .start):
             (SomeFinitePath.combine(pathA, pathB)!, { $0 })
         case (.end, .end):

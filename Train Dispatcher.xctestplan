@@ -34,14 +34,6 @@
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Train Dispatcher.xcodeproj",
-        "identifier" : "142D67A52B9D117000130757",
-        "name" : "Base Tests"
-      }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:Train Dispatcher.xcodeproj",
         "identifier" : "142D67DB2B9D663E00130757",
         "name" : "Tracks Tests"
       }
@@ -50,8 +42,23 @@
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Train Dispatcher.xcodeproj",
+        "identifier" : "142D67A52B9D117000130757",
+        "name" : "Base Tests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Train Dispatcher.xcodeproj",
         "identifier" : "14A5779C2C0CCC9D00419E09",
         "name" : "GroundTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Train Dispatcher.xcodeproj",
+        "identifier" : "148009382C602C15007D25B7",
+        "name" : "Trains Tests"
       }
     }
   ],

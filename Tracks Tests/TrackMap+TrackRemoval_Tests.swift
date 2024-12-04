@@ -36,6 +36,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .removed(oldTrack)
             ])
+        check(map)
     }
 
     func testRemovesEntireTrackSection() {
@@ -65,6 +66,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .removed(oldTrack)
             ])
+        check(map)
     }
 
     func testRemovesTrackAndStartConnection() {
@@ -156,6 +158,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                 .removedTrack(oldTrack2, oldConnection),
                 .removed(oldConnection),
             ])
+        check(map)
     }
 
     func testRemovesTrackButNotStartConnection() {
@@ -240,6 +243,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .removedTrack(oldTrack2, connection)
             ])
+        check(map)
     }
 
     func testRemovesTrackAndEndConnection() {
@@ -331,6 +335,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                 .removedTrack(oldTrack2, oldConnection),
                 .removed(oldConnection),
             ])
+        check(map)
     }
 
     func testRemovesStartSectionForTrack() {
@@ -369,6 +374,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                         x - 30.0.m
                     })
             ])
+        check(map)
     }
 
     func testRemovesMiddleSectionForTrack() {
@@ -422,6 +428,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             ])
         XCTAssert(newTrack1Observer.calls.isEmpty)
         XCTAssert(newTrack2Observer.calls.isEmpty)
+        check(map)
     }
 
     func testRemovesMiddleSectionForTrackWithConnections() {
@@ -521,6 +528,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .replacedTrack(oldTrack, newTrack2, connection2, .b)
             ])
+        check(map)
     }
 
     func testRemovesEndSectionForTrack() {
@@ -559,6 +567,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                         x
                     })
             ])
+        check(map)
     }
 
     func testRemovesStartSectionAndConnection() {
@@ -658,6 +667,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                 .removedTrack(oldTrack2, oldConnection),
                 .removed(oldConnection),
             ])
+        check(map)
     }
 
     func testRemovesEndSectionAndConnection() {
@@ -757,6 +767,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
                 .removedTrack(oldTrack2, oldConnection),
                 .removed(oldConnection),
             ])
+        check(map)
     }
 
 }

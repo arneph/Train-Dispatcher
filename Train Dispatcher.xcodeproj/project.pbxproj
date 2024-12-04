@@ -20,6 +20,7 @@
 		140E52932C979720007E2D32 /* TrackConnection+Modifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E52922C979720007E2D32 /* TrackConnection+Modifications.swift */; };
 		140E52952C9797CE007E2D32 /* TrackConnection+Switches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E52942C9797CE007E2D32 /* TrackConnection+Switches.swift */; };
 		141014BB2BDDD4EE004651A0 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141014BA2BDDD4EE004651A0 /* Color.swift */; };
+		1415D1A62D00099D006A3CFA /* TrackMapValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415D1A52D00099D006A3CFA /* TrackMapValidation.swift */; };
 		142343D82CFCCC9E00C42727 /* Identifiers_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */; };
 		142343E12CFFF55700C42727 /* Units_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142343E02CFFF55700C42727 /* Units_Tests.swift */; };
 		142D67A72B9D117000130757 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
@@ -373,6 +374,7 @@
 		140E52922C979720007E2D32 /* TrackConnection+Modifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Modifications.swift"; sourceTree = "<group>"; };
 		140E52942C9797CE007E2D32 /* TrackConnection+Switches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Switches.swift"; sourceTree = "<group>"; };
 		141014BA2BDDD4EE004651A0 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		1415D1A52D00099D006A3CFA /* TrackMapValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMapValidation.swift; sourceTree = "<group>"; };
 		142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers_Tests.swift; sourceTree = "<group>"; };
 		142343E02CFFF55700C42727 /* Units_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units_Tests.swift; sourceTree = "<group>"; };
 		1423CB202B80541000DA1420 /* Geometry_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geometry_Tests.swift; sourceTree = "<group>"; };
@@ -625,6 +627,7 @@
 				1465C8162B64B2DD0042332D /* TestTrackObserver.swift */,
 				1465C81A2B6584C60042332D /* TestTrackConnectionObserver.swift */,
 				1465C8182B64B30B0042332D /* TestTrackMapObserver.swift */,
+				1415D1A52D00099D006A3CFA /* TrackMapValidation.swift */,
 				14D4BBD02CBB277A00852BF0 /* TrackConnection+Switches_Test.swift */,
 				140136FA2BBA0F340080C0E1 /* TrackMap+Codable_Tests.swift */,
 				1465C8052B6492D00042332D /* TrackMap+TrackAdditon_Tests.swift */,
@@ -1243,6 +1246,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				142D67F02B9D669400130757 /* TestTrackMapObserver.swift in Sources */,
+				1415D1A62D00099D006A3CFA /* TrackMapValidation.swift in Sources */,
 				140136FD2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift in Sources */,
 				14D4BBD12CBB277A00852BF0 /* TrackConnection+Switches_Test.swift in Sources */,
 				142D67F12B9D669400130757 /* TestTrackConnectionObserver.swift in Sources */,

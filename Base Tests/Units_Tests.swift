@@ -37,11 +37,11 @@ final class ReduceRanges_Tests: XCTestCase {
         XCTAssertEqual(reduce(ranges: [2.0.m...7.0.m, 5.0.m...11.0.m]), [2.0.m...11.0.m])
         XCTAssertEqual(reduce(ranges: [5.0.m...11.0.m, 2.0.m...7.0.m]), [2.0.m...11.0.m])
     }
-    
+
     func testHandlesTwoIdenticalRanges() {
         XCTAssertEqual(reduce(ranges: [2.0.m...7.0.m, 2.0.m...7.0.m]), [2.0.m...7.0.m])
     }
-    
+
     func testHandlesOneRangeContainedInAnotherRange() {
         XCTAssertEqual(reduce(ranges: [2.0.m...7.0.m, 3.0.m...6.0.m]), [2.0.m...7.0.m])
         XCTAssertEqual(reduce(ranges: [3.0.m...6.0.m, 2.0.m...7.0.m]), [2.0.m...7.0.m])
@@ -109,56 +109,62 @@ final class ReduceRanges_Tests: XCTestCase {
             reduce(ranges: [11.0.m...15.0.m, 5.0.m...12.0.m, 2.0.m...7.0.m]),
             [2.0.m...15.0.m])
     }
-    
+
     func testHandlesSeveralRanges() {
-        XCTAssertEqual(reduce(ranges: [
-            2.0.m...7.0.m,
-            3.0.m...6.0.m,
-            4.0.m...8.0.m,
-            9.0.m...11.0.m,
-            10.0.m...15.0.m,
-            12.0.m...15.0.m,
-            15.0.m...17.0.m,
-            21.0.m...24.0.m,
-            25.0.m...29.0.m,
-        ]), [
-            2.0.m...8.0.m,
-            9.0.m...17.0.m,
-            21.0.m...24.0.m,
-            25.0.m...29.0.m,
-        ])
-        XCTAssertEqual(reduce(ranges: [
-            9.0.m...11.0.m,
-            21.0.m...24.0.m,
-            25.0.m...29.0.m,
-            12.0.m...15.0.m,
-            10.0.m...15.0.m,
-            4.0.m...8.0.m,
-            2.0.m...7.0.m,
-            3.0.m...6.0.m,
-            15.0.m...17.0.m,
-        ]), [
-            2.0.m...8.0.m,
-            9.0.m...17.0.m,
-            21.0.m...24.0.m,
-            25.0.m...29.0.m,
-        ])
-        XCTAssertEqual(reduce(ranges: [
-            3.0.m...6.0.m,
-            10.0.m...15.0.m,
-            21.0.m...24.0.m,
-            9.0.m...11.0.m,
-            4.0.m...8.0.m,
-            15.0.m...17.0.m,
-            25.0.m...29.0.m,
-            12.0.m...15.0.m,
-            2.0.m...7.0.m,
-        ]), [
-            2.0.m...8.0.m,
-            9.0.m...17.0.m,
-            21.0.m...24.0.m,
-            25.0.m...29.0.m,
-        ])
+        XCTAssertEqual(
+            reduce(ranges: [
+                2.0.m...7.0.m,
+                3.0.m...6.0.m,
+                4.0.m...8.0.m,
+                9.0.m...11.0.m,
+                10.0.m...15.0.m,
+                12.0.m...15.0.m,
+                15.0.m...17.0.m,
+                21.0.m...24.0.m,
+                25.0.m...29.0.m,
+            ]),
+            [
+                2.0.m...8.0.m,
+                9.0.m...17.0.m,
+                21.0.m...24.0.m,
+                25.0.m...29.0.m,
+            ])
+        XCTAssertEqual(
+            reduce(ranges: [
+                9.0.m...11.0.m,
+                21.0.m...24.0.m,
+                25.0.m...29.0.m,
+                12.0.m...15.0.m,
+                10.0.m...15.0.m,
+                4.0.m...8.0.m,
+                2.0.m...7.0.m,
+                3.0.m...6.0.m,
+                15.0.m...17.0.m,
+            ]),
+            [
+                2.0.m...8.0.m,
+                9.0.m...17.0.m,
+                21.0.m...24.0.m,
+                25.0.m...29.0.m,
+            ])
+        XCTAssertEqual(
+            reduce(ranges: [
+                3.0.m...6.0.m,
+                10.0.m...15.0.m,
+                21.0.m...24.0.m,
+                9.0.m...11.0.m,
+                4.0.m...8.0.m,
+                15.0.m...17.0.m,
+                25.0.m...29.0.m,
+                12.0.m...15.0.m,
+                2.0.m...7.0.m,
+            ]),
+            [
+                2.0.m...8.0.m,
+                9.0.m...17.0.m,
+                21.0.m...24.0.m,
+                25.0.m...29.0.m,
+            ])
     }
 
 }

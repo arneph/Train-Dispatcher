@@ -86,9 +86,9 @@ public final class TrackConnection: IDObject {
     }
 
     public struct StateChange {
-        let previous: Track
-        let next: Track
-        let progress: Float64
+        public let previous: Track
+        public let next: Track
+        public let progress: Float64
     }
     public enum State {
         case fixed(Track)

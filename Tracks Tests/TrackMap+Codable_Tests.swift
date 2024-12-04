@@ -14,7 +14,9 @@ func encodeAndDecode(_ original: TrackMap) throws -> TrackMap {
     let encoder = JSONEncoder()
     let encoded = try encoder.encode(original)
     let decoder = JSONDecoder()
-    return try decoder.decode(TrackMap.self, from: encoded)
+    let decoded = try decoder.decode(TrackMap.self, from: encoded)
+    check(decoded)
+    return decoded
 }
 
 final class TrackMap_Codable_Tests: XCTestCase {
