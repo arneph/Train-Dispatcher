@@ -408,3 +408,23 @@ public func / (lhs: Float64, rhs: Acceleration) -> Acceleration⁻¹ {
 public func / (lhs: Duration, rhs: Acceleration⁻¹) -> Speed {
     Speed(lhs.value / rhs.value)
 }
+
+public func reduce<T: Unit>(ranges: [ClosedRange<Quantity<T>>]) -> [ClosedRange<Quantity<T>>] {
+    ranges.sorted(by: { $0.lowerBound <= $1.lowerBound }).reduce(
+        [],
+        {
+            (priorRanges, currentRange) in
+            if let lastPriorRange = priorRanges.last {
+                if lastPriorRange.upperBound < currentRange.lowerBound {
+                    priorRanges + [currentRange]
+                } else {
+                    priorRanges.dropLast() + [
+                        lastPriorRange.lowerBound...max(lastPriorRange.upperBound,
+                                                        currentRange.upperBound)
+                    ]
+                }
+            } else {
+                [currentRange]
+            }
+        })
+}
