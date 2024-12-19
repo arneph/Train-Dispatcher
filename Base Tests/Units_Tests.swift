@@ -12,7 +12,7 @@ import XCTest
 final class ReduceRanges_Tests: XCTestCase {
 
     func testHandlesNoRanges() {
-        XCTAssertEqual(reduce(ranges: [ClosedRange<Distance>]()), [])
+        XCTAssertEqual(reduce(ranges: [ClosedRange<Position>]()), [])
     }
 
     func testHandlesSingleRange() {
