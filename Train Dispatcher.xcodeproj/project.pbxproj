@@ -36,7 +36,7 @@
 		142D67C22B9D119F00130757 /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E0827D2B18227A00AA29C2 /* Drawing.swift */; };
 		142D67C52B9D22CF00130757 /* CircleAngle_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81E2B6B46A90042332D /* CircleAngle_Tests.swift */; };
 		142D67C62B9D22CF00130757 /* Geometry_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1423CB202B80541000DA1420 /* Geometry_Tests.swift */; };
-		142D67C72B9D22CF00130757 /* Path_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144055332B7968BC00A2C5D9 /* Path_Tests.swift */; };
+		142D67C72B9D22CF00130757 /* FinitePath_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144055332B7968BC00A2C5D9 /* FinitePath_Tests.swift */; };
 		142D67C82B9D22CF00130757 /* ChangeManager_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1486AD842B994765008C5E6C /* ChangeManager_Tests.swift */; };
 		142D67C92B9D248300130757 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; };
 		142D67CA2B9D248300130757 /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 142D679D2B9D116F00130757 /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -61,6 +61,17 @@
 		142D68092B9D864D00130757 /* TrackObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D68082B9D864D00130757 /* TrackObserver.swift */; };
 		142D680B2B9D869F00130757 /* TrackConnectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */; };
 		142D680D2B9D86D500130757 /* TrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142D680C2B9D86D400130757 /* TrackMapObserver.swift */; };
+		1435932D2D13DA640073D902 /* Rounding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1435932C2D13DA640073D902 /* Rounding.swift */; };
+		1435932F2D13DAD30073D902 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1435932E2D13DAD30073D902 /* Types.swift */; };
+		143593312D13DAF20073D902 /* FinitePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143593302D13DAF20073D902 /* FinitePath.swift */; };
+		143593332D13DB350073D902 /* LinearPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143593322D13DB350073D902 /* LinearPath.swift */; };
+		143593352D13DB520073D902 /* CircularPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143593342D13DB520073D902 /* CircularPath.swift */; };
+		143593372D13DB8B0073D902 /* AtomicFinitePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143593362D13DB8B0073D902 /* AtomicFinitePath.swift */; };
+		143593392D13DBAD0073D902 /* CompoundPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143593382D13DBAD0073D902 /* CompoundPath.swift */; };
+		1435933B2D13DBFF0073D902 /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1435933A2D13DBFF0073D902 /* Loop.swift */; };
+		1435933D2D13DC800073D902 /* LinearPath_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1435933C2D13DC800073D902 /* LinearPath_Tests.swift */; };
+		143593402D13DCB00073D902 /* CircularPath_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1435933F2D13DCB00073D902 /* CircularPath_Tests.swift */; };
+		143593422D13DCCB0073D902 /* CompoundPath_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143593412D13DCCB0073D902 /* CompoundPath_Tests.swift */; };
 		1461ED782BF188D800119738 /* PanelSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1461ED772BF188D800119738 /* PanelSelector.swift */; };
 		1465C7FB2B54BF730042332D /* TrackPen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C7FA2B54BF730042332D /* TrackPen.swift */; };
 		1465C81D2B673DFF0042332D /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465C81C2B673DFF0042332D /* Tool.swift */; };
@@ -389,7 +400,18 @@
 		142D68082B9D864D00130757 /* TrackObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackObserver.swift; sourceTree = "<group>"; };
 		142D680A2B9D869F00130757 /* TrackConnectionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackConnectionObserver.swift; sourceTree = "<group>"; };
 		142D680C2B9D86D400130757 /* TrackMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMapObserver.swift; sourceTree = "<group>"; };
-		144055332B7968BC00A2C5D9 /* Path_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path_Tests.swift; sourceTree = "<group>"; };
+		1435932C2D13DA640073D902 /* Rounding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rounding.swift; sourceTree = "<group>"; };
+		1435932E2D13DAD30073D902 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
+		143593302D13DAF20073D902 /* FinitePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinitePath.swift; sourceTree = "<group>"; };
+		143593322D13DB350073D902 /* LinearPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearPath.swift; sourceTree = "<group>"; };
+		143593342D13DB520073D902 /* CircularPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularPath.swift; sourceTree = "<group>"; };
+		143593362D13DB8B0073D902 /* AtomicFinitePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicFinitePath.swift; sourceTree = "<group>"; };
+		143593382D13DBAD0073D902 /* CompoundPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompoundPath.swift; sourceTree = "<group>"; };
+		1435933A2D13DBFF0073D902 /* Loop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loop.swift; sourceTree = "<group>"; };
+		1435933C2D13DC800073D902 /* LinearPath_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearPath_Tests.swift; sourceTree = "<group>"; };
+		1435933F2D13DCB00073D902 /* CircularPath_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularPath_Tests.swift; sourceTree = "<group>"; };
+		143593412D13DCCB0073D902 /* CompoundPath_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompoundPath_Tests.swift; sourceTree = "<group>"; };
+		144055332B7968BC00A2C5D9 /* FinitePath_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinitePath_Tests.swift; sourceTree = "<group>"; };
 		144055352B79987D00A2C5D9 /* TrackMap+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackMap+Queries.swift"; sourceTree = "<group>"; };
 		145411362C4D5CBD006CF940 /* BR186.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BR186.swift; sourceTree = "<group>"; };
 		145411382C55EA9E006CF940 /* ICE3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICE3.swift; sourceTree = "<group>"; };
@@ -571,7 +593,7 @@
 				14E082762B156F7000AA29C2 /* Units.swift */,
 				14E082742B156F3000AA29C2 /* Geometry.swift */,
 				1465C8202B6B49140042332D /* CircleAngle.swift */,
-				1465C7FC2B5B54580042332D /* Path.swift */,
+				1435932B2D13DA3B0073D902 /* Paths */,
 				141014BA2BDDD4EE004651A0 /* Color.swift */,
 				14E0827D2B18227A00AA29C2 /* Drawing.swift */,
 				14EC6BA72CCDCD7200AE3B46 /* DrawContext+Paths.swift */,
@@ -586,11 +608,11 @@
 			isa = PBXGroup;
 			children = (
 				1486AD842B994765008C5E6C /* ChangeManager_Tests.swift */,
+				142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */,
 				142343E02CFFF55700C42727 /* Units_Tests.swift */,
 				1423CB202B80541000DA1420 /* Geometry_Tests.swift */,
 				1465C81E2B6B46A90042332D /* CircleAngle_Tests.swift */,
-				144055332B7968BC00A2C5D9 /* Path_Tests.swift */,
-				142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */,
+				1435933E2D13DC8A0073D902 /* Paths */,
 			);
 			path = "Base Tests";
 			sourceTree = "<group>";
@@ -634,6 +656,33 @@
 				140136FC2BBA101B0080C0E1 /* TrackMap+TrackRemoval_Tests.swift */,
 			);
 			path = "Tracks Tests";
+			sourceTree = "<group>";
+		};
+		1435932B2D13DA3B0073D902 /* Paths */ = {
+			isa = PBXGroup;
+			children = (
+				1435932C2D13DA640073D902 /* Rounding.swift */,
+				1435932E2D13DAD30073D902 /* Types.swift */,
+				1465C7FC2B5B54580042332D /* Path.swift */,
+				143593302D13DAF20073D902 /* FinitePath.swift */,
+				143593322D13DB350073D902 /* LinearPath.swift */,
+				143593342D13DB520073D902 /* CircularPath.swift */,
+				143593362D13DB8B0073D902 /* AtomicFinitePath.swift */,
+				143593382D13DBAD0073D902 /* CompoundPath.swift */,
+				1435933A2D13DBFF0073D902 /* Loop.swift */,
+			);
+			path = Paths;
+			sourceTree = "<group>";
+		};
+		1435933E2D13DC8A0073D902 /* Paths */ = {
+			isa = PBXGroup;
+			children = (
+				144055332B7968BC00A2C5D9 /* FinitePath_Tests.swift */,
+				1435933C2D13DC800073D902 /* LinearPath_Tests.swift */,
+				1435933F2D13DCB00073D902 /* CircularPath_Tests.swift */,
+				143593412D13DCCB0073D902 /* CompoundPath_Tests.swift */,
+			);
+			path = Paths;
 			sourceTree = "<group>";
 		};
 		148009332C602C15007D25B7 /* Trains */ = {
@@ -1190,12 +1239,20 @@
 				142D67BF2B9D119F00130757 /* CircleAngle.swift in Sources */,
 				142D67C12B9D119F00130757 /* Geometry.swift in Sources */,
 				142D67BC2B9D119F00130757 /* Identifiers.swift in Sources */,
+				143593352D13DB520073D902 /* CircularPath.swift in Sources */,
+				143593332D13DB350073D902 /* LinearPath.swift in Sources */,
+				1435932F2D13DAD30073D902 /* Types.swift in Sources */,
 				142D67BD2B9D119F00130757 /* Units.swift in Sources */,
 				14EC6BAA2CCDCE0700AE3B46 /* DrawContext+CGContext.swift in Sources */,
 				14EC6BA82CCDCD7200AE3B46 /* DrawContext+Paths.swift in Sources */,
+				143593392D13DBAD0073D902 /* CompoundPath.swift in Sources */,
 				14884BB32CF1831A00C2D6B2 /* Observation.swift in Sources */,
 				142D67C22B9D119F00130757 /* Drawing.swift in Sources */,
+				1435932D2D13DA640073D902 /* Rounding.swift in Sources */,
+				143593372D13DB8B0073D902 /* AtomicFinitePath.swift in Sources */,
 				142D67BE2B9D119F00130757 /* Path.swift in Sources */,
+				1435933B2D13DBFF0073D902 /* Loop.swift in Sources */,
+				143593312D13DAF20073D902 /* FinitePath.swift in Sources */,
 				142D67C02B9D119F00130757 /* Object.swift in Sources */,
 				142D67BB2B9D119F00130757 /* ChangeManager.swift in Sources */,
 				141014BB2BDDD4EE004651A0 /* Color.swift in Sources */,
@@ -1207,11 +1264,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				142D67C52B9D22CF00130757 /* CircleAngle_Tests.swift in Sources */,
+				143593422D13DCCB0073D902 /* CompoundPath_Tests.swift in Sources */,
 				142343E12CFFF55700C42727 /* Units_Tests.swift in Sources */,
-				142D67C72B9D22CF00130757 /* Path_Tests.swift in Sources */,
+				142D67C72B9D22CF00130757 /* FinitePath_Tests.swift in Sources */,
 				142343D82CFCCC9E00C42727 /* Identifiers_Tests.swift in Sources */,
 				142D67C82B9D22CF00130757 /* ChangeManager_Tests.swift in Sources */,
 				142D67C62B9D22CF00130757 /* Geometry_Tests.swift in Sources */,
+				1435933D2D13DC800073D902 /* LinearPath_Tests.swift in Sources */,
+				143593402D13DCB00073D902 /* CircularPath_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
