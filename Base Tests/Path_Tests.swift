@@ -625,6 +625,192 @@ final class FinitePath_Tests: XCTestCase {
                     direction: .positive)!))
     }
 
+    func testDeterminesSubPathsOfLinearPath() {
+        let originalPath = LinearPath(
+            start: Point(x: 1.0.m, y: 1.0.m), end: Point(x: 51.0.m, y: 1.0.m))!
+
+        XCTAssertEqual(
+            originalPath.subPath(from: 0.0.m, to: 15.0.m),
+            .linear(
+                LinearPath(
+                    start: Point(x: 1.0.m, y: 1.0.m),
+                    end: Point(x: 16.0.m, y: 1.0.m))!))
+        XCTAssertEqual(
+            originalPath.subPath(from: 15.0.m, to: 35.0.m),
+            .linear(
+                LinearPath(
+                    start: Point(x: 16.0.m, y: 1.0.m),
+                    end: Point(x: 36.0.m, y: 1.0.m))!))
+        XCTAssertEqual(
+            originalPath.subPath(from: 35.0.m, to: 50.0.m),
+            .linear(
+                LinearPath(
+                    start: Point(x: 36.0.m, y: 1.0.m),
+                    end: Point(x: 51.0.m, y: 1.0.m))!))
+        XCTAssertEqual(
+            originalPath.subPath(from: 0.0.m, to: 50.0.m),
+            .linear(originalPath))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 20.0.m))
+        XCTAssertNil(originalPath.subPath(from: 5.0.m, to: 60.0.m))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 60.0.m))
+        XCTAssertNil(originalPath.subPath(from: 35.0.m, to: 15.0.m))
+    }
+
+    func testDeterminesSubPathsOfCircularPath() {
+        let originalPath = CircularPath(
+            center: Point(x: 12.3.m, y: 45.6.m),
+            radius: 98.7.m,
+            startAngle: CircleAngle(120.0.deg),
+            endAngle: CircleAngle(230.0.deg),
+            direction: .positive)!
+
+        XCTAssertEqual(
+            originalPath.subPath(from: 0.0.m, to: 98.7.m * 30.0.deg),
+            .circular(
+                CircularPath(
+                    center: Point(x: 12.3.m, y: 45.6.m),
+                    radius: 98.7.m,
+                    startAngle: CircleAngle(120.0.deg),
+                    endAngle: CircleAngle(150.0.deg),
+                    direction: .positive)!))
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 98.7.m * 30.0.deg,
+                to: 98.7.m * 70.0.deg),
+            .circular(
+                CircularPath(
+                    center: Point(x: 12.3.m, y: 45.6.m),
+                    radius: 98.7.m,
+                    startAngle: CircleAngle(150.0.deg),
+                    endAngle: CircleAngle(190.0.deg),
+                    direction: .positive)!))
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 98.7.m * 70.0.deg,
+                to: 98.7.m * 110.0.deg),
+            .circular(
+                CircularPath(
+                    center: Point(x: 12.3.m, y: 45.6.m),
+                    radius: 98.7.m,
+                    startAngle: CircleAngle(190.0.deg),
+                    endAngle: CircleAngle(230.0.deg),
+                    direction: .positive)!))
+        XCTAssertEqual(
+            originalPath.subPath(from: 0.0.m, to: 98.7.m * 110.0.deg),
+            .circular(originalPath))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 20.0.m))
+        XCTAssertNil(originalPath.subPath(from: 5.0.m, to: 98.7.m * 120.0.deg))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 98.7.m * 120.0.deg))
+        XCTAssertNil(originalPath.subPath(from: 98.7.m * 70.0.deg, to: 98.7.m * 30.0.deg))
+    }
+
+    func testDeterminesSubPathsOfCompoundPath() {
+        let originalPath = CompoundPath(components: [
+            .linear(
+                LinearPath(
+                    start: Point(x: 1.0.m, y: 1.0.m), end: Point(x: 51.0.m, y: 1.0.m))!),
+            .circular(
+                CircularPath(
+                    center: Point(x: 51.0.m, y: 101.0.m), radius: 100.0.m,
+                    startAngle: CircleAngle(270.0.deg), endAngle: CircleAngle(330.0.deg),
+                    direction: .positive)!),
+        ])!
+
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 0.0.m,
+                to: 40.0.m),
+            .linear(
+                LinearPath(
+                    start: Point(x: 1.0.m, y: 1.0.m),
+                    end: Point(x: 41.0.m, y: 1.0.m))!))
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 40.0.m,
+                to: 50.0.m + 100.0.m * 30.0.deg),
+            .compound(
+                CompoundPath(components: [
+                    .linear(
+                        LinearPath(
+                            start: Point(x: 41.0.m, y: 1.0.m), end: Point(x: 51.0.m, y: 1.0.m))!),
+                    .circular(
+                        CircularPath(
+                            center: Point(x: 51.0.m, y: 101.0.m), radius: 100.0.m,
+                            startAngle: CircleAngle(270.0.deg), endAngle: CircleAngle(300.0.deg),
+                            direction: .positive)!),
+                ])!))
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 50.0.m + 100.0.m * 30.0.deg,
+                to: 50.0.m + 100.0.m * 60.0.deg),
+            .circular(
+                CircularPath(
+                    center: Point(x: 51.0.m, y: 101.0.m), radius: 100.0.m,
+                    startAngle: CircleAngle(300.0.deg), endAngle: CircleAngle(330.0.deg),
+                    direction: .positive)!))
+        XCTAssertEqual(
+            originalPath.subPath(from: 0.0.m, to: 50.0.m + 100.0.m * 60.0.deg),
+            .compound(originalPath))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 40.0.m))
+        XCTAssertNil(originalPath.subPath(from: 5.0.m, to: 50.0.m + 100.0.m * 70.0.deg))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 50.0.m + 100.0.m * 30.0.deg))
+        XCTAssertNil(originalPath.subPath(from: 50.0.m + 100.0.m * 30.0.deg, to: 40.0.m))
+    }
+
+    func testDeterminesSubPathsOfSomeFinitePath() {
+        let originalPath = SomeFinitePath.compound(
+            CompoundPath(components: [
+                .linear(
+                    LinearPath(
+                        start: Point(x: 1.0.m, y: 1.0.m), end: Point(x: 51.0.m, y: 1.0.m))!),
+                .circular(
+                    CircularPath(
+                        center: Point(x: 51.0.m, y: 101.0.m), radius: 100.0.m,
+                        startAngle: CircleAngle(270.0.deg), endAngle: CircleAngle(330.0.deg),
+                        direction: .positive)!),
+            ])!)
+
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 0.0.m,
+                to: 40.0.m),
+            .linear(
+                LinearPath(
+                    start: Point(x: 1.0.m, y: 1.0.m),
+                    end: Point(x: 41.0.m, y: 1.0.m))!))
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 40.0.m,
+                to: 50.0.m + 100.0.m * 30.0.deg),
+            .compound(
+                CompoundPath(components: [
+                    .linear(
+                        LinearPath(
+                            start: Point(x: 41.0.m, y: 1.0.m), end: Point(x: 51.0.m, y: 1.0.m))!),
+                    .circular(
+                        CircularPath(
+                            center: Point(x: 51.0.m, y: 101.0.m), radius: 100.0.m,
+                            startAngle: CircleAngle(270.0.deg), endAngle: CircleAngle(300.0.deg),
+                            direction: .positive)!),
+                ])!))
+        XCTAssertEqual(
+            originalPath.subPath(
+                from: 50.0.m + 100.0.m * 30.0.deg,
+                to: 50.0.m + 100.0.m * 60.0.deg),
+            .circular(
+                CircularPath(
+                    center: Point(x: 51.0.m, y: 101.0.m), radius: 100.0.m,
+                    startAngle: CircleAngle(300.0.deg), endAngle: CircleAngle(330.0.deg),
+                    direction: .positive)!))
+        XCTAssertEqual(
+            originalPath.subPath(from: 0.0.m, to: 50.0.m + 100.0.m * 60.0.deg),
+            originalPath)
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 40.0.m))
+        XCTAssertNil(originalPath.subPath(from: 5.0.m, to: 50.0.m + 100.0.m * 70.0.deg))
+        XCTAssertNil(originalPath.subPath(from: -5.0.m, to: 50.0.m + 100.0.m * 30.0.deg))
+        XCTAssertNil(originalPath.subPath(from: 50.0.m + 100.0.m * 30.0.deg, to: 40.0.m))
+    }
+
 }
 
 final class SomeFinitePath_Tests: XCTestCase {

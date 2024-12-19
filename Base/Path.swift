@@ -167,10 +167,16 @@ extension FinitePath {
     public func subPath(from x1: Position, to x2: Position) -> SomeFinitePath? {
         guard 0.0.m <= x1 && x1 < x2 && x2 <= self.length else { return nil }
         return if x1 == 0.0.m && x2 == self.length {
-            switch self.finitePathType {
-            case .linear: .linear(self as! LinearPath)
-            case .circular: .circular(self as! CircularPath)
-            case .compound: .compound(self as! CompoundPath)
+            if let linear = self as? LinearPath {
+                .linear(linear)
+            } else if let circular = self as? CircularPath {
+                .circular(circular)
+            } else if let compound = self as? CompoundPath {
+                .compound(compound)
+            } else if let some = self as? SomeFinitePath {
+                some
+            } else {
+                preconditionFailure("FinitePath has unexpected type.")
             }
         } else if x1 == 0.0.m {
             self.split(at: x2)!.0
