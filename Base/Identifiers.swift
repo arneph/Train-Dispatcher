@@ -90,8 +90,8 @@ public struct IDSet<T: IDObject> {
 
 public struct IDMap<Key: IDObject, Value> {
     public struct Entry {
-        let key: Key
-        let value: Value
+        public let key: Key
+        public let value: Value
     }
     private var map: OrderedDictionary<ID<Key>, Entry> = [:]
     public var keys: [Key] { map.values.map { $0.key } }
