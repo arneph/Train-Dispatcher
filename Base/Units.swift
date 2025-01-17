@@ -409,6 +409,14 @@ public func / (lhs: Duration, rhs: Acceleration⁻¹) -> Speed {
     Speed(lhs.value / rhs.value)
 }
 
+extension ClosedRange {
+
+    func length<T: Unit>() -> Quantity<T> where Bound == Quantity<T> {
+        upperBound - lowerBound
+    }
+
+}
+
 public func reduce<T: Unit>(ranges: [ClosedRange<Quantity<T>>]) -> [ClosedRange<Quantity<T>>] {
     ranges.sorted(by: { $0.lowerBound <= $1.lowerBound }).reduce(
         [],

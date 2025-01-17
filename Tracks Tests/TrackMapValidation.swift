@@ -18,7 +18,7 @@ func check(_ trackMap: TrackMap) {
     }
 }
 
-fileprivate func check(track: Track, in trackMap: TrackMap) {
+private func check(track: Track, in trackMap: TrackMap) {
     if let startConnection = track.startConnection {
         XCTAssert(trackMap.connections.contains { $0 === startConnection })
         XCTAssertEqual(startConnection.point, track.path.start)
@@ -43,7 +43,7 @@ fileprivate func check(track: Track, in trackMap: TrackMap) {
     }
 }
 
-fileprivate func check(connection: TrackConnection, in trackMap: TrackMap) {
+private func check(connection: TrackConnection, in trackMap: TrackMap) {
     XCTAssert(connection.directionATracks.count > 1 || connection.directionBTracks.count > 1)
     for directionATrack in connection.directionATracks {
         XCTAssert(trackMap.tracks.contains { $0 === directionATrack })

@@ -20,6 +20,7 @@
 		140E52932C979720007E2D32 /* TrackConnection+Modifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E52922C979720007E2D32 /* TrackConnection+Modifications.swift */; };
 		140E52952C9797CE007E2D32 /* TrackConnection+Switches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E52942C9797CE007E2D32 /* TrackConnection+Switches.swift */; };
 		141014BB2BDDD4EE004651A0 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141014BA2BDDD4EE004651A0 /* Color.swift */; };
+		1414ABB72D13DFF500BE742A /* PositionMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1414ABB62D13DFF500BE742A /* PositionMapping.swift */; };
 		1415D1A62D00099D006A3CFA /* TrackMapValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415D1A52D00099D006A3CFA /* TrackMapValidation.swift */; };
 		142343D82CFCCC9E00C42727 /* Identifiers_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */; };
 		142343E12CFFF55700C42727 /* Units_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142343E02CFFF55700C42727 /* Units_Tests.swift */; };
@@ -110,6 +111,7 @@
 		14A577BF2C0CD03800419E09 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A577BE2C0CD03800419E09 /* Units.swift */; };
 		14A577C12C0CE74F00419E09 /* GroundMap+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A577C02C0CE74F00419E09 /* GroundMap+Codable.swift */; };
 		14A577C32C0FE46100419E09 /* GroundMap+Drawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A577C22C0FE46100419E09 /* GroundMap+Drawable.swift */; };
+		14B797B12D166BFB00A77827 /* PositionMapping_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B797B02D166BFB00A77827 /* PositionMapping_Tests.swift */; };
 		14C774992B1B77570096BC97 /* TrainDispatcherWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */; };
 		14CF8D6E2CD7E4660040EB61 /* MapView+GroundMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF8D6D2CD7E4660040EB61 /* MapView+GroundMapObserver.swift */; };
 		14CF8D702CD7E4C70040EB61 /* MapView+TrackMapObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF8D6F2CD7E4C70040EB61 /* MapView+TrackMapObserver.swift */; };
@@ -385,6 +387,7 @@
 		140E52922C979720007E2D32 /* TrackConnection+Modifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Modifications.swift"; sourceTree = "<group>"; };
 		140E52942C9797CE007E2D32 /* TrackConnection+Switches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackConnection+Switches.swift"; sourceTree = "<group>"; };
 		141014BA2BDDD4EE004651A0 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		1414ABB62D13DFF500BE742A /* PositionMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionMapping.swift; sourceTree = "<group>"; };
 		1415D1A52D00099D006A3CFA /* TrackMapValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMapValidation.swift; sourceTree = "<group>"; };
 		142343D62CFCC3C200C42727 /* Identifiers_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers_Tests.swift; sourceTree = "<group>"; };
 		142343E02CFFF55700C42727 /* Units_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units_Tests.swift; sourceTree = "<group>"; };
@@ -449,6 +452,7 @@
 		14A577BE2C0CD03800419E09 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		14A577C02C0CE74F00419E09 /* GroundMap+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroundMap+Codable.swift"; sourceTree = "<group>"; };
 		14A577C22C0FE46100419E09 /* GroundMap+Drawable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroundMap+Drawable.swift"; sourceTree = "<group>"; };
+		14B797B02D166BFB00A77827 /* PositionMapping_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionMapping_Tests.swift; sourceTree = "<group>"; };
 		14C774982B1B77570096BC97 /* TrainDispatcherWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDispatcherWindowController.swift; sourceTree = "<group>"; };
 		14C774A02B1D18890096BC97 /* Train Dispatcher Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Train Dispatcher Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14CF8D6D2CD7E4660040EB61 /* MapView+GroundMapObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+GroundMapObserver.swift"; sourceTree = "<group>"; };
@@ -665,6 +669,7 @@
 				1435932E2D13DAD30073D902 /* Types.swift */,
 				1465C7FC2B5B54580042332D /* Path.swift */,
 				143593302D13DAF20073D902 /* FinitePath.swift */,
+				1414ABB62D13DFF500BE742A /* PositionMapping.swift */,
 				143593322D13DB350073D902 /* LinearPath.swift */,
 				143593342D13DB520073D902 /* CircularPath.swift */,
 				143593362D13DB8B0073D902 /* AtomicFinitePath.swift */,
@@ -681,6 +686,7 @@
 				1435933C2D13DC800073D902 /* LinearPath_Tests.swift */,
 				1435933F2D13DCB00073D902 /* CircularPath_Tests.swift */,
 				143593412D13DCCB0073D902 /* CompoundPath_Tests.swift */,
+				14B797B02D166BFB00A77827 /* PositionMapping_Tests.swift */,
 			);
 			path = Paths;
 			sourceTree = "<group>";
@@ -1255,6 +1261,7 @@
 				143593312D13DAF20073D902 /* FinitePath.swift in Sources */,
 				142D67C02B9D119F00130757 /* Object.swift in Sources */,
 				142D67BB2B9D119F00130757 /* ChangeManager.swift in Sources */,
+				1414ABB72D13DFF500BE742A /* PositionMapping.swift in Sources */,
 				141014BB2BDDD4EE004651A0 /* Color.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1268,6 +1275,7 @@
 				142343E12CFFF55700C42727 /* Units_Tests.swift in Sources */,
 				142D67C72B9D22CF00130757 /* FinitePath_Tests.swift in Sources */,
 				142343D82CFCCC9E00C42727 /* Identifiers_Tests.swift in Sources */,
+				14B797B12D166BFB00A77827 /* PositionMapping_Tests.swift in Sources */,
 				142D67C82B9D22CF00130757 /* ChangeManager_Tests.swift in Sources */,
 				142D67C62B9D22CF00130757 /* Geometry_Tests.swift in Sources */,
 				1435933D2D13DC800073D902 /* LinearPath_Tests.swift in Sources */,
