@@ -555,6 +555,8 @@ class TrainDispatcherWindowController: NSWindowController,
     }
 
     // MARK: - TrainObserver
+    func positionChanged(_ train: Trains.Train) {}
+
     func speedChanged(_ train: Train) {
         updateTrainControls()
     }

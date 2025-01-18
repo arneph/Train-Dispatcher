@@ -40,14 +40,3 @@ public protocol TrackObserver: AnyObject {
         withMapping mapping: TrackAndPostionMapping)
     func removed(track oldTrack: Track)
 }
-
-extension TrackObserver {
-    func pathChanged(forTrack track: Track, withMapping mapping: PositionMapping) {}
-    func startConnectionChanged(forTrack: Track, oldConnection: TrackConnection?) {}
-    func endConnectionChanged(forTrack: Track, oldConnection: TrackConnection?) {}
-    func replaced(
-        track oldTrack: Track, withTracks newTracks: [Track],
-        withMapping mapping: TrackAndPostionMapping
-    ) {}
-    func removed(track: Track) {}
-}

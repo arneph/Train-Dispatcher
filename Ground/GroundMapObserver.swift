@@ -10,7 +10,3 @@ import Foundation
 public protocol GroundMapObserver: AnyObject {
     func groundChanged(forMap map: GroundMap)
 }
-
-extension GroundMapObserver {
-    func groundChanged(forMap map: GroundMap) {}
-}

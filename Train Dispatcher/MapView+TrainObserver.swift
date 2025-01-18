@@ -15,4 +15,12 @@ extension MapView: TrainObserver {
         needsDisplay = true
     }
 
+    func speedChanged(_ train: Trains.Train) {}
+
+    func directionChanged(_ train: Trains.Train) {}
+
+    func accelerationForceChanged(_ train: Trains.Train) {}
+
+    func brakeForceChanged(_ train: Trains.Train) {}
+
 }

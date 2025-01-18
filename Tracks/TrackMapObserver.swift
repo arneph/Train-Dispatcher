@@ -21,18 +21,3 @@ public protocol TrackMapObserver: AnyObject {
     func trackChanged(_ track: Track, onMap map: TrackMap)
     func connectionChanged(_ connection: TrackConnection, onMap map: TrackMap)
 }
-
-extension TrackMapObserver {
-    func added(track: Track, toMap: TrackMap) {}
-    func replaced(tracks: [Track], withTracks: [Track], onMap: TrackMap) {}
-    func removed(track: Track, fromMap: TrackMap) {}
-
-    func added(connection: TrackConnection, toMap: TrackMap) {}
-    func removed(connection: TrackConnection, fromMap: TrackMap) {}
-
-    func added(signal: Signal, toMap map: TrackMap) {}
-    func removed(signal oldSignal: Signal, fromMap map: TrackMap) {}
-
-    func trackChanged(_: Track, onMap: TrackMap) {}
-    func connectionChanged(_: TrackConnection, onMap: TrackMap) {}
-}

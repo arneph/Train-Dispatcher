@@ -22,18 +22,3 @@ public protocol TrackConnectionObserver: AnyObject {
 
     func removed(connection oldConnection: TrackConnection)
 }
-
-extension TrackConnectionObserver {
-    func added(
-        track: Track, toConnection: TrackConnection, inDirection: TrackConnection.Direction
-    ) {}
-    func replaced(
-        track: Track, withTrack: Track, inConnection: TrackConnection,
-        inDirection: TrackConnection.Direction
-    ) {}
-    func removed(track: Track, fromConnection: TrackConnection) {}
-    func startedChangingState(connection: TrackConnection, direction: TrackConnection.Direction) {}
-    func progressedStateChange(connection: TrackConnection, direction: TrackConnection.Direction) {}
-    func stoppedChangingState(connection: TrackConnection, direction: TrackConnection.Direction) {}
-    func removed(connection: TrackConnection) {}
-}

@@ -14,10 +14,3 @@ public protocol SignalObserver: AnyObject {
 
     func removed(signal oldSignal: Signal)
 }
-
-extension SignalObserver {
-    func startedChangingState(signal: Signal) {}
-    func progressedStateChange(signal: Signal) {}
-    func stoppedChangingState(signal: Signal) {}
-    func removed(signal oldSignal: Signal) {}
-}
