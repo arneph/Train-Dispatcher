@@ -53,11 +53,12 @@ public final class Track: IDObject {
     public var atomicPathTypeAtEnd: AtomicPathType { path.backwardAtomicPathType(at: path.length)! }
 
     internal func set(
-        path: SomeFinitePath, withPositionUpdate positionUpdate: @escaping PositionUpdateFunc
+        path: SomeFinitePath,
+        withMapping mapping: PositionMapping
     ) -> ObserverUpdate {
         self.path = path
         return observers_.createUpdate({
-            $0.pathChanged(forTrack: self, withPositionUpdate: positionUpdate)
+            $0.pathChanged(forTrack: self, withMapping: mapping)
         })
     }
 
@@ -97,10 +98,11 @@ public final class Track: IDObject {
     }
 
     internal func createObserverUpdateForReplacement(
-        by newTracks: [Track], withUpdateFunc f: @escaping TrackAndPostionUpdateFunc
+        by newTracks: [Track],
+        withMapping mapping: TrackAndPostionMapping
     ) -> ObserverUpdate {
         observers_.createUpdate({
-            $0.replaced(track: self, withTracks: newTracks, withUpdateFunc: f)
+            $0.replaced(track: self, withTracks: newTracks, withMapping: mapping)
         })
     }
 

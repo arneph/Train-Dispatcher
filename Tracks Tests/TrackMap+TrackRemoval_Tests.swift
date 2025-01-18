@@ -130,26 +130,18 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .replaced(
                     oldTrack3, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 23.0.m {
-                            (newTrack, 68.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...23.0.m).shift(by: 45.0.m).inverted))
             ])
         XCTAssertEqual(
             oldTrack4Observer.calls,
             [
                 .replaced(
                     oldTrack4, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 45.0.m {
-                            (newTrack, 45.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...45.0.m).inverted))
             ])
         XCTAssert(newTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -307,26 +299,18 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .replaced(
                     oldTrack3, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 23.0.m {
-                            (newTrack, 68.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...23.0.m).shift(by: 45.0.m).inverted))
             ])
         XCTAssertEqual(
             oldTrack4Observer.calls,
             [
                 .replaced(
                     oldTrack4, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 45.0.m {
-                            (newTrack, 45.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...45.0.m).inverted))
             ])
         XCTAssert(newTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -368,11 +352,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(
-                    track,
-                    { x in
-                        x - 30.0.m
-                    })
+                .pathChanged(track, PositionMapping(for: 30.0.m...68.0.m))
             ])
         check(map)
     }
@@ -416,15 +396,10 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .replaced(
                     oldTrack, [newTrack1, newTrack2],
-                    { x in
-                        if 0.0.m <= x && x <= 10.0.m {
-                            (newTrack1, x)
-                        } else if 30.0.m <= x && x <= 68.0.m {
-                            (newTrack2, x - 30.0.m)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(tracksAndPositionMappings: [
+                        (newTrack1, PositionMapping(for: 0.0.m...10.0.m)),
+                        (newTrack2, PositionMapping(for: 30.0.m...68.0.m)),
+                    ]))
             ])
         XCTAssert(newTrack1Observer.calls.isEmpty)
         XCTAssert(newTrack2Observer.calls.isEmpty)
@@ -504,15 +479,10 @@ final class TrackMap_Remove_Tests: XCTestCase {
                 .endConnectionChanged(oldTrack, nil),
                 .replaced(
                     oldTrack, [newTrack1, newTrack2],
-                    { x in
-                        if 0.0.m <= x && x <= 10.0.m {
-                            (newTrack1, x)
-                        } else if 30.0.m <= x && x <= 68.0.m {
-                            (newTrack2, x - 30.0.m)
-                        } else {
-                            nil
-                        }
-                    }),
+                    TrackAndPostionMapping(tracksAndPositionMappings: [
+                        (newTrack1, PositionMapping(for: 0.0.m...10.0.m)),
+                        (newTrack2, PositionMapping(for: 30.0.m...68.0.m)),
+                    ])),
             ])
         XCTAssert(newTrack1Observer.calls.isEmpty)
         XCTAssert(newTrack2Observer.calls.isEmpty)
@@ -561,11 +531,7 @@ final class TrackMap_Remove_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(
-                    track,
-                    { x in
-                        x
-                    })
+                .pathChanged(track, PositionMapping(for: 0.0.m...30.0.m))
             ])
         check(map)
     }
@@ -628,37 +594,25 @@ final class TrackMap_Remove_Tests: XCTestCase {
             oldTrack2Observer.calls,
             [
                 .startConnectionChanged(oldTrack2, oldConnection),
-                .pathChanged(
-                    oldTrack2,
-                    { x in
-                        x - 10.0.m
-                    }),
+                .pathChanged(oldTrack2, PositionMapping(for: 10.0.m...(100.0.m * 60.0.deg))),
             ])
         XCTAssertEqual(
             oldTrack3Observer.calls,
             [
                 .replaced(
                     oldTrack3, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 23.0.m {
-                            (newTrack, 68.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...23.0.m).shift(by: 45.0.m).inverted))
             ])
         XCTAssertEqual(
             oldTrack4Observer.calls,
             [
                 .replaced(
                     oldTrack4, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 45.0.m {
-                            (newTrack, 45.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...45.0.m).inverted))
             ])
         XCTAssert(newTrackObserver.calls.isEmpty)
         XCTAssertEqual(
@@ -729,36 +683,25 @@ final class TrackMap_Remove_Tests: XCTestCase {
             [
                 .endConnectionChanged(oldTrack2, oldConnection),
                 .pathChanged(
-                    oldTrack2,
-                    { x in
-                        x
-                    }),
+                    oldTrack2, PositionMapping(for: 0.0.m...10.0.m)),
             ])
         XCTAssertEqual(
             oldTrack3Observer.calls,
             [
                 .replaced(
                     oldTrack3, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 23.0.m {
-                            (newTrack, 68.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...23.0.m).shift(by: 45.0.m).inverted))
             ])
         XCTAssertEqual(
             oldTrack4Observer.calls,
             [
                 .replaced(
                     oldTrack4, [newTrack],
-                    { x in
-                        if 0.0.m <= x && x <= 45.0.m {
-                            (newTrack, 45.0.m - x)
-                        } else {
-                            nil
-                        }
-                    })
+                    TrackAndPostionMapping(
+                        track: newTrack,
+                        mapping: PositionMapping(for: 0.0.m...45.0.m).inverted))
             ])
         XCTAssert(newTrackObserver.calls.isEmpty)
         XCTAssertEqual(

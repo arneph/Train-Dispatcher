@@ -28,14 +28,14 @@ public final class TrackMap {
     }
 
     internal func replace(
-        oldTracksAndUpdateFuncs: [(Track, TrackAndPostionUpdateFunc)],
+        oldTracksAndMappings: [(Track, TrackAndPostionMapping)],
         withTracks newTracks: [Track]
     ) -> [ObserverUpdate] {
-        let oldTracks = oldTracksAndUpdateFuncs.map { $0.0 }
+        let oldTracks = oldTracksAndMappings.map { $0.0 }
         trackSet.remove(oldTracks)
         trackSet.add(newTracks)
-        let trackUpdates = oldTracksAndUpdateFuncs.map { (oldTrack, f) in
-            oldTrack.createObserverUpdateForReplacement(by: newTracks, withUpdateFunc: f)
+        let trackUpdates = oldTracksAndMappings.map { (oldTrack, mapping) in
+            oldTrack.createObserverUpdateForReplacement(by: newTracks, withMapping: mapping)
         }
         let mapUpdate = observers_.createUpdate({
             $0.replaced(tracks: oldTracks, withTracks: newTracks, onMap: self)

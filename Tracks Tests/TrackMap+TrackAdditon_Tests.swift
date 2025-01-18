@@ -132,12 +132,22 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .replaced(track1, [resultTrack], { (resultTrack, 10.0.m - $0) })
+                .replaced(
+                    track1,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m).inverted))
             ])
         XCTAssertEqual(
             track2Observer.calls,
             [
-                .replaced(track2, [resultTrack], { (resultTrack, $0 + 20.0.m) })
+                .replaced(
+                    track2,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m).shift(by: 20.0.m)))
             ])
         check(map)
     }
@@ -196,12 +206,22 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .replaced(track1, [resultTrack], { (resultTrack, 10.0.m - $0) })
+                .replaced(
+                    track1,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m).inverted))
             ])
         XCTAssertEqual(
             track2Observer.calls,
             [
-                .replaced(track2, [resultTrack], { (resultTrack, 30.0.m - $0) })
+                .replaced(
+                    track2,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m).shift(by: 20.0.m).inverted))
             ])
         check(map)
     }
@@ -260,12 +280,22 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .replaced(track1, [resultTrack], { (resultTrack, $0) })
+                .replaced(
+                    track1,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m)))
             ])
         XCTAssertEqual(
             track2Observer.calls,
             [
-                .replaced(track2, [resultTrack], { (resultTrack, $0 + 20.0.m) })
+                .replaced(
+                    track2,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m).shift(by: 20.0.m)))
             ])
         check(map)
     }
@@ -324,12 +354,22 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .replaced(track1, [resultTrack], { (resultTrack, $0) })
+                .replaced(
+                    track1,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m)))
             ])
         XCTAssertEqual(
             track2Observer.calls,
             [
-                .replaced(track2, [resultTrack], { (resultTrack, 30.0.m - $0) })
+                .replaced(
+                    track2,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...10.0.m).shift(by: 20.0.m).inverted))
             ])
         check(map)
     }
@@ -397,13 +437,24 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .replaced(track1, [resultTrack], { (resultTrack, $0) })
+                .replaced(
+                    track1,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...20.0.m)))
             ])
         XCTAssertEqual(
             track2Observer.calls,
             [
                 .replaced(
-                    track2, [resultTrack], { (resultTrack, 40.0.m + 90.0.deg * 200.0.m - $0) })
+                    track2,
+                    [resultTrack],
+                    TrackAndPostionMapping(
+                        track: resultTrack,
+                        mapping: PositionMapping(for: 0.0.m...20.0.m).shift(
+                            by: 20.0.m + 90.0.deg * 200.0.m
+                        ).inverted))
             ])
         check(map)
     }
@@ -489,7 +540,9 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { 99.0.m * 70.0.deg + $0 })
+                .pathChanged(
+                    track,
+                    PositionMapping(for: 0.0.m...10.0.m).shift(by: 99.0.m * 70.0.deg))
             ])
         check(map)
     }
@@ -539,7 +592,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { 99.0.m * 70.0.deg + $0 })
+                .pathChanged(
+                    track, PositionMapping(for: 0.0.m...10.0.m).shift(by: 99.0.m * 70.0.deg))
             ])
         check(map)
     }
@@ -589,7 +643,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { $0 })
+                .pathChanged(track, PositionMapping(for: 0.0.m...10.0.m))
             ])
         check(map)
     }
@@ -639,7 +693,7 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             trackObserver.calls,
             [
-                .pathChanged(track, { $0 })
+                .pathChanged(track, PositionMapping(for: 0.0.m...10.0.m))
             ])
         check(map)
     }
@@ -722,9 +776,10 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(
                     oldTrack, [splitTrack1, splitTrack2],
-                    { (x) in
-                        x < 50.0.m ? (splitTrack1, x) : (splitTrack2, x - 50.0.m)
-                    })
+                    TrackAndPostionMapping(tracksAndPositionMappings: [
+                        (splitTrack1, PositionMapping(for: 0.0.m...50.0.m)),
+                        (splitTrack2, PositionMapping(for: 50.0.m...100.0.m)),
+                    ]))
             ])
         XCTAssert(splitTrack1Observer.calls.isEmpty)
         XCTAssert(splitTrack2Observer.calls.isEmpty)
@@ -811,9 +866,10 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(
                     oldTrack, [splitTrack1, splitTrack2],
-                    { (x) in
-                        x < 25.0.m ? (splitTrack1, x) : (splitTrack2, x - 25.0.m)
-                    })
+                    TrackAndPostionMapping(tracksAndPositionMappings: [
+                        (splitTrack1, PositionMapping(for: 0.0.m...25.0.m)),
+                        (splitTrack2, PositionMapping(for: 25.0.m...100.0.m)),
+                    ]))
             ])
         XCTAssert(splitTrack1Observer.calls.isEmpty)
         XCTAssert(splitTrack2Observer.calls.isEmpty)
@@ -1129,7 +1185,8 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .pathChanged(track1, { 120.0.m * 90.0.deg + $0 }),
+                .pathChanged(
+                    track1, PositionMapping(for: 0.0.m...40.0.m).shift(by: 120.0.m * 90.0.deg)),
                 .startConnectionChanged(track1, nil),
             ])
         XCTAssertEqual(
@@ -1137,9 +1194,10 @@ final class TrackMap_Addition_Tests: XCTestCase {
             [
                 .replaced(
                     track2, [track3, track4],
-                    { (x) in
-                        (x < 110.0.m) ? (track3, x) : (track4, x - 110.0.m)
-                    })
+                    TrackAndPostionMapping(tracksAndPositionMappings: [
+                        (track3, PositionMapping(for: 0.0.m...110.0.m)),
+                        (track4, PositionMapping(for: 110.m...140.0.m)),
+                    ]))
             ])
         XCTAssert(track3Observer.calls.isEmpty)
         XCTAssert(track4Observer.calls.isEmpty)
@@ -1233,16 +1291,18 @@ final class TrackMap_Addition_Tests: XCTestCase {
         XCTAssertEqual(
             track1Observer.calls,
             [
-                .pathChanged(track1, { $0 }), .endConnectionChanged(track1, nil),
+                .pathChanged(track1, PositionMapping(for: 0.0.m...40.0.m)),
+                .endConnectionChanged(track1, nil),
             ])
         XCTAssertEqual(
             track2Observer.calls,
             [
                 .replaced(
                     track2, [track3, track4],
-                    { (x) in
-                        (x < 110.0.m) ? (track3, x) : (track4, x - 110.0.m)
-                    })
+                    TrackAndPostionMapping(tracksAndPositionMappings: [
+                        (track3, PositionMapping(for: 0.0.m...110.0.m)),
+                        (track4, PositionMapping(for: 110.0.m...140.0.m)),
+                    ]))
             ])
         XCTAssert(track3Observer.calls.isEmpty)
         XCTAssert(track4Observer.calls.isEmpty)

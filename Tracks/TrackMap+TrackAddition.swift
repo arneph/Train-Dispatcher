@@ -89,9 +89,12 @@ extension TrackMap {
         trackA: Track, trackAExtremity: PathExtremity, trackB: Track,
         trackBExtremity: PathExtremity, viaPath middlePath: SomeFinitePath
     ) -> (Track, [ObserverUpdate], ChangeHandler) {
-        let (combinedPath, pathAUpdate, pathBUpdate) = TrackMap.merge(
-            pathA: trackA.path, pathAExtremity: trackAExtremity, pathB: trackB.path,
-            pathBExtremity: trackBExtremity, middlePath: middlePath)
+        let (combinedPath, pathAMapping, pathBMapping) = TrackMap.merge(
+            pathA: trackA.path,
+            pathAExtremity: trackAExtremity,
+            pathB: trackB.path,
+            pathBExtremity: trackBExtremity,
+            middlePath: middlePath)
         let newTrack = Track(id: trackIDGenerator.new(), path: combinedPath)
         let undoHandler = TrackRemovalHandler(change: {
             let (_, _, undoHandler) = self.removeSection(
@@ -126,12 +129,11 @@ extension TrackMap {
         }
         updates.append(
             contentsOf: replace(
-                oldTracksAndUpdateFuncs: [
-                    (trackA, { (newTrack, pathAUpdate($0)) }),
-                    (trackB, { (newTrack, pathBUpdate($0)) }),
+                oldTracksAndMappings: [
+                    (trackA, TrackAndPostionMapping(track: newTrack, mapping: pathAMapping)),
+                    (trackB, TrackAndPostionMapping(track: newTrack, mapping: pathBMapping)),
                 ],
-                withTracks: [newTrack])
-        )
+                withTracks: [newTrack]))
         return (newTrack, updates, undoHandler)
     }
 
@@ -139,31 +141,24 @@ extension TrackMap {
         pathA: SomeFinitePath, pathAExtremity: PathExtremity, pathB: SomeFinitePath,
         pathBExtremity: PathExtremity, middlePath: SomeFinitePath
     ) -> (
-        combinedPath: SomeFinitePath, pathAUpdate: PositionUpdateFunc,
-        pathBUpdate: PositionUpdateFunc
+        combinedPath: SomeFinitePath,
+        pathAMapping: PositionMapping,
+        pathBMapping: PositionMapping
     ) {
-        switch (pathAExtremity, pathBExtremity) {
-        case (.start, .start):
-            (
-                SomeFinitePath.combine([pathA.reverse, middlePath, pathB])!, { pathA.length - $0 },
-                { pathA.length + middlePath.length + $0 }
-            )
-        case (.start, .end):
-            (
-                SomeFinitePath.combine([pathA.reverse, middlePath, pathB.reverse])!,
-                { pathA.length - $0 }, { pathA.length + middlePath.length + pathB.length - $0 }
-            )
-        case (.end, .start):
-            (
-                SomeFinitePath.combine([pathA, middlePath, pathB])!, { $0 },
-                { pathA.length + middlePath.length + $0 }
-            )
-        case (.end, .end):
-            (
-                SomeFinitePath.combine([pathA, middlePath, pathB.reverse])!, { $0 },
-                { pathA.length + middlePath.length + pathB.length - $0 }
-            )
-        }
+        let pathAWithMapping =
+            switch pathAExtremity {
+            case .start: pathA.withMapping.reverse
+            case .end: pathA.withMapping
+            }
+        let pathBWithMapping =
+            switch pathBExtremity {
+            case .start: pathB.withMapping
+            case .end: pathB.withMapping.reverse
+            }
+        let (combinedPath, mappings) = FinitePathAndPositionMapping.combine([
+            pathAWithMapping, middlePath.withMapping, pathBWithMapping,
+        ])!
+        return (combinedPath, mappings[0], mappings[2])
     }
 
     private func extend(
@@ -171,15 +166,17 @@ extension TrackMap {
         withPath newPath: SomeFinitePath, at newPathExtremity: PathExtremity
     ) -> ([ObserverUpdate], ChangeHandler) {
         let oldLength = existingTrack.path.length
-        let (combinedPath, pathAUpdate) = TrackMap.merge(
-            pathA: existingTrack.path, pathAExtremity: existingTrackExtremity, pathB: newPath,
+        let (combinedPath, pathAMapping) = TrackMap.merge(
+            pathA: existingTrack.path,
+            pathAExtremity: existingTrackExtremity,
+            pathB: newPath,
             pathBExtremity: newPathExtremity)
         let undoHandler = TrackRemovalHandler(change: {
             let (_, _, undoHandler) = self.removeSection(
                 ofTrack: existingTrack, from: oldLength, to: newPath.length)
             return undoHandler
         })
-        let update1 = existingTrack.set(path: combinedPath, withPositionUpdate: pathAUpdate)
+        let update1 = existingTrack.set(path: combinedPath, withMapping: pathAMapping)
         let update2 = observers_.createUpdate({
             $0.trackChanged(existingTrack, onMap: self)
         })
@@ -187,18 +184,36 @@ extension TrackMap {
     }
 
     private static func merge(
-        pathA: SomeFinitePath, pathAExtremity: PathExtremity, pathB: SomeFinitePath,
+        pathA: SomeFinitePath,
+        pathAExtremity: PathExtremity,
+        pathB: SomeFinitePath,
         pathBExtremity: PathExtremity
-    ) -> (combinedPath: SomeFinitePath, pathAUpdate: PositionUpdateFunc) {
+    ) -> (combinedPath: SomeFinitePath, pathAMapping: PositionMapping) {
         switch (pathAExtremity, pathBExtremity) {
         case (.start, .start):
-            (SomeFinitePath.combine(pathB.reverse, pathA)!, { pathB.length + $0 })
+            let (combinedPath, mappings) = FinitePathAndPositionMapping.combine([
+                pathB.withMapping.reverse,
+                pathA.withMapping,
+            ])!
+            return (combinedPath, mappings[1])
         case (.start, .end):
-            (SomeFinitePath.combine(pathB, pathA)!, { pathB.length + $0 })
+            let (combinedPath, mappings) = FinitePathAndPositionMapping.combine([
+                pathB.withMapping,
+                pathA.withMapping,
+            ])!
+            return (combinedPath, mappings[1])
         case (.end, .start):
-            (SomeFinitePath.combine(pathA, pathB)!, { $0 })
+            let (combinedPath, mappings) = FinitePathAndPositionMapping.combine([
+                pathA.withMapping,
+                pathB.withMapping,
+            ])!
+            return (combinedPath, mappings[0])
         case (.end, .end):
-            (SomeFinitePath.combine(pathA, pathB.reverse)!, { $0 })
+            let (combinedPath, mappings) = FinitePathAndPositionMapping.combine([
+                pathA.withMapping,
+                pathB.withMapping.reverse,
+            ])!
+            return (combinedPath, mappings[0])
         }
     }
 
@@ -280,9 +295,10 @@ extension TrackMap {
         assert(0.0.m < x && x < oldTrack.path.length)
         let point = oldTrack.path.point(at: x)!
         let directionA = oldTrack.path.orientation(at: x)!
-        let (splitPathA, splitPathB) = oldTrack.path.split(at: x)!
-        let splitTrackA = Track(id: trackIDGenerator.new(), path: splitPathA)
-        let splitTrackB = Track(id: trackIDGenerator.new(), path: splitPathB)
+        let (splitPathAAndMapping, splitPathBAndMapping) =
+            oldTrack.path.withMapping.split(at: x)!
+        let splitTrackA = Track(id: trackIDGenerator.new(), path: splitPathAAndMapping.path)
+        let splitTrackB = Track(id: trackIDGenerator.new(), path: splitPathBAndMapping.path)
         var updates: [ObserverUpdate] = []
         if let connectionA = oldTrack.startConnection {
             updates.append(splitTrackA.setStartConnection(connectionA))
@@ -306,10 +322,15 @@ extension TrackMap {
         updates.append(contentsOf: newConnection.add(track: splitTrackB))
         updates.append(
             contentsOf: replace(
-                oldTracksAndUpdateFuncs: [
-                    (oldTrack, { (y) in (y < x) ? (splitTrackA, y) : (splitTrackB, y - x) })
-                ],
-                withTracks: [splitTrackA, splitTrackB]))
+                oldTracksAndMappings: [
+                    (
+                        oldTrack,
+                        TrackAndPostionMapping(tracksAndPositionMappings: [
+                            (splitTrackA, splitPathAAndMapping.mapping),
+                            (splitTrackB, splitPathBAndMapping.mapping),
+                        ])
+                    )
+                ], withTracks: [splitTrackA, splitTrackB]))
         updates.append(add(connection: newConnection))
         return (newConnection, updates)
     }

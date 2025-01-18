@@ -10,21 +10,11 @@ import Foundation
 
 @testable import Tracks
 
-func == (lhs: PositionUpdateFunc, rhs: PositionUpdateFunc) -> Bool {
+func == (lhs: TrackAndPostionMapping, rhs: TrackAndPostionMapping) -> Bool {
     for i in stride(from: -200.0, through: +200.0, by: 1.23) {
         let x = Position(i)
-        if lhs(x) != rhs(x) {
-            return false
-        }
-    }
-    return true
-}
-
-func == (lhs: TrackAndPostionUpdateFunc, rhs: TrackAndPostionUpdateFunc) -> Bool {
-    for i in stride(from: -200.0, through: +200.0, by: 1.23) {
-        let x = Position(i)
-        let l = lhs(x)
-        let r = rhs(x)
+        let l = lhs.newTrackAndPosition(for: x)
+        let r = rhs.newTrackAndPosition(for: x)
         guard let l = l, let r = r else {
             if (l == nil) != (r == nil) {
                 return false
@@ -46,10 +36,10 @@ func == (lhs: TrackAndPostionUpdateFunc, rhs: TrackAndPostionUpdateFunc) -> Bool
 
 final class TestTrackObserver: TrackObserver {
     enum Call: Equatable {
-        case pathChanged(Track, PositionUpdateFunc)
+        case pathChanged(Track, PositionMapping)
         case startConnectionChanged(Track, TrackConnection?)
         case endConnectionChanged(Track, TrackConnection?)
-        case replaced(Track, [Track], TrackAndPostionUpdateFunc)
+        case replaced(Track, [Track], TrackAndPostionMapping)
         case removed(Track)
 
         static func == (lhs: Call, rhs: Call) -> Bool {
@@ -75,8 +65,8 @@ final class TestTrackObserver: TrackObserver {
         track.observers.add(self)
     }
 
-    func pathChanged(forTrack track: Track, withPositionUpdate f: @escaping PositionUpdateFunc) {
-        calls.append(.pathChanged(track, f))
+    func pathChanged(forTrack track: Track, withMapping mapping: PositionMapping) {
+        calls.append(.pathChanged(track, mapping))
     }
 
     func startConnectionChanged(forTrack track: Track, oldConnection: TrackConnection?) {
@@ -89,9 +79,9 @@ final class TestTrackObserver: TrackObserver {
 
     func replaced(
         track oldTrack: Track, withTracks newTracks: [Track],
-        withUpdateFunc f: @escaping TrackAndPostionUpdateFunc
+        withMapping mapping: TrackAndPostionMapping
     ) {
-        calls.append(.replaced(oldTrack, newTracks, f))
+        calls.append(.replaced(oldTrack, newTracks, mapping))
     }
 
     func removed(track oldTrack: Track) {
